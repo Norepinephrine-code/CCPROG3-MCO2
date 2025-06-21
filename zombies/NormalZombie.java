@@ -6,15 +6,4 @@ public class NormalZombie extends Zombie {
         super(70, 4, 10, pos);
     }
 
-    @Override
-    public void move() {
-        if (!isFreeze) {
-            // movement logic here
-        }
-    }
-
-    @Override
-    public void attack() {
-        // attack logic here
-    }
 }
