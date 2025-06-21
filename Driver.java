@@ -86,7 +86,7 @@ public class Driver {
                     z = new ConeheadZombie(spawnTile);
                 }
                 spawnTile.addZombie(z);
-                System.out.println("Zombie appeared in Row " + row + ", Column " + (COLS - 1)
+                System.out.println("Zombie appeared in Row " + (row + 1) + ", Column " + COLS
                         + " | Type: " + z.getClass().getSimpleName()
                         + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
             }
@@ -104,7 +104,7 @@ public class Driver {
 
             System.out.println("Current Sun: " + sun);
 
-            // Player places plants
+            // Player places plants (1-based input)
             System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 0-None): ");
             int choice = -1;
             try {
@@ -113,26 +113,26 @@ public class Driver {
                 choice = -1;
             }
             if (choice == 1 && sun >= 50) {
-                System.out.print("Enter row and column: ");
-                int r = scanner.nextInt();
-                int c = scanner.nextInt();
+                System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
+                int r = scanner.nextInt() - 1;
+                int c = scanner.nextInt() - 1;
                 scanner.nextLine();
                 if (r >= 0 && r < ROWS && c >= 0 && c < COLS && !board[r][c].isOccupied()) {
                     board[r][c].setPlant(new Sunflower(board[r][c]));
                     sun -= 50;
-                    System.out.println("Placed Sunflower at Row " + r + " Column " + c);
+                    System.out.println("Placed Sunflower at Row " + (r + 1) + " Column " + (c + 1));
                 } else {
                     System.out.println("Invalid location.");
                 }
             } else if (choice == 2 && sun >= 100) {
-                System.out.print("Enter row and column: ");
-                int r = scanner.nextInt();
-                int c = scanner.nextInt();
+                System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
+                int r = scanner.nextInt() - 1;
+                int c = scanner.nextInt() - 1;
                 scanner.nextLine();
                 if (r >= 0 && r < ROWS && c >= 0 && c < COLS && !board[r][c].isOccupied()) {
                     board[r][c].setPlant(new Peashooter(board[r][c]));
                     sun -= 100;
-                    System.out.println("Placed Peashooter at Row " + r + " Column " + c);
+                    System.out.println("Placed Peashooter at Row " + (r + 1) + " Column " + (c + 1));
                 } else {
                     System.out.println("Invalid location.");
                 }
@@ -150,7 +150,7 @@ public class Driver {
                                     p.action(z);
                                     if (!z.isAlive()) {
                                         board[r][zc].removeZombie(z);
-                                        System.out.println("Zombie at Row " + r + " Col " + zc + " died.");
+                                        System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
                                     }
                                 }
                                 break;
@@ -160,7 +160,7 @@ public class Driver {
                 }
             }
 
-            // Zombies attack & move
+            // Zombies attack & move every [speed] ticks
             List<Zombie> movingZombies = new ArrayList<>();
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
@@ -170,14 +170,15 @@ public class Driver {
 
             for (Zombie z : movingZombies) {
                 z.attack();
-                z.move(board);
+                if (ticks % z.getSpeed() == 0) {
+                    z.move(board);
+                }
                 if (z.getPosition().getColumn() == 0) {
                     System.out.println("A zombie reached your house! Game Over. Zombies win!");
                     scanner.close();
                     return;
                 }
             }
-
 
             gameBoard.display();
 

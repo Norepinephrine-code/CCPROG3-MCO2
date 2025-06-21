@@ -22,25 +22,17 @@ public abstract class Zombie {
     }
 
     public void move(Tile[][] board) {
-        int row = position.getRow();
-        int col = position.getColumn();
+        // remove from current tile
+        Tile currentTile = this.getPosition();
+        currentTile.removeZombie(this);
 
-        // Calculate effective speed (frozen zombies move slower)
-        int moveDistance = isFreeze ? Math.max(1, speed / 2) : speed;
-        int newCol = col - moveDistance;
+        // move 1 tile left ONLY:
+        int newCol = this.getPosition().getColumn() - 1;
+        if (newCol < 0) newCol = 0; // safeguard
 
-        if (newCol < 0) {
-            System.out.println("A zombie reached your house! Game Over.");
-            // Optionally set a game-over flag here
-            return;
-        }
-
-        board[row][col].removeZombie(this);
-        board[row][newCol].addZombie(this);
-        this.setPosition(board[row][newCol]);
-
-        System.out.println("Zombie moved to Row " + row + ", Col " + newCol +
-                (isFreeze ? " (slowed)" : ""));
+        Tile newTile = board[this.getPosition().getRow()][newCol];
+        this.setPosition(newTile);
+        newTile.addZombie(this);
     }
 
     public void setPosition(Tile position) {

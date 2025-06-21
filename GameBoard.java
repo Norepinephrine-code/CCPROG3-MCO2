@@ -23,7 +23,7 @@ public class GameBoard {
      * " Z " = has at least 1 zombie (priority over plant)
      */
     public void display() {
-        System.out.println("\n=== Current Game Board ===");
+        System.out.println("\n======= Current Game Board  =======");
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 Tile tile = board[r][c];
@@ -44,6 +44,6 @@ public class GameBoard {
             }
             System.out.println();
         }
-        System.out.println("==========================\n");
+        System.out.println("===================================\n");
     }
 }
