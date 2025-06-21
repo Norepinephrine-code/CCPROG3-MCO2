@@ -18,15 +18,15 @@ public class Tile {
     }
 
     public void setPlant(Plant plant) {
-        this.plants = plant;
+        this.plant = plant;
     }
 
     public void removePlants() {
-        this.plants = null;
+        this.plant = null;
     }
 
     public boolean isOccupied() {
-        return plants != null;
+        return plant != null;
     }
 
     public void addZombie(Zombie z) {
@@ -46,7 +46,7 @@ public class Tile {
     }
 
     public Plant getPlant() {
-        return plants;
+        return plant;
     }
 
     public boolean hasZombies() {
