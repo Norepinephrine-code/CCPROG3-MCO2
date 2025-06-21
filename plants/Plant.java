@@ -24,24 +24,32 @@ public class Plant{
      * @param Zombie The zombie being attacked
      * @return The health of the zombie after getting hit by the action
      */
-    public int action(Zombie zombie){
-        int i;
-
-                for (i=0; i<this.range; i++){
-                    if (i > (this.range/2) && i == zombie.position){
-                        zombie.health = zombie.health - (this.damage/(i/2));
-                        System.out.println("Hit zombie at row " + zombie.position.row + " column " + zombie.position.column);
-                        return zombie.health; // return value to simulate a projectile hitting only the first zombie
-                        }
-                    else if (i < (this.range/2 && i = zombiePosition)){
-                        zombie.health = zombie.health - this.directDamage;
-                        return zombie.health; // return value to simulate a projectile hitting only the first zombie
-                        }
-                    
-                }
-        
-     }
+    public int action(Zombie zombie) {
+        Tile zombieTile = zombie.getPosition();
+        int plantRow = this.position.getRow();
+        int plantCol = this.position.getColumn();
+        int zombieRow = zombieTile.getRow();
+        int zombieCol = zombieTile.getColumn();
     
+        // Only attack if in the same row and ahead
+        if (plantRow != zombieRow) return zombie.getHealth();
+    
+        int distance = zombieCol - plantCol;
+    
+        if (distance > 0 && distance <= range) {
+            if (distance <= range / 2) {
+                zombie.takeDamage((int) directDamage);
+                System.out.println("Close-range hit! Dealt " + (int) directDamage + " damage.");
+            } else {
+                int dmg = (int)(damage / (distance / 2.0));
+                zombie.takeDamage(dmg);
+                System.out.println("Long-range hit! Dealt " + dmg + " damage.");
+            }
+        }
+    
+        return zombie.getHealth();
+    }
+        
 
     /**
      * The plant takes damage to its health according to the damage of the zombie
