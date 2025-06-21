@@ -7,6 +7,9 @@ import zombies.Zombie;
  */
 public class Cherrybomb extends Plant {
 
+    /** Number of ticks before the cherrybomb explodes. */
+    private int fuse;
+
     /**
      * Creates a Cherrybomb at the given tile.
      *
@@ -14,6 +17,7 @@ public class Cherrybomb extends Plant {
      */
     public Cherrybomb(Tile position){
         super(150,5.5f,1800,1000,1,1800,5.5f,position);
+        this.fuse = 3; // explode after 3 ticks
     }
 
     /**
@@ -40,6 +44,50 @@ public class Cherrybomb extends Plant {
         System.out.println("Cherrybomb exploded at Row " + plantRow + " Column " + plantCol + "!");
         this.health = 0; // destroy Cherrybomb after exploding
         return 1;
+    }
+
+    /**
+     * Updates the fuse each tick and triggers explosion when it reaches zero.
+     *
+     * @param board the current game board used to locate zombies
+     */
+    public void tick(Tile[][] board) {
+        if (health <= 0) return; // already exploded
+        fuse--;
+        if (fuse <= 0) {
+            explode(board);
+        }
+    }
+
+    /**
+     * Deals damage to all zombies in a 3x3 area centered on this cherrybomb
+     * then removes the plant from the board.
+     *
+     * @param board the game board
+     */
+    private void explode(Tile[][] board) {
+        int plantRow = this.position.getRow();
+        int plantCol = this.position.getColumn();
+        for (int i = plantRow - range; i <= plantRow + range; i++) {
+            for (int j = plantCol - range; j <= plantCol + range; j++) {
+                if (i >= 0 && i < board.length && j >= 0 && j < board[0].length) {
+                    Tile tile = board[i][j];
+                    if (tile.hasZombies()) {
+                        // copy to avoid concurrent modification
+                        java.util.List<Zombie> zs = new java.util.ArrayList<>(tile.getZombies());
+                        for (Zombie z : zs) {
+                            z.takeDamage(this.damage);
+                            if (!z.isAlive()) {
+                                tile.removeZombie(z);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("Cherrybomb exploded at Row " + plantRow + " Column " + plantCol + "!");
+        this.health = 0;
+        position.removePlants();
     }
 
 }
