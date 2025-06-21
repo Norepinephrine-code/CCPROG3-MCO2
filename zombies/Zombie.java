@@ -100,8 +100,9 @@ public abstract class Zombie {
         Tile currentTile = this.getPosition();
         if (currentTile.getPlant() != null) {
             currentTile.getPlant().takeDamage(this);
-            System.out.println("Zombie at Row " + currentTile.getRow() + ", Col " + currentTile.getColumn() +
-                    " attacked the plant for " + this.getDamage() + " damage.");
+            System.out.println("Zombie at Row " + (currentTile.getRow() + 1) + ", Col " +
+                    (currentTile.getColumn() + 1) + " attacked the plant for " + this.getDamage() +
+                    " damage.");
         }
     }
 
