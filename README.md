@@ -1,6 +1,6 @@
 <h1 align="center">CCPROG3 MCO1</h1>
 
-<p align="center"><em>A simple console implementation of <strong>Plants vs Zombies</strong> for CCPROG3</em> by Ramos & Vergara.</p> 
+<p align="center"><em>A simple console implementation of <strong>Plants vs Zombies</strong> for CCPROG3 by Ramos & Vergara.</em></p> 
 
 <h2>Important Logics and Parameters</h2>
 
