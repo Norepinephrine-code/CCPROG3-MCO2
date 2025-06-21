@@ -9,13 +9,14 @@ import plants.Sunflower;
 import plants.Peashooter;
 import zombies.Zombie;
 import zombies.NormalZombie;
-
-/* In progress */
+import zombies.FlagZombie;
+import zombies.ConeheadZombie;
 
 public class Driver {
 
     private static final int ROWS = 5;
     private static final int COLS = 9;
+    private static final int GAME_DURATION = 180; // ticks
 
     private static String formatTime(int ticks) {
         int minutes = ticks / 60;
@@ -32,21 +33,62 @@ public class Driver {
             }
         }
 
+        GameBoard gameBoard = new GameBoard(board);
+
+        System.out.print("Select Level (1, 2, or 3): ");
+        int level = 1;
+        try {
+            level = Integer.parseInt(scanner.nextLine());
+        } catch (Exception e) {
+            level = 1;
+        }
+        if (level < 1) level = 1;
+        if (level > 3) level = 3;
+
         int sun = 150; // starting sun
         int ticks = 0;
         Random rand = new Random();
 
-        while (true) {
+        System.out.println("=== Plants vs Zombies Console Game ===");
+        System.out.println("Level: " + level);
+
+        while (ticks <= GAME_DURATION) {
             System.out.println("Time: " + formatTime(ticks));
 
-            // Spawn a zombie every 5 ticks
+            // Ambient sun every 5 ticks
             if (ticks % 5 == 0) {
+                sun += 25;
+                System.out.println("Sun dropped! Current sun: " + sun);
+            }
+
+            // Spawn zombies per spec
+            boolean spawnZombie = false;
+            if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {
+                spawnZombie = true;
+            } else if (ticks >= 81 && ticks <= 140 && ticks % 5 == 0) {
+                spawnZombie = true;
+            } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {
+                spawnZombie = true;
+            } else if (ticks >= 171 && ticks <= 180) {
+                spawnZombie = true;
+            }
+
+            if (spawnZombie) {
                 int row = rand.nextInt(ROWS);
                 Tile spawnTile = board[row][COLS - 1];
-                Zombie z = new NormalZombie(spawnTile);
+                Zombie z;
+                int zType = rand.nextInt(3);
+                if (zType == 0) {
+                    z = new NormalZombie(spawnTile);
+                } else if (zType == 1) {
+                    z = new FlagZombie(spawnTile);
+                } else {
+                    z = new ConeheadZombie(spawnTile);
+                }
                 spawnTile.addZombie(z);
                 System.out.println("Zombie appeared in Row " + row + ", Column " + (COLS - 1)
-                        + " with Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
+                        + " | Type: " + z.getClass().getSimpleName()
+                        + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
             }
 
             // Sunflowers generate sun
@@ -62,7 +104,7 @@ public class Driver {
 
             System.out.println("Current Sun: " + sun);
 
-            // Ask player to place a plant
+            // Player places plants
             System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 0-None): ");
             int choice = -1;
             try {
@@ -118,7 +160,7 @@ public class Driver {
                 }
             }
 
-            // Zombies attack and move
+            // Zombies attack & move
             List<Zombie> movingZombies = new ArrayList<>();
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
@@ -130,14 +172,23 @@ public class Driver {
                 z.attack();
                 z.move(board);
                 if (z.getPosition().getColumn() == 0) {
-                    System.out.println("A zombie reached your house! Game Over.");
+                    System.out.println("A zombie reached your house! Game Over. Zombies win!");
                     scanner.close();
                     return;
                 }
             }
 
+
+            gameBoard.display();
+
+            // Time up check
+            if (ticks == GAME_DURATION) {
+                System.out.println("Time's up! Plants survived. Plants win!");
+                scanner.close();
+                return;
+            }
+
             ticks++;
-            System.out.println();
         }
     }
 }
