@@ -7,15 +7,4 @@ public class FlagZombie extends Zombie {
         this.baseSpeed = 3;
     }
 
-    @Override
-    public void move() {
-        if (!isFreeze) {
-            // movement logic here
-        }
-    }
-
-    @Override
-    public void attack() {
-        // attack logic here
-    }
 }
