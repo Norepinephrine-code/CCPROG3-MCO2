@@ -2,6 +2,7 @@ import tiles.Tile;
 import plants.Plant;
 import plants.Sunflower;
 import plants.Peashooter;
+import plants.Cherrybomb;
 import zombies.Zombie;
 import zombies.NormalZombie;
 import zombies.FlagZombie;
@@ -68,6 +69,8 @@ public class GameBoard {
                         content = " S ";
                     } else if (p instanceof Peashooter) {
                         content = " P ";
+                    } else if (p instanceof Cherrybomb) {
+                        content = "C-B";
                     } else {
                         content = "---";
                     }
