@@ -7,15 +7,4 @@ public class ConeheadZombie extends Zombie {
         this.baseSpeed = 2;
     }
 
-    @Override
-    public void move() {
-        if (!isFreeze) {
-            // movement logic here
-        }
-    }
-
-    @Override
-    public void attack() {
-        // attack logic here
-    }
 }
