@@ -8,7 +8,7 @@ import plants.Plant;
 public class Tile {
     private int row;
     private int column;
-    private Plant plants;
+    private Plant plant;
     private List<Zombie> zombies;
 
     public Tile(int row, int column) {
@@ -45,10 +45,14 @@ public class Tile {
         return column;
     }
 
-    public Plant getPlants() {
+    public Plant getPlant() {
         return plants;
     }
 
+    public boolean hasZombies() {
+        return !zombies.isEmpty();
+    }
+    
     public List<Zombie> getZombies() {
         return zombies;
     }
