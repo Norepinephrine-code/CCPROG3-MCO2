@@ -101,6 +101,4 @@ public abstract class Zombie {
     public int getFreezeTimer() {
         return freezeTimer;
     }
-
-    public
 }
