@@ -7,6 +7,7 @@ import tiles.Tile;
 import plants.Plant;
 import plants.Sunflower;
 import plants.Peashooter;
+import plants.Cherrybomb;
 import zombies.Zombie;
 import zombies.NormalZombie;
 import zombies.FlagZombie;
@@ -165,7 +166,7 @@ public class Game {
  * Allows planting anywhere else, including the zombie edge if desired.
  */
     private void placePlant() {
-        System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 0-None):");
+        System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
         int choice = -1;
         try {
             choice = Integer.parseInt(scanner.nextLine());
@@ -197,6 +198,18 @@ public class Game {
             } else {
                 System.out.println("Invalid location. Cannot place on the house (col 1).");
             }
+        } else if (choice == 3 && sun >= 150) {
+            System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
+            int r = scanner.nextInt() - 1;
+            int c = scanner.nextInt() - 1;
+            scanner.nextLine();
+            if (r >= 0 && r < ROWS && c > 0 && c < COLS && !board[r][c].isOccupied()) {
+                board[r][c].setPlant(new Cherrybomb(board[r][c]));
+                sun -= 150;
+                System.out.println("Placed Cherrybomb at Row " + (r + 1) + " Column " + (c + 1));
+            } else {
+                System.out.println("Invalid location. Cannot place on the house(col 1).");
+            }
         }
     }
 
@@ -222,6 +235,24 @@ public class Game {
                             }
                             break;
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates all Cherrybombs each tick and triggers explosions when ready.
+     */
+    private void handleCherrybombs() {
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                Plant p = board[r][c].getPlant();
+                if (p instanceof Cherrybomb) {
+                    Cherrybomb cb = (Cherrybomb) p;
+                    cb.tick(board);
+                    if (!cb.isAlive()) {
+                        board[r][c].removePlants();
                     }
                 }
             }
@@ -293,6 +324,7 @@ public class Game {
             System.out.println("Current Sun: " + sun);
             placePlant();
             handlePeashooters();
+            handleCherrybombs();
             if (moveZombies()) {
                 scanner.close();
                 return;
