@@ -232,12 +232,18 @@ public class Game {
                         if (board[r][zc].hasZombies()) {
                             List<Zombie> zs = new ArrayList<>(board[r][zc].getZombies());
                             for (Zombie z : zs) {
-                                p.action(z);
-                                if (!z.isAlive()) {
-                                    board[r][zc].removeZombie(z);
-                                    System.out.println(
-                                            "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
+                                // === BEGIN Peashooter cooldown logic ===
+                                // Peashooters fire only on every other tick.
+                                // Modify the modulo check below to adjust cooldown.
+                                if (ticks % 2 == 0) {
+                                    p.action(z);
+                                    if (!z.isAlive()) {
+                                        board[r][zc].removeZombie(z);
+                                        System.out.println(
+                                                "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
+                                    }
                                 }
+                                // === END Peashooter cooldown logic ===
                             }
                             break;
                         }
