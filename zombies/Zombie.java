@@ -1,6 +1,11 @@
 package zombies;
 import tiles.Tile;
 import plants.Plant;
+
+/**
+ * Base class for all zombie types. Implements common behaviour such as
+ * movement, attacking and taking damage.
+ */
 public abstract class Zombie {
     protected int health = 70;
     protected int baseSpeed = 4;
@@ -11,6 +16,14 @@ public abstract class Zombie {
     protected boolean isFreeze;
     protected int freezeTimer;
 
+    /**
+     * Constructs a zombie with the given attributes.
+     *
+     * @param h   starting health
+     * @param bs  base movement speed in ticks
+     * @param d   damage dealt to plants
+     * @param pos starting tile position on the board
+     */
     public Zombie(int h, int bs, int d, Tile pos) {
         this.health = h;
         this.baseSpeed = bs;
@@ -21,6 +34,11 @@ public abstract class Zombie {
         this.freezeTimer = 0;
     }
 
+    /**
+     * Moves the zombie one tile to the left on the given board.
+     *
+     * @param board current board grid used to update tile occupancy
+     */
     public void move(Tile[][] board) {
         // remove from current tile
         Tile currentTile = this.getPosition();
@@ -35,19 +53,37 @@ public abstract class Zombie {
         newTile.addZombie(this);
     }
 
+    /**
+     * Updates the tile reference that this zombie occupies.
+     *
+     * @param position new tile position
+     */
     public void setPosition(Tile position) {
         this.position = position;
     }
 
+    /**
+     * Reduces this zombie's health by the specified amount.
+     *
+     * @param amount damage to apply
+     */
     public void takeDamage(int amount) {
         health -= amount;
     }
 
+    /**
+     * Freezes the zombie for the specified number of ticks.
+     *
+     * @param ticks how long the zombie will remain frozen
+     */
     public void freezeFor(int ticks) {
         isFreeze = true;
         freezeTimer = ticks;
     }
 
+    /**
+     * Updates internal timers such as freeze state each tick.
+     */
     public void update() {
         if (isFreeze) {
             freezeTimer--;
@@ -57,6 +93,9 @@ public abstract class Zombie {
         }
     }
 
+    /**
+     * Attacks the plant on the current tile if one exists.
+     */
     public void attack() {
         Tile currentTile = this.getPosition();
         if (currentTile.getPlant() != null) {
@@ -66,30 +105,53 @@ public abstract class Zombie {
         }
     }
 
+    /**
+     * Checks if this zombie still has health remaining.
+     *
+     * @return {@code true} if health is above zero
+     */
     public boolean isAlive() {
         return health > 0;
     }
 
+    /**
+     * @return current tile occupied by the zombie
+     */
     public Tile getPosition() {
         return position;
     }
 
+    /**
+     * @return zombie's original speed value
+     */
     public int getBaseSpeed() {
         return baseSpeed;
     }
 
+    /**
+     * @return current movement speed factoring in modifiers
+     */
     public int getSpeed() {
         return speed;
     }
 
+    /**
+     * @return current health value
+     */
     public int getHealth() {
         return health;
     }
     
+    /**
+     * @return damage dealt when attacking a plant
+     */
     public int getDamage() {
         return damage;
     }
 
+    /**
+     * @return remaining ticks that this zombie is frozen
+     */
     public int getFreezeTimer() {
         return freezeTimer;
     }
