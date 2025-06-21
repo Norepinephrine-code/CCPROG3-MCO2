@@ -69,6 +69,9 @@ public class Game {
 
     /**
      * Initializes the game board and attaches the rendering utility.
+     *
+     * Index:       0       1  2  3  4  5  6  7                     8
+     * Meaning: [house]           LAWN             [zombie spawn at last column]
      */
     private void initializeBoard() {
         board = new Tile[ROWS][COLS];
