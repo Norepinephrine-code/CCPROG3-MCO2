@@ -1,7 +1,6 @@
 package zombies;
-
 import tiles.Tile;
-
+import plants.Plant;
 public abstract class Zombie {
     protected int health = 70;
     protected int baseSpeed = 4;
@@ -22,9 +21,31 @@ public abstract class Zombie {
         this.freezeTimer = 0;
     }
 
-    public abstract void move();
+    public void move(Tile[][] board) {
+        int row = position.getRow();
+        int col = position.getColumn();
 
-    public abstract void attack();
+        // Calculate effective speed (frozen zombies move slower)
+        int moveDistance = isFreeze ? Math.max(1, speed / 2) : speed;
+        int newCol = col - moveDistance;
+
+        if (newCol < 0) {
+            System.out.println("A zombie reached your house! Game Over.");
+            // Optionally set a game-over flag here
+            return;
+        }
+
+        board[row][col].removeZombie(this);
+        board[row][newCol].addZombie(this);
+        this.setPosition(board[row][newCol]);
+
+        System.out.println("Zombie moved to Row " + row + ", Col " + newCol +
+                (isFreeze ? " (slowed)" : ""));
+    }
+
+    public void setPosition(Tile position) {
+        this.position = position;
+    }
 
     public void takeDamage(int amount) {
         health -= amount;
@@ -44,11 +65,19 @@ public abstract class Zombie {
         }
     }
 
+    public void attack() {
+        Tile currentTile = this.getPosition();
+        if (currentTile.getPlant() != null) {
+            currentTile.getPlant().takeDamage(this);
+            System.out.println("Zombie at Row " + currentTile.getRow() + ", Col " + currentTile.getColumn() +
+                    " attacked the plant for " + this.getDamage() + " damage.");
+        }
+    }
+
     public boolean isAlive() {
         return health > 0;
     }
 
-    // Getters
     public Tile getPosition() {
         return position;
     }
@@ -64,37 +93,14 @@ public abstract class Zombie {
     public int getHealth() {
         return health;
     }
-
+    
     public int getDamage() {
         return damage;
-    }
-
-    public boolean isFrozen() {
-        return isFreeze;
     }
 
     public int getFreezeTimer() {
         return freezeTimer;
     }
 
-    // Setters
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    public void setPosition(Tile position) {
-        this.position = position;
-    }
-
-    public void setFrozen(boolean frozen) {
-        this.isFreeze = frozen;
-    }
-
-    public void setFreezeTimer(int freezeTimer) {
-        this.freezeTimer = freezeTimer;
-    }
+    public
 }
