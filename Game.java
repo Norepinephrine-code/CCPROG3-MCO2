@@ -1,4 +1,3 @@
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,25 +12,64 @@ import zombies.NormalZombie;
 import zombies.FlagZombie;
 import zombies.ConeheadZombie;
 
+/**
+ * The {@code Game} class encapsulates the core logic for the 
+ * console version of the Plants vs Zombies simulation. 
+ * 
+ * It handles board initialization, level setup, sun generation,
+ * zombie spawning, plant placement, attacks, zombie movement,
+ * and win/loss conditions. This class separates game logic
+ * from the main driver and UI rendering.
+ * 
+ * Usage:
+ * {@code new Game().start();}
+ */
 public class Game {
-    private static final int ROWS = 5;
-    private static final int COLS = 9;
-    private static final int GAME_DURATION = 180; // ticks
 
+    /** Number of rows on the board. */
+    private static final int ROWS = 5;
+
+    /** Number of columns on the board. */
+    private static final int COLS = 9;
+
+    /** Total duration of the game in ticks. */
+    private static final int GAME_DURATION = 180;
+
+    /** 2D grid representing the game board. */
     private Tile[][] board;
+
+    /** Utility for rendering the board state. */
     private GameBoard gameBoard;
+
+    /** Scanner for player input. */
     private Scanner scanner;
+
+    /** Random generator for zombie spawning. */
     private Random rand;
 
+    /** Player-selected difficulty level (1-3). */
     private int level;
+
+    /** Current available sun points. */
     private int sun;
+
+    /** Current time tick. */
     private int ticks;
 
+    /**
+     * Tracks zombies spawned in the current tick to prevent immediate movement.
+     */
+    private List<Zombie> justSpawned = new ArrayList<>();
+
+    /** Constructs a new Game instance with initialized input and random generator. */
     public Game() {
         scanner = new Scanner(System.in);
         rand = new Random();
     }
 
+    /**
+     * Initializes the game board and attaches the rendering utility.
+     */
     private void initializeBoard() {
         board = new Tile[ROWS][COLS];
         for (int r = 0; r < ROWS; r++) {
@@ -42,6 +80,9 @@ public class Game {
         gameBoard = new GameBoard(board);
     }
 
+    /**
+     * Prompts the player to select a level and validates input.
+     */
     private void selectLevel() {
         System.out.print("Select Level (1, 2, or 3): ");
         try {
@@ -53,6 +94,9 @@ public class Game {
         if (level > 3) level = 3;
     }
 
+    /**
+     * Generates ambient sun points every 5 ticks.
+     */
     private void dropSun() {
         if (ticks % 5 == 0) {
             sun += 25;
@@ -60,6 +104,10 @@ public class Game {
         }
     }
 
+    /**
+     * Spawns zombies according to the wave pattern defined in the project specs.
+     * Newly spawned zombies are tracked to prevent instant movement.
+     */
     private void spawnZombies() {
         boolean spawnZombie = false;
         if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {
@@ -85,6 +133,7 @@ public class Game {
                 z = new ConeheadZombie(spawnTile);
             }
             spawnTile.addZombie(z);
+            justSpawned.add(z);
             System.out.println(
                     "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
                             + " | Type: " + z.getClass().getSimpleName()
@@ -92,6 +141,9 @@ public class Game {
         }
     }
 
+    /**
+     * Generates sun points from all active Sunflowers every 2 ticks.
+     */
     private void handleSunflowers() {
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
@@ -104,6 +156,10 @@ public class Game {
         }
     }
 
+    /**
+     * Handles player input for placing Sunflowers and Peashooters.
+     * Validates placement and adjusts sun points accordingly.
+     */
     private void placePlant() {
         System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 0-None):");
         int choice = -1;
@@ -140,6 +196,10 @@ public class Game {
         }
     }
 
+    /**
+     * Handles Peashooter attacks: finds the nearest zombie in range and applies damage.
+     * Removes zombies that die as a result.
+     */
     private void handlePeashooters() {
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
@@ -165,9 +225,10 @@ public class Game {
     }
 
     /**
-     * Moves zombies, handles attacks and checks for game over.
+     * Moves all zombies that were not just spawned this tick and handles their attacks.
+     * Checks if any zombie reaches the player's house.
      *
-     * @return {@code true} if a zombie reached the house
+     * @return {@code true} if a zombie reached the house; {@code false} otherwise.
      */
     private boolean moveZombies() {
         List<Zombie> movingZombies = new ArrayList<>();
@@ -179,7 +240,7 @@ public class Game {
 
         for (Zombie z : movingZombies) {
             z.attack();
-            if (ticks % z.getSpeed() == 0) {
+            if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
                 z.move(board);
             }
             if (z.getPosition().getColumn() == 0) {
@@ -190,12 +251,23 @@ public class Game {
         return false;
     }
 
+    /**
+     * Formats a tick count as a MM:SS time string.
+     *
+     * @param ticks current tick count
+     * @return formatted time string
+     */
     private static String formatTime(int ticks) {
         int minutes = ticks / 60;
         int seconds = ticks % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    /**
+     * Starts the game loop, controlling all phases: sun generation,
+     * zombie spawning, plant actions, zombie movement, rendering,
+     * and win/loss checking.
+     */
     public void start() {
         initializeBoard();
         selectLevel();
@@ -208,6 +280,8 @@ public class Game {
 
         while (ticks <= GAME_DURATION) {
             System.out.println("Time: " + formatTime(ticks));
+
+            justSpawned.clear(); // clear tracker for this tick
 
             dropSun();
             spawnZombies();
@@ -232,5 +306,3 @@ public class Game {
         }
     }
 }
-
-    
