@@ -157,9 +157,10 @@ public class Game {
     }
 
     /**
-     * Handles player input for placing Sunflowers and Peashooters.
-     * Validates placement and adjusts sun points accordingly.
-     */
+ * Handles player input for placing Sunflowers and Peashooters.
+ * Prevents planting on the house tile (column 0).
+ * Allows planting anywhere else, including the zombie edge if desired.
+ */
     private void placePlant() {
         System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 0-None):");
         int choice = -1;
@@ -168,30 +169,30 @@ public class Game {
         } catch (Exception e) {
             choice = -1;
         }
-
+    
         if (choice == 1 && sun >= 50) {
             System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
-            if (r >= 0 && r < ROWS && c >= 0 && c < COLS && !board[r][c].isOccupied()) {
+            if (r >= 0 && r < ROWS && c > 0 && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Sunflower(board[r][c]));
                 sun -= 50;
                 System.out.println("Placed Sunflower at Row " + (r + 1) + " Column " + (c + 1));
             } else {
-                System.out.println("Invalid location.");
+                System.out.println("Invalid location. Cannot place on the house (col 1).");
             }
         } else if (choice == 2 && sun >= 100) {
             System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
-            if (r >= 0 && r < ROWS && c >= 0 && c < COLS && !board[r][c].isOccupied()) {
+            if (r >= 0 && r < ROWS && c > 0 && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Peashooter(board[r][c]));
                 sun -= 100;
                 System.out.println("Placed Peashooter at Row " + (r + 1) + " Column " + (c + 1));
             } else {
-                System.out.println("Invalid location.");
+                System.out.println("Invalid location. Cannot place on the house (col 1).");
             }
         }
     }
