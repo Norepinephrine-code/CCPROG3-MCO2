@@ -2,8 +2,16 @@ package plants;
 import tiles.Tile;
 import zombies.Zombie;
 
+/**
+ * Explosive plant that damages all zombies in a 3x3 area around it.
+ */
 public class Cherrybomb extends Plant {
 
+    /**
+     * Creates a Cherrybomb at the given tile.
+     *
+     * @param position tile where the bomb is placed
+     */
     public Cherrybomb(Tile position){
         super(150,5.5f,1800,1000,1,1800,5.5f,position);
     }

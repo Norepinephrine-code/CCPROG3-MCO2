@@ -12,20 +12,38 @@ import zombies.NormalZombie;
 import zombies.FlagZombie;
 import zombies.ConeheadZombie;
 
+/**
+ * Entry point for the console-based Plants vs Zombies game.
+ * Handles initialization of the board, user interaction and
+ * the main game loop.
+ */
 public class Driver {
 
     private static final int ROWS = 5;
     private static final int COLS = 9;
     private static final int GAME_DURATION = 180; // ticks
 
+    /**
+     * Converts the given tick count into a human readable time string.
+     *
+     * @param ticks number of elapsed ticks
+     * @return time in the format mm:ss
+     */
     private static String formatTime(int ticks) {
         int minutes = ticks / 60;
         int seconds = ticks % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    /**
+     * Launches the game and processes player input each tick.
+     *
+     * @param args command line arguments (unused)
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        // initialize playing field
         Tile[][] board = new Tile[ROWS][COLS];
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
@@ -35,6 +53,7 @@ public class Driver {
 
         GameBoard gameBoard = new GameBoard(board);
 
+        // ask player which difficulty level to play
         System.out.print("Select Level (1, 2, or 3): ");
         int level = 1;
         try {
@@ -52,16 +71,17 @@ public class Driver {
         System.out.println("=== Plants vs Zombies Console Game ===");
         System.out.println("Level: " + level);
 
+        // main game loop runs until the duration elapses
         while (ticks <= GAME_DURATION) {
             System.out.println("Time: " + formatTime(ticks));
 
-            // Ambient sun every 5 ticks
+            // ambient sun drop every 5 ticks
             if (ticks % 5 == 0) {
                 sun += 25;
                 System.out.println("Sun dropped! Current sun: " + sun);
             }
 
-            // Spawn zombies per spec
+            // determine if a zombie should spawn this tick
             boolean spawnZombie = false;
             if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {
                 spawnZombie = true;
@@ -91,7 +111,7 @@ public class Driver {
                         + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
             }
 
-            // Sunflowers generate sun
+            // allow sunflowers to generate sun every other tick
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
                     Plant p = board[r][c].getPlant();
@@ -104,7 +124,7 @@ public class Driver {
 
             System.out.println("Current Sun: " + sun);
 
-            // Player places plants (1-based input)
+            // prompt user for plant placement
             System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 0-None): ");
             int choice = -1;
             try {
@@ -138,7 +158,7 @@ public class Driver {
                 }
             }
 
-            // Plants attack
+            // peashooters look for zombies in range and attack
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
                     Plant p = board[r][c].getPlant();
@@ -160,7 +180,7 @@ public class Driver {
                 }
             }
 
-            // Zombies attack & move every [speed] ticks
+            // gather all zombies so they can act this tick
             List<Zombie> movingZombies = new ArrayList<>();
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
@@ -168,6 +188,7 @@ public class Driver {
                 }
             }
 
+            // each zombie attacks then moves depending on its speed
             for (Zombie z : movingZombies) {
                 z.attack();
                 if (ticks % z.getSpeed() == 0) {
@@ -180,9 +201,10 @@ public class Driver {
                 }
             }
 
+            // show updated board state
             gameBoard.display();
 
-            // Time up check
+            // check if the game duration has been reached
             if (ticks == GAME_DURATION) {
                 System.out.println("Time's up! Plants survived. Plants win!");
                 scanner.close();

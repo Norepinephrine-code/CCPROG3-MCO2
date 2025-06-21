@@ -1,8 +1,16 @@
 package plants;
 import tiles.Tile;
 
+/**
+ * Support plant that periodically generates sun resources.
+ */
 public class Sunflower extends Plant {
 
+    /**
+     * Constructs a Sunflower at the specified tile.
+     *
+     * @param position tile where the plant will be placed
+     */
     public Sunflower(Tile position){
         super(50, 2.5f, 0, 40, 0, 0, 2.5f, position);
     }
