@@ -45,6 +45,10 @@ public class Plant{
         int plantCol = this.position.getColumn();
         int zombieRow = zombieTile.getRow();
         int zombieCol = zombieTile.getColumn();
+        int plantRowDisplay = plantRow + 1;
+        int plantColDisplay = plantCol + 1;
+        int zombieRowDisplay = zombieRow + 1;
+        int zombieColDisplay = zombieCol + 1;
     
         // Only attack if in the same row and ahead
         if (plantRow != zombieRow) return zombie.getHealth();
@@ -53,12 +57,16 @@ public class Plant{
     
         if (distance > 0 && distance <= range) {
             if (distance <= range / 2) {
-                zombie.takeDamage( directDamage);
-                System.out.println("Close-range hit! Dealt " + directDamage + " damage.");
+                zombie.takeDamage(directDamage);
+                System.out.println("Plant at Row " + plantRowDisplay + ", Column " + plantColDisplay +
+                        " close-range hit zombie at Row " + zombieRowDisplay + ", Column " +
+                        zombieColDisplay + " for " + directDamage + " damage.");
             } else {
                 int dmg = (damage - (distance / 2));
                 zombie.takeDamage(dmg);
-                System.out.println("Long-range hit! Dealt " + dmg + " damage.");
+                System.out.println("Plant at Row " + plantRowDisplay + ", Column " + plantColDisplay +
+                        " long-range hit zombie at Row " + zombieRowDisplay + ", Column " +
+                        zombieColDisplay + " for " + dmg + " damage.");
             }
         }
     
