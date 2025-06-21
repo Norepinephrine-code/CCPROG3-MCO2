@@ -8,16 +8,31 @@ import zombies.Zombie;
 
 public class Plant{
 
-    public Plant(int cost, float regenerateRate, float damage, float health, int range, float directDamage, float speed, Tile position){
-        cost = this.cost;
-        regenerateRate = this.regenerateRate;
-        damage = this.damage;
-        health = this.health;
-        range = this.range;
-        directDamage = this.directDamage;
-        speed = this.speed;
-        position = this.position;
+    // Constructor
+
+    /**
+     * Constructs a plant with all given attributes
+     * @param cost Amount of sun needed to use the plant
+     * @param regenerateRate Amount of time the plant needs to regenerate
+     * @param damage Amount of damage the plant does to the zombie
+     * @param health Amount of damage the plant can sustain
+     * @param range How far the attack of the plant can reach
+     * @param directDamage Amount of damage the plant does to zombies at a closer range
+     * @param speed How fast the next attack will be
+     * @param position The position of the plant
+     */
+    public Plant(int cost, float regenerateRate, int damage, int health, int range, int directDamage, float speed, Tile position){
+        this.cost = cost;
+        this.regenerateRate = regenerateRate;
+        this.damage = damage;
+        this.health = health;
+        this.range = range;
+        this.directDamage = directDamage;
+        this.speed = speed;
+        this.position = position;
     }
+
+    // Methods
 
     /**
      * The plant attacks zombies in their row
@@ -38,10 +53,10 @@ public class Plant{
     
         if (distance > 0 && distance <= range) {
             if (distance <= range / 2) {
-                zombie.takeDamage((int) directDamage);
-                System.out.println("Close-range hit! Dealt " + (int) directDamage + " damage.");
+                zombie.takeDamage( directDamage);
+                System.out.println("Close-range hit! Dealt " + directDamage + " damage.");
             } else {
-                int dmg = (int)(damage / (distance / 2.0));
+                int dmg = (damage - (distance / 2));
                 zombie.takeDamage(dmg);
                 System.out.println("Long-range hit! Dealt " + dmg + " damage.");
             }
@@ -56,12 +71,76 @@ public class Plant{
      * @param zombie The zombie attacking the plant
      */
     public void takeDamage(Zombie zombie){
-        this.health = this.health - zombie.damage
+        this.health -= zombie.getDamage();
     }
 
-    public int getCost(){}
+    /**
+     * @return Boolean based on Plant health
+     */
+    public boolean isAlive(){
+        return health > 0;
+    }
 
-    
+    // Getters
+
+    /**
+     * @return The current health of the plant
+     */
+    public float getHealth(){
+        return this.health;
+    }
+
+    /**
+     * @return The damage the plant deals
+     */
+    public float getDamage(){
+        return this.damage;
+    }
+
+    /**
+     * @return The damage plant deals at a closer range
+     */
+    public float getDirectDamage(){
+        return this.directDamage;
+    }
+
+    /**
+     * @return The range of the plant's attack
+     */
+    public float getRange(){
+        return this.range;
+    }
+
+    /**
+     * @return The speed of the plant's next attack
+     */
+    public float getSpeed(){
+        return this.speed;
+    }
+
+    /**
+     * @return How much the plant costs to place
+     */
+    public int getCost(){
+        return this.cost;
+    }
+
+    /**
+     * @return How fast plants can be generated
+     */
+    public float getRegenerateRate(){
+        return this.regenerateRate;
+    }
+
+    /**
+     * @return Position of the plant
+     */
+    public Tile getPosition(){
+        return this.position;
+    }
+
+    // Attributes
+
     /* Amount of sun needed to use the plant */
     protected int cost;
 
@@ -69,16 +148,16 @@ public class Plant{
     protected float regenerateRate;
 
     /* Amount of damage the plant does to the zombie */
-    protected float damage;
+    protected int damage;
 
     /* Amount of damage the plant can sustain */
-    protected float health;
+    protected int health;
 
     /* How far the attack of the plant can reach */
     protected int range;
 
     /* Amount of damage the plant does to zombies at a closer range */
-    protected float directDamage;
+    protected int directDamage;
 
     /* How fast the next attack will be */
     protected float speed;    
