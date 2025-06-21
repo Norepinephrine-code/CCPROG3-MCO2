@@ -2,6 +2,10 @@ import tiles.Tile;
 import plants.Plant;
 import plants.Sunflower;
 import plants.Peashooter;
+import zombies.Zombie;
+import zombies.NormalZombie;
+import zombies.FlagZombie;
+import zombies.ConeheadZombie;
 
 /**
  * Utility class responsible for rendering the state of the board
@@ -28,8 +32,9 @@ public class GameBoard {
      * Prints a textual representation of the board using ASCII characters.
      * <p>
      * "---" represents an empty tile, "S" is a {@link Sunflower},
-     * "P" a {@link Peashooter}, and "Z" denotes that a tile currently
-     * holds at least one zombie (which takes display priority over a plant).
+     * "P" a {@link Peashooter}. Zombie tiles show one of:
+     * "ZN" for {@link NormalZombie}, "ZF" for {@link FlagZombie},
+     * or "ZC" for {@link ConeheadZombie}.
      */
     public void display() {
         System.out.println("\n======= Current Game Board  =======");
@@ -41,7 +46,18 @@ public class GameBoard {
                 boolean hasZombie = tile.hasZombies();
 
                 if (hasZombie) {
-                    content = " Z ";
+                    if (tile.getZombies().size() > 1) {
+                        content = " M ";
+                    } else {
+                        Zombie z = tile.getZombies().get(0);
+                        if (z instanceof FlagZombie) {
+                            content = "ZF ";
+                        } else if (z instanceof ConeheadZombie) {
+                            content = "ZC ";
+                        } else {
+                            content = "ZN ";
+                        }
+                    }
                 } else if (p instanceof Sunflower) {
                     content = " S ";
                 } else if (p instanceof Peashooter) {
