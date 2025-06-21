@@ -33,6 +33,12 @@ public class Game {
     /** Number of columns on the board. */
     private static final int COLS = 9;
 
+    /** Column index representing the player's house. */
+    private static final int HOUSE_COLUMN = 0;
+
+    /** First column index where plants may be placed. */
+    private static final int FIRST_PLANTABLE_COLUMN = HOUSE_COLUMN + 1;
+
     /** Total duration of the game in ticks. */
     private static final int GAME_DURATION = 180;
 
@@ -175,40 +181,40 @@ public class Game {
         }
     
         if (choice == 1 && sun >= 50) {
-            System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
+            System.out.print("Enter row (1-5) and column (2-9): ");
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
-            if (r >= 0 && r < ROWS && c > 0 && c < COLS && !board[r][c].isOccupied()) {
+            if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Sunflower(board[r][c]));
                 sun -= 50;
                 System.out.println("Placed Sunflower at Row " + (r + 1) + " Column " + (c + 1));
             } else {
-                System.out.println("Invalid location. Cannot place on the house (col 1).");
+                System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
             }
         } else if (choice == 2 && sun >= 100) {
-            System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
+            System.out.print("Enter row (1-5) and column (2-9): ");
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
-            if (r >= 0 && r < ROWS && c > 0 && c < COLS && !board[r][c].isOccupied()) {
+            if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Peashooter(board[r][c]));
                 sun -= 100;
                 System.out.println("Placed Peashooter at Row " + (r + 1) + " Column " + (c + 1));
             } else {
-                System.out.println("Invalid location. Cannot place on the house (col 1).");
+                System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
             }
         } else if (choice == 3 && sun >= 150) {
-            System.out.print("Enter row (1-" + ROWS + ") and column (1-" + COLS + "): ");
+            System.out.print("Enter row (1-5) and column (2-9): ");
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
-            if (r >= 0 && r < ROWS && c > 0 && c < COLS && !board[r][c].isOccupied()) {
+            if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Cherrybomb(board[r][c]));
                 sun -= 150;
                 System.out.println("Placed Cherrybomb at Row " + (r + 1) + " Column " + (c + 1));
             } else {
-                System.out.println("Invalid location. Cannot place on the house(col 1).");
+                System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
             }
         }
     }
@@ -312,6 +318,8 @@ public class Game {
 
         System.out.println("=== Plants vs Zombies Console Game ===");
         System.out.println("Level: " + level);
+
+        gameBoard.display();
 
         while (ticks <= GAME_DURATION) {
             System.out.println("Time: " + formatTime(ticks));
