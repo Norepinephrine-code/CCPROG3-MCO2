@@ -4,6 +4,7 @@
 
 package plants;
 import tiles.Tile;
+import zombies.Zombie;
 
 public class Plant{
 
