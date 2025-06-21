@@ -10,6 +10,7 @@
     <li>Grid size: <strong>5 rows x 9 columns</strong></li>
     <li>Column 0 represents the house; plants may be placed from columns 1 to 8</li>
     <li>Zombies spawn at the last column (8)</li>
+    <li>Indexes displayed to user is Index-1</li>
   </ul>
 </li>
 
