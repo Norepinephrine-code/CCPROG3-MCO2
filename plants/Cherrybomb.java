@@ -21,37 +21,12 @@ public class Cherrybomb extends Plant {
     }
 
     /**
-     * Overloaded to affect zombies in a 3x3 grid around the Plant position
-     * @param zombie A 2D array representing a grid of zombies in that position
-     * @return 1 To indicate action was done successfuly
+     * Triggers the cherrybomb explosion using the provided game board.
+     *
+     * @param board the current game board
      */
-    public int action(Tile[][] board) {
-        int plantRow = this.position.getRow();
-        int plantCol = this.position.getColumn();
-        int rows = board.length;               // bounds for row index
-        int columns = board[0].length;         // bounds for column index
-
-        for (int i = plantRow - this.range; i <= plantRow + this.range; i++) {
-            for (int j = plantCol - this.range; j <= plantCol + this.range; j++) {
-                if (i >= 0 && i < rows && j >= 0 && j < columns) {
-                    Tile tile = board[i][j];
-                    java.util.List<Zombie> zs = tile.getZombies();
-                    if (zs != null && !zs.isEmpty()) {
-                        // copy to avoid concurrent modification
-                        java.util.List<Zombie> copy = new java.util.ArrayList<>(zs);
-                        for (Zombie z : copy) {
-                            z.takeDamage(this.damage);
-                            if (!z.isAlive()) {
-                                tile.removeZombie(z);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        System.out.println("Cherrybomb exploded at Row " + (plantRow + 1) + " Column " + (plantCol + 1) + "!");
-        this.health = 0; // destroy Cherrybomb after exploding
-        return 1;
+    public void action(Tile[][] board) {
+        explode(board);
     }
 
     /**
