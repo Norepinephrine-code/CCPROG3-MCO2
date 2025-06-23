@@ -40,28 +40,34 @@ public class Plant{
      * @return The health of the zombie after getting hit by the action
      */
     public int action(Zombie zombie) {
+        // Determine relative positions for the plant and its target zombie
         Tile zombieTile = zombie.getPosition();
         int plantRow = this.position.getRow();
         int plantCol = this.position.getColumn();
         int zombieRow = zombieTile.getRow();
         int zombieCol = zombieTile.getColumn();
+
+        // Pre-computed values used only for printing logs
         int plantRowDisplay = plantRow + 1;
         int plantColDisplay = plantCol + 1;
         int zombieRowDisplay = zombieRow + 1;
         int zombieColDisplay = zombieCol + 1;
-    
-        // Only attack if in the same row and ahead
+
+        // Ignore if zombie is on a different row
         if (plantRow != zombieRow) return zombie.getHealth();
-    
+
         int distance = zombieCol - plantCol;
-    
+
+        // Check if the zombie is within attack range
         if (distance > 0 && distance <= range) {
             if (distance <= range / 2) {
+                // Close enough for direct damage
                 zombie.takeDamage(directDamage);
                 System.out.println("Plant at Row " + plantRowDisplay + ", Column " + plantColDisplay +
                         " close-range hit zombie at Row " + zombieRowDisplay + ", Column " +
                         zombieColDisplay + " for " + directDamage + " damage.");
             } else {
+                // Farther away: reduce damage based on distance
                 int dmg = (damage - (distance / 2));
                 zombie.takeDamage(dmg);
                 System.out.println("Plant at Row " + plantRowDisplay + ", Column " + plantColDisplay +
@@ -69,7 +75,7 @@ public class Plant{
                         zombieColDisplay + " for " + dmg + " damage.");
             }
         }
-    
+
         return zombie.getHealth();
     }
         

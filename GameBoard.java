@@ -40,22 +40,26 @@ public class GameBoard {
      */
     public void display() {
         System.out.println("\n======= Current Game Board  =======");
+        // Loop over every board coordinate row by row
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 String content;
 
                 if (c == 0) {
-                    // Always show the house symbol on column 0
+                    // Column 0 is always the player's house
                     content = " H ";
                 } else {
                     Tile tile = board[r][c];
                     Plant p = tile.getPlant();
                     boolean hasZombie = tile.hasZombies();
 
+                    // Decide what symbol to print for this tile
                     if (hasZombie) {
+                        // Multiple zombies shown with 'M'
                         if (tile.getZombies().size() > 1) {
                             content = " M ";
                         } else {
+                            // Otherwise map the single zombie type
                             Zombie z = tile.getZombies().get(0);
                             if (z instanceof FlagZombie) {
                                 content = "ZF ";
@@ -72,10 +76,12 @@ public class GameBoard {
                     } else if (p instanceof Cherrybomb) {
                         content = "C-B";
                     } else {
+                        // Empty tile
                         content = "---";
                     }
                 }
 
+                // Print tile contents separated by | bars
                 System.out.print(content);
                 if (c < cols - 1) System.out.print("|");
             }

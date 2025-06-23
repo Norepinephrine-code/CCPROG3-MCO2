@@ -37,6 +37,7 @@ public class Peashooter extends Plant {
             return zombie.getHealth();
         }
 
+        // Perform the actual attack using Plant.action
         int before = zombie.getHealth();
         int after = super.action(zombie);
         // If damage was dealt, start cooldown.

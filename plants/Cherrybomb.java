@@ -40,6 +40,7 @@ public class Cherrybomb extends Plant {
      */
     public void tick(Tile[][] board) {
         if (health <= 0) return; // already exploded
+        // Decrease the fuse each tick and explode once it hits zero
         fuse--;
         if (fuse <= 0) {
             explode(board);
@@ -55,12 +56,13 @@ public class Cherrybomb extends Plant {
     private void explode(Tile[][] board) {
         int plantRow = this.position.getRow();
         int plantCol = this.position.getColumn();
+        // Scan the surrounding 3x3 area for zombies to damage
         for (int i = plantRow - range; i <= plantRow + range; i++) {
             for (int j = plantCol - range; j <= plantCol + range; j++) {
                 if (i >= 0 && i < board.length && j >= 0 && j < board[0].length) {
                     Tile tile = board[i][j];
                     if (tile.hasZombies()) {
-                        // copy to avoid concurrent modification
+                        // Copy list to avoid concurrent modification while removing
                         List<Zombie> zs = new ArrayList<>(tile.getZombies());
                         for (Zombie z : zs) {
                             z.takeDamage(this.damage);
