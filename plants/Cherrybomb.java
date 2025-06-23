@@ -1,4 +1,8 @@
 package plants;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import tiles.Tile;
 import zombies.Zombie;
 
@@ -57,7 +61,7 @@ public class Cherrybomb extends Plant {
                     Tile tile = board[i][j];
                     if (tile.hasZombies()) {
                         // copy to avoid concurrent modification
-                        java.util.List<Zombie> zs = new java.util.ArrayList<>(tile.getZombies());
+                        List<Zombie> zs = new ArrayList<>(tile.getZombies());
                         for (Zombie z : zs) {
                             z.takeDamage(this.damage);
                             if (!z.isAlive()) {
