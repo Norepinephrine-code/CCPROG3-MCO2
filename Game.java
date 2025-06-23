@@ -230,16 +230,17 @@ public class Game {
                 if (p instanceof Peashooter) {
                     for (int zc = c + 1; zc < COLS && zc <= c + p.getRange(); zc++) {
                         if (board[r][zc].hasZombies()) {
-                            List<Zombie> zs = new ArrayList<>(board[r][zc].getZombies());
-                            for (Zombie z : zs) {
-                                p.action(z);
-                                if (!z.isAlive()) {
-                                    board[r][zc].removeZombie(z);
+                            List<Zombie> zs = board[r][zc].getZombies();
+                            if (!zs.isEmpty()) {
+                                Zombie target = zs.get(0);
+                                p.action(target);
+                                if (!target.isAlive()) {
+                                    board[r][zc].removeZombie(target);
                                     System.out.println(
                                             "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
                                 }
                             }
-                            break;
+                            break; // attack only one zombie on the first tile in range
                         }
                     }
                 }
