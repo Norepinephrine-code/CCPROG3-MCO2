@@ -281,9 +281,17 @@ public class Game {
 
         for (Zombie z : movingZombies) {
             z.attack();
-            if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
-                z.move(board);
+
+            // Only move if there is no living plant on the current tile
+            Tile current = z.getPosition();
+            Plant occupant = current.getPlant();
+
+            if (occupant == null) {
+                if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
+                    z.move(board);
+                }
             }
+
             if (z.getPosition().getColumn() == 0) {
                 System.out.println("A zombie reached your house! Game Over. Zombies win!");
                 return true;
