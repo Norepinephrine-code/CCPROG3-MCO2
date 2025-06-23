@@ -41,7 +41,7 @@ public class Cherrybomb extends Plant {
                 }
             }
         }
-        System.out.println("Cherrybomb exploded at Row " + plantRow + " Column " + plantCol + "!");
+        System.out.println("Cherrybomb exploded at Row " + plantRow+1 + " Column " + plantCol+1 + "!");
         this.health = 0; // destroy Cherrybomb after exploding
         return 1;
     }
