@@ -25,23 +25,24 @@ public class Cherrybomb extends Plant {
      * @param zombie A 2D array representing a grid of zombies in that position
      * @return 1 To indicate action was done successfuly
      */
-    public int action(java.util.List<Zombie>[][] zombies) {
+    public int action(Tile[][] board) {
         int plantRow = this.position.getRow();
         int plantCol = this.position.getColumn();
-        int rows = zombies.length;               // bounds for row index
-        int columns = zombies[0].length;         // bounds for column index
+        int rows = board.length;               // bounds for row index
+        int columns = board[0].length;         // bounds for column index
 
         for (int i = plantRow - this.range; i <= plantRow + this.range; i++) {
             for (int j = plantCol - this.range; j <= plantCol + this.range; j++) {
                 if (i >= 0 && i < rows && j >= 0 && j < columns) {
-                    java.util.List<Zombie> zs = zombies[i][j];
+                    Tile tile = board[i][j];
+                    java.util.List<Zombie> zs = tile.getZombies();
                     if (zs != null && !zs.isEmpty()) {
                         // copy to avoid concurrent modification
                         java.util.List<Zombie> copy = new java.util.ArrayList<>(zs);
                         for (Zombie z : copy) {
                             z.takeDamage(this.damage);
                             if (!z.isAlive()) {
-                                zs.remove(z);
+                                tile.removeZombie(z);
                             }
                         }
                     }
