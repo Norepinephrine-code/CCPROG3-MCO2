@@ -1,7 +1,7 @@
 <h1 align="center">CCPROG3 MCO1</h1>
 
 <p align="center"><em>A simple console implementation of <strong>Plants vs Zombies</strong> for CCPROG3 by Ramos & Vergara.</em></p> 
-<p align="center"><em>VERSION CONTROL: 12:00 AM June 22, 2025</em></p> 
+<p align="center"><em>VERSION CONTROL: 8:30 PM June 23, 2025</em></p> 
 
 <h2>Important Logics and Parameters</h2>
 
