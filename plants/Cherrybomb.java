@@ -25,23 +25,30 @@ public class Cherrybomb extends Plant {
      * @param zombie A 2D array representing a grid of zombies in that position
      * @return 1 To indicate action was done successfuly
      */
-    public int action(Zombie[][] zombie){
-        int i, j;
+    public int action(java.util.List<Zombie>[][] zombies) {
         int plantRow = this.position.getRow();
         int plantCol = this.position.getColumn();
-        int rows = zombie.length; // get number of rows of the grid for bound checking
-        int columns = zombie[0].length; // get number of columns of the grid for bound checking
+        int rows = zombies.length;               // bounds for row index
+        int columns = zombies[0].length;         // bounds for column index
 
-        for (i=plantRow-this.range;i<=plantRow+this.range;i++){
-            for (j=plantCol-this.range;j<=plantCol+this.range;j++){
-                if (i >= 0 && i < rows && j >= 0 && j < columns){
-                    if (zombie[i][j] != null){
-                        zombie[i][j].takeDamage(this.damage);
+        for (int i = plantRow - this.range; i <= plantRow + this.range; i++) {
+            for (int j = plantCol - this.range; j <= plantCol + this.range; j++) {
+                if (i >= 0 && i < rows && j >= 0 && j < columns) {
+                    java.util.List<Zombie> zs = zombies[i][j];
+                    if (zs != null && !zs.isEmpty()) {
+                        // copy to avoid concurrent modification
+                        java.util.List<Zombie> copy = new java.util.ArrayList<>(zs);
+                        for (Zombie z : copy) {
+                            z.takeDamage(this.damage);
+                            if (!z.isAlive()) {
+                                zs.remove(z);
+                            }
+                        }
                     }
                 }
             }
         }
-        System.out.println("Cherrybomb exploded at Row " + plantRow+1 + " Column " + plantCol+1 + "!");
+        System.out.println("Cherrybomb exploded at Row " + (plantRow + 1) + " Column " + (plantCol + 1) + "!");
         this.health = 0; // destroy Cherrybomb after exploding
         return 1;
     }
