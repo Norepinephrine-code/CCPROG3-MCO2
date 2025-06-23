@@ -120,6 +120,7 @@ public class Game {
      */
     private void spawnZombies() {
         boolean spawnZombie = false;
+        // Determine if a zombie should spawn based on the current tick window
         if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {
             spawnZombie = true;
         } else if (ticks >= 81 && ticks <= 140 && ticks % 5 == 0) {
@@ -131,6 +132,7 @@ public class Game {
         }
 
         if (spawnZombie) {
+            // Randomly choose a row and zombie type
             int row = rand.nextInt(ROWS);
             Tile spawnTile = board[row][COLS - 1];
             Zombie z;
@@ -143,7 +145,7 @@ public class Game {
                 z = new ConeheadZombie(spawnTile);
             }
             spawnTile.addZombie(z);
-            justSpawned.add(z);
+            justSpawned.add(z); // prevent moving on the same tick
             System.out.println(
                     "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
                             + " | Type: " + z.getClass().getSimpleName()
@@ -175,6 +177,7 @@ public class Game {
         System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
         int choice = -1;
         try {
+            // Read the player's choice; invalid input defaults to -1
             choice = Integer.parseInt(scanner.nextLine());
         } catch (Exception e) {
             choice = -1;
@@ -185,6 +188,7 @@ public class Game {
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
+            // Validate location and ensure tile is empty
             if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Sunflower(board[r][c]));
                 sun -= 50;
@@ -197,6 +201,7 @@ public class Game {
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
+            // Validate location and ensure tile is empty
             if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Peashooter(board[r][c]));
                 sun -= 100;
@@ -209,6 +214,7 @@ public class Game {
             int r = scanner.nextInt() - 1;
             int c = scanner.nextInt() - 1;
             scanner.nextLine();
+            // Validate location and ensure tile is empty
             if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
                 board[r][c].setPlant(new Cherrybomb(board[r][c]));
                 sun -= 150;
@@ -228,19 +234,20 @@ public class Game {
             for (int c = 0; c < COLS; c++) {
                 Plant p = board[r][c].getPlant();
                 if (p instanceof Peashooter) {
+                    // Look to the right for the first zombie within range
                     for (int zc = c + 1; zc < COLS && zc <= c + p.getRange(); zc++) {
                         if (board[r][zc].hasZombies()) {
                             List<Zombie> zs = board[r][zc].getZombies();
                             if (!zs.isEmpty()) {
                                 Zombie target = zs.get(0);
-                                p.action(target);
+                                p.action(target); // apply damage
                                 if (!target.isAlive()) {
                                     board[r][zc].removeZombie(target);
                                     System.out.println(
                                             "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
                                 }
                             }
-                            break; // attack only one zombie on the first tile in range
+                            break; // attack only the first zombie tile in range
                         }
                     }
                 }
@@ -257,6 +264,7 @@ public class Game {
                 Plant p = board[r][c].getPlant();
                 if (p instanceof Cherrybomb) {
                     Cherrybomb cb = (Cherrybomb) p;
+                    // Advance fuse timer and explode when ready
                     cb.tick(board);
                     if (!cb.isAlive()) {
                         board[r][c].removePlants();
@@ -274,6 +282,7 @@ public class Game {
      */
     private boolean moveZombies() {
         List<Zombie> movingZombies = new ArrayList<>();
+        // Collect all zombies from every tile first
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 movingZombies.addAll(board[r][c].getZombies());
@@ -288,11 +297,13 @@ public class Game {
             Plant occupant = current.getPlant();
 
             if (occupant == null) {
+                // Skip movement for newly spawned zombies and apply their speed
                 if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
                     z.move(board);
                 }
             }
 
+            // Check if any zombie reached the house column
             if (z.getPosition().getColumn() == 0) {
                 System.out.println("A zombie reached your house! Game Over. Zombies win!");
                 return true;
@@ -330,11 +341,13 @@ public class Game {
 
         gameBoard.display();
 
+        // Main game loop: each iteration represents one tick
         while (ticks <= GAME_DURATION) {
             System.out.println("Time: " + formatTime(ticks));
 
             justSpawned.clear(); // clear tracker for this tick
 
+            // === Begin per-tick phases ===
             dropSun();
             spawnZombies();
             handleSunflowers();
@@ -346,6 +359,7 @@ public class Game {
                 scanner.close();
                 return;
             }
+            // === End per-tick phases ===
 
             gameBoard.display();
 
