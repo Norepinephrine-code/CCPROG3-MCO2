@@ -57,17 +57,17 @@ public class Cherrybomb extends Plant {
         int plantRow = this.position.getRow();
         int plantCol = this.position.getColumn();
         // Scan the surrounding 3x3 area for zombies to damage
-        for (int i = plantRow - range; i <= plantRow + range; i++) {
-            for (int j = plantCol - range; j <= plantCol + range; j++) {
-                if (i >= 0 && i < board.length && j >= 0 && j < board[0].length) {
-                    Tile tile = board[i][j];
-                    if (tile.hasZombies()) {
+        for (int i = plantRow - range; i <= plantRow + range; i++) {                // ROW
+            for (int j = plantCol - range; j <= plantCol + range; j++) {            // COLUMN
+                if (i >= 0 && i < board.length && j >= 0 && j < board[0].length) {  // BORDER CHECK
+                    Tile tile = board[i][j];                                        // ANALYZE EACH TILE
+                    if (tile.hasZombies()) {                                        // CHECK FOR ZOMBIE
                         // Copy list to avoid concurrent modification while removing
-                        List<Zombie> zs = new ArrayList<>(tile.getZombies());
-                        for (Zombie z : zs) {
-                            z.takeDamage(this.damage);
+                        List<Zombie> zs = new ArrayList<>(tile.getZombies());       // GET LIST OF ZOMBIES
+                        for (Zombie z : zs) {                                       // LOOP THE ZOMBIE ARRAY OF THAT TILE
+                            z.takeDamage(this.damage);                              // DAMAGE ZOMBIE!
                             if (!z.isAlive()) {
-                                tile.removeZombie(z);
+                                tile.removeZombie(z);                               // KILL ZOMBIE IF HEALTH == 0
                             }
                         }
                     }
