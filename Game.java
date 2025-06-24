@@ -100,14 +100,14 @@ public class Game {
         } catch (Exception e) {
             level = 1;
         }
-        if (level < 1) level = 1;
-        if (level > 3) level = 3;
+        if (level < 1) level = 1;                       // Select default level 1 if input less than 1
+        if (level > 3) level = 3;                       // Select default level 3 if input greater than 3
     }
 
     /**
      * Generates ambient sun points every 5 ticks.
      */
-    private void dropSun() {
+    private void dropSun() {                            // Drop sun every 5 seconds
         if (ticks % 5 == 0) {
             sun += 25;
             System.out.println("Sun dropped! Current sun: " + sun);
@@ -119,34 +119,35 @@ public class Game {
      * Newly spawned zombies are tracked to prevent instant movement.
      */
     private void spawnZombies() {
-        boolean spawnZombie = false;
+        boolean spawnZombie = false;                                                                // WAVE LOGIC :
         // Determine if a zombie should spawn based on the current tick window
-        if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {
+        if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {                                        // 30 - 80 Spawn every 10
             spawnZombie = true;
-        } else if (ticks >= 81 && ticks <= 140 && ticks % 5 == 0) {
+        } else if (ticks >= 81 && ticks <= 140 && ticks % 5 == 0) {                                 // 81 - 140 Spawn every 5
             spawnZombie = true;
-        } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {
+        } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {                                // 141 - 170 Spawn every 3
             spawnZombie = true;
-        } else if (ticks >= 171 && ticks <= 180) {
+        } else if (ticks >= 171 && ticks <= 180) {                                                  // 171 - 180 Spawn every second
             spawnZombie = true;
         }
 
-        if (spawnZombie) {
+        if (spawnZombie) {                                                                          // Uses Pseudo-random for random spawn
             // Randomly choose a row and zombie type
-            int row = rand.nextInt(ROWS);
-            Tile spawnTile = board[row][COLS - 1];
+            int row = rand.nextInt(ROWS);                                                           // If ROWS = 5, then row can be 0, 1, 2, 3, or 4.
+            Tile spawnTile = board[row][COLS - 1];                                                  // Uses LAST COLUMN (COLS - 1) to spawn
             Zombie z;
-            int zType = rand.nextInt(3);
-            if (zType == 0) {
+            int zType = rand.nextInt(3);                                                      // Choose random number from 0 to 2
+            if (zType == 0) {                                                                        // 0 is Normal Zombie
                 z = new NormalZombie(spawnTile);
-            } else if (zType == 1) {
+            } else if (zType == 1) {                                                                 // 1 is Flag Zombie
                 z = new FlagZombie(spawnTile);
-            } else {
+            } else {                                                                                 // 2 is Conehead Zombie
                 z = new ConeheadZombie(spawnTile);
-            }
-            spawnTile.addZombie(z);
-            justSpawned.add(z); // prevent moving on the same tick
-            System.out.println(
+            }                                                                                        // We can scale this further to add zombies!!!
+            spawnTile.addZombie(z);                                                                  // Add zombie to the tile
+            justSpawned.add(z);                                                                      // When a zombie just got spawned, we put them in a justSpawned array list.
+            System.out.println(                                                                      // those who exist in that array list cannot call their move() methods the same second they got spawned
+                                                                                                     // This prevents the scenario where a zombie moves immediately and skips a tile after spawn.
                     "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
                             + " | Type: " + z.getClass().getSimpleName()
                             + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
@@ -157,10 +158,10 @@ public class Game {
      * Generates sun points from all active Sunflowers every 2 ticks.
      */
     private void handleSunflowers() {
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                Plant p = board[r][c].getPlant();
-                if (p instanceof Sunflower && ticks % 2 == 0) {
+        for (int r = 0; r < ROWS; r++) {                                                            // Get Row
+            for (int c = 0; c < COLS; c++) {                                                        // Get Column
+                Plant p = board[r][c].getPlant();                                                   // Check if Sunflower. THIS LOGIC IS USED OVER AND OVER
+                if (p instanceof Sunflower && ticks % 2 == 0) {                                     // Generate sun every 2 seconds
                     Sunflower s = (Sunflower) p;
                     sun = s.action(sun);
                 }
@@ -177,11 +178,21 @@ public class Game {
         System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
         int choice = -1;
         try {
-            // Read the player's choice; invalid input defaults to -1
+
+            /* Read the player's choice; invalid input defaults to -1, if it is an invalid input we assume
+               that the player just wants to let the time pass by.                                          */
+
             choice = Integer.parseInt(scanner.nextLine());
         } catch (Exception e) {
             choice = -1;
         }
+            /*
+                This section handles the logic of :
+                    1. Choosing the type of plant to place
+                    2. Boundary checking for correct locations, if incorrect move to the next tick.
+                       It does not loop waiting for a correct input
+                    3. If you have enough sun to plant
+             */
     
         if (choice == 1 && sun >= 50) {
             System.out.print("Enter row (1-5) and column (2-9): ");
@@ -222,6 +233,8 @@ public class Game {
             } else {
                 System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
             }
+        } else if (choice == 1 || choice == 2 || choice == 3) {
+            System.out.println("Not enough sun to plant that!");
         }
     }
 
@@ -261,6 +274,9 @@ public class Game {
      * Updates all Cherrybombs each tick and triggers explosions when ready.
      */
     private void handleCherrybombs() {
+            /*
+               Same logic as Sunflower handleSunflowers()
+             */
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 Plant p = board[r][c].getPlant();
@@ -285,6 +301,11 @@ public class Game {
     private boolean moveZombies() {
         List<Zombie> movingZombies = new ArrayList<>();
         // Collect all zombies from every tile first
+
+            /*
+               Same logic as Sunflower handleSunflowers()
+             */
+
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 movingZombies.addAll(board[r][c].getZombies());
@@ -292,14 +313,19 @@ public class Game {
         }
 
         for (Zombie z : movingZombies) {
-            z.attack();                         // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN
+            z.attack();                         // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN, IF NEEDED!
+                                                // But damage is too low for zombies.
 
-            // Only move if there is no living plant on the current tile
             Tile current = z.getPosition();
             Plant occupant = current.getPlant();
 
+            /*
+                Movement logic requirements:
+                    1. Only move if there is no living plant on the current tile.
+                    2. Skip movement for newly spawned zombies, (this prevents z.move() being called on the same tick it is spawned)
+             */
+
             if (occupant == null) {
-                // Skip movement for newly spawned zombies and apply their speed
                 if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
                     z.move(board);
                 }
