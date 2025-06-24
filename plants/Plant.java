@@ -59,7 +59,7 @@ public class Plant{
         int distance = zombieCol - plantCol;
 
         // Check if the zombie is within attack range
-        if (distance > 0 && distance <= range) {
+        if (distance >= 0 && distance <= range) {
             if (distance <= range / 2) {
                 // Close enough for direct damage
                 zombie.takeDamage(directDamage);
