@@ -51,7 +51,7 @@
     <li>Ticks 30–80: spawn every 10 ticks</li>
     <li>Ticks 81–140: spawn every 5 ticks</li>
     <li>Ticks 141–170: spawn every 3 ticks</li>
-    <li>Ticks 171–180: spawn each tick</li>
+    <li>Ticks 171: Wave Spawn</li>
   </ul>
 </li>
 
