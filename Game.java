@@ -290,7 +290,7 @@ public class Game {
         }
 
         for (Zombie z : movingZombies) {
-            z.attack();
+            z.attack();                         // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN
 
             // Only move if there is no living plant on the current tile
             Tile current = z.getPosition();
