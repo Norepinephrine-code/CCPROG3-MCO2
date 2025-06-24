@@ -1,7 +1,7 @@
 <h1 align="center">CCPROG3 MCO1</h1>
 
 <p align="center"><em>A simple console implementation of <strong>Plants vs Zombies</strong> for CCPROG3 by Ramos & Vergara.</em></p> 
-<p align="center"><em>VERSION CONTROL: 10:30 AM June 24, 2025</em></p> 
+<p align="center"><em>VERSION CONTROL: 7:00 PM June 24, 2025</em></p> 
 
 <h2>Important Logics and Parameters</h2>
 
@@ -51,7 +51,7 @@
     <li>Ticks 30–80: spawn every 10 ticks</li>
     <li>Ticks 81–140: spawn every 5 ticks</li>
     <li>Ticks 141–170: spawn every 3 ticks</li>
-    <li>Ticks 171–180: spawn each tick</li>
+    <li>Ticks 171: Wave Spawn</li>
   </ul>
 </li>
 
