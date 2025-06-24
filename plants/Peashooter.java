@@ -29,20 +29,20 @@ public class Peashooter extends Plant {
      * then resets the counter to {@link #COOLDOWN_TICKS}.
      */
     @Override
-    public int action(zombies.Zombie zombie) {
-        // === BEGIN Peashooter cooldown logic ===
+    public int action(zombies.Zombie zombie) {              // ADDS COOL-DOWN WHEN ATTACKING
+        // === BEGIN Peashooter cooldown logic ===          // Peashooter cant always shoot every second
         // Skip attack if still cooling down.
         if (cooldownCounter > 0) {
             cooldownCounter--;
-            return zombie.getHealth();
-        }
+            return zombie.getHealth();                      // If countdown > 0, return Zombie Health.
+        }                                                   // nothing changes if cool-down timer > 0
 
         // Perform the actual attack using Plant.action
-        int before = zombie.getHealth();
-        int after = super.action(zombie);
+        int before = zombie.getHealth();                    // Get Zombie Health
+        int after = super.action(zombie);                   // Use parent class action method
         // If damage was dealt, start cooldown.
         if (after != before) {
-            cooldownCounter = COOLDOWN_TICKS;
+            cooldownCounter = COOLDOWN_TICKS;               // Reset cooldown
         }
         // === END Peashooter cooldown logic ===
         return after;

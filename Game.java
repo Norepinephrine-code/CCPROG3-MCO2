@@ -230,24 +230,26 @@ public class Game {
      * Removes zombies that die as a result.
      */
     private void handlePeashooters() {
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                Plant p = board[r][c].getPlant();
-                if (p instanceof Peashooter) {
-                    // Look to the right for the first zombie within range
-                    for (int zc = c + 1; zc < COLS && zc <= c + p.getRange(); zc++) {
-                        if (board[r][zc].hasZombies()) {
-                            List<Zombie> zs = board[r][zc].getZombies();
-                            if (!zs.isEmpty()) {
-                                Zombie target = zs.get(0);
-                                p.action(target); // apply damage
-                                if (!target.isAlive()) {
+
+        for (int r = 0; r < ROWS; r++) {                                                        // ROW
+            for (int c = 0; c < COLS; c++) {                                                    // COLUMN
+                Plant p = board[r][c].getPlant();                                               // Get Plant per Tile
+                if (p instanceof Peashooter) {                                                  // Check if Peashooter
+                    boolean hasAttacked = false;                                                // Every PeaShooter can only attack 1 zombie
+                                                                                                // Look at own column (zc = c) then increment with zc++ to check to the right
+                    for (int zc = c; zc < COLS && zc <= c + p.getRange() && !hasAttacked; zc++) {               // The Peashooter’s maximum range to the right (c + p.getRange())
+                        if (board[r][zc].hasZombies()) {                                        // But never past the edge of the board zc < COLS
+                            List<Zombie> zs = board[r][zc].getZombies();                        // Get list of zombies
+                            if (!zs.isEmpty()) {                                                // Check if we are not accessing a null value
+                                Zombie target = zs.get(0);                                      // Get the first zombie
+                                p.action(target);                                               // Call PeaShooter action method
+                                if (!target.isAlive()) {                                        // Update Logic
                                     board[r][zc].removeZombie(target);
                                     System.out.println(
                                             "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
                                 }
                             }
-                            break; // attack only the first zombie tile in range
+                            hasAttacked = true; //                                              // Shoot only 1 zombie
                         }
                     }
                 }
