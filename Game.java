@@ -71,7 +71,12 @@ public class Game {
      */
     private List<Zombie> justSpawned = new ArrayList<>();
 
-    /** Constructs a new Game instance with initialized input and random generator. */
+    /**
+     * Constructs a new {@code Game} object. The board itself is not created at
+     * this stage; it will be initialized once {@link #start()} is invoked. The
+     * constructor simply prepares the input scanner and pseudo-random number
+     * generator used for zombie spawning and user interaction.
+     */
     public Game() {
         scanner = new Scanner(System.in);
         rand = new Random();
@@ -94,7 +99,8 @@ public class Game {
     }
 
     /**
-     * Prompts the player to select a level and validates input.
+     * Prompts the player to select a difficulty level from 1-3.
+     * The chosen level determines the final zombie wave size.
      */
     private void selectLevel() {
         System.out.print("Select Level (1, 2, or 3): ");
@@ -112,7 +118,8 @@ public class Game {
     }
 
     /**
-     * Generates ambient sun points every 5 ticks.
+     * Generates 25 sun points every 5 ticks if the current
+     * tick count is divisible by five.
      */
     private void dropSun() {                            // Drop sun every 5 seconds
         if (ticks % 5 == 0) {
@@ -122,8 +129,7 @@ public class Game {
     }
 
     /**
-     * Spawns zombies according to the wave pattern defined in the project specs.
-     * Newly spawned zombies are tracked to prevent instant movement.
+     * Spawns zombies following the level's timing pattern. Early waves spawn less frequently while later waves increase the rate. Newly created zombies are added to {@code justSpawned} so they remain stationary for one tick.
      */
     private void spawnZombies() {
 
@@ -141,6 +147,12 @@ public class Game {
         }
     }
 
+    /**
+     * Spawns a single zombie on the right-most column. A random row and
+     * zombie type are selected. The newly created zombie is added to the
+     * {@link #justSpawned} list so that it does not move until the next game
+     * tick.
+     */
     private void spawnSingleZombie() {
         // Uses Pseudo-random for random spawn
         // Randomly choose a row and zombie type
@@ -174,9 +186,9 @@ public class Game {
                         + " | Type: " + z.getClass().getSimpleName()
                         + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
     }
-
     /**
-     * Generates sun points from all active Sunflowers every 2 ticks.
+     * Loops over the board and triggers each Sunflower to produce sun.
+     * Sunflowers generate additional resources every 2 ticks.
      */
     private void handleSunflowers() {
         for (int r = 0; r < ROWS; r++) {                                                            // Get Row
@@ -191,10 +203,10 @@ public class Game {
     }
 
     /**
- * Handles player input for placing Sunflowers and Peashooters.
- * Prevents planting on the house tile (column 0).
- * Allows planting anywhere else, including the zombie edge if desired.
- */
+     * Handles player input for placing plants.
+     * The player may choose Sunflower (50 sun), Peashooter (100 sun)
+     * or Cherrybomb (150 sun). Planting is disallowed on the house column.
+     */
     private void placePlant() {
         System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
         int choice = -1;
@@ -260,8 +272,8 @@ public class Game {
     }
 
     /**
-     * Handles Peashooter attacks: finds the nearest zombie in range and applies damage.
-     * Removes zombies that die as a result.
+     * Iterates through all Peashooters and attacks the first zombie within range.
+     * Eliminates zombies with zero health after being hit.
      */
     private void handlePeashooters() {
 
@@ -292,7 +304,8 @@ public class Game {
     }
 
     /**
-     * Updates all Cherrybombs each tick and triggers explosions when ready.
+     * Updates all active Cherrybombs each tick. When a bomb's fuse expires it explodes
+     * damaging nearby zombies before removing itself from the board.
      */
     private void handleCherrybombs() {
             /*
@@ -374,9 +387,9 @@ public class Game {
     }
 
     /**
-     * Starts the game loop, controlling all phases: sun generation,
-     * zombie spawning, plant actions, zombie movement, rendering,
-     * and win/loss checking.
+     * Starts the main game loop after setting up the board and difficulty.
+     * Each tick handles sun generation, zombie spawning, plant actions, movement,
+     * and board rendering while checking for win or loss conditions.
      */
     public void start() {
         initializeBoard();

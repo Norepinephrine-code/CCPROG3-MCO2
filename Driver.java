@@ -4,6 +4,11 @@
  * contains all gameplay logic.
  */
 public class Driver {
+    /**
+     * Launches the game using default settings.
+     *
+     * @param args command line arguments (unused)
+     */
     public static void main(String[] args) {
         new Game().start();
     }
