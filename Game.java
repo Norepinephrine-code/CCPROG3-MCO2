@@ -57,6 +57,9 @@ public class Game {
     /** Player-selected difficulty level (1-3). */
     private int level;
 
+    /** The wave of zombies for a given level. */
+    private int waveLimit;
+
     /** Current available sun points. */
     private int sun;
 
@@ -102,6 +105,10 @@ public class Game {
         }
         if (level < 1) level = 1;                       // Select default level 1 if input less than 1
         if (level > 3) level = 3;                       // Select default level 3 if input greater than 3
+
+        if (level == 1) waveLimit = 5;
+        if (level == 2) waveLimit = 7;
+        if (level == 3) waveLimit = 9;
     }
 
     /**
@@ -119,39 +126,53 @@ public class Game {
      * Newly spawned zombies are tracked to prevent instant movement.
      */
     private void spawnZombies() {
-        boolean spawnZombie = false;                                                                // WAVE LOGIC :
+
         // Determine if a zombie should spawn based on the current tick window
         if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {                                        // 30 - 80 Spawn every 10
-            spawnZombie = true;
+            spawnSingleZombie();
         } else if (ticks >= 81 && ticks <= 140 && ticks % 5 == 0) {                                 // 81 - 140 Spawn every 5
-            spawnZombie = true;
+            spawnSingleZombie();
         } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {                                // 141 - 170 Spawn every 3
-            spawnZombie = true;
-        } else if (ticks >= 171 && ticks <= 180) {                                                  // 171 - 180 Spawn every second
-            spawnZombie = true;
+            spawnSingleZombie();
+        } else if (ticks == 171) {
+            for (int waveCount = 0; waveCount< waveLimit;waveCount++) {
+                spawnSingleZombie();
+            }
         }
+    }
 
-        if (spawnZombie) {                                                                          // Uses Pseudo-random for random spawn
-            // Randomly choose a row and zombie type
-            int row = rand.nextInt(ROWS);                                                           // If ROWS = 5, then row can be 0, 1, 2, 3, or 4.
-            Tile spawnTile = board[row][COLS - 1];                                                  // Uses LAST COLUMN (COLS - 1) to spawn
-            Zombie z;
-            int zType = rand.nextInt(3);                                                      // Choose random number from 0 to 2
-            if (zType == 0) {                                                                        // 0 is Normal Zombie
-                z = new NormalZombie(spawnTile);
-            } else if (zType == 1) {                                                                 // 1 is Flag Zombie
-                z = new FlagZombie(spawnTile);
-            } else {                                                                                 // 2 is Conehead Zombie
-                z = new ConeheadZombie(spawnTile);
-            }                                                                                        // We can scale this further to add zombies!!!
-            spawnTile.addZombie(z);                                                                  // Add zombie to the tile
-            justSpawned.add(z);                                                                      // When a zombie just got spawned, we put them in a justSpawned array list.
-            System.out.println(                                                                      // those who exist in that array list cannot call their move() methods the same second they got spawned
-                                                                                                     // This prevents the scenario where a zombie moves immediately and skips a tile after spawn.
-                    "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
-                            + " | Type: " + z.getClass().getSimpleName()
-                            + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
+    private void spawnSingleZombie() {
+        // Uses Pseudo-random for random spawn
+        // Randomly choose a row and zombie type
+        int row = rand.nextInt(ROWS);
+        // If ROWS = 5, then row can be 0, 1, 2, 3, or 4.
+        Tile spawnTile = board[row][COLS - 1];
+        // Uses LAST COLUMN (COLS - 1) to spawn
+        Zombie z;
+        int zType = rand.nextInt(3);
+        // Choose random number from 0 to 2
+        if (zType == 0) {
+            // 0 is Normal Zombie
+            z = new NormalZombie(spawnTile);
+        } else if (zType == 1) {
+            // 1 is Flag Zombie
+            z = new FlagZombie(spawnTile);
+        } else {
+            // 2 is Conehead Zombie
+            z = new ConeheadZombie(spawnTile);
         }
+        // We can scale this further to add zombies!!!
+        spawnTile.addZombie(z);
+        // Add zombie to the tile
+        justSpawned.add(z);
+        // When a zombie just got spawned, we put them in a justSpawned array list.
+        System.out.println(
+                // those who exist in that array list cannot call their move() methods the same second they got spawned
+
+                // This prevents the scenario where a zombie moves immediately and skips a tile after spawn.
+                "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
+                        + " | Type: " + z.getClass().getSimpleName()
+                        + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
     }
 
     /**
