@@ -188,119 +188,166 @@ public class Game {
                         + " | Type: " + z.getClass().getSimpleName()
                         + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
     }
-    /**
-     * Loops over the board and triggers each Sunflower to produce sun.
-     * Sunflowers generate additional resources every 2 ticks.
-     */
-    private void handleSunflowers() {
-        for (int r = 0; r < ROWS; r++) {                                                            // Get Row
-            for (int c = 0; c < COLS; c++) {                                                        // Get Column
-                Plant p = board[r][c].getPlant();                                                   // Check if Sunflower. THIS LOGIC IS USED OVER AND OVER
-                if (p instanceof Sunflower && ticks % 2 == 0) {                                     // Generate sun every 2 seconds
-                    Sunflower s = (Sunflower) p;
-                    sun = s.action(sun);
-                }
-            }
-        }
+ 
+
+private void placePlant() {
+
+
+    System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
+    int choice = -1;
+    int[] user_input = new int[2];
+
+    /* Read the player's choice; invalid input defaults to -1, if it is an invalid input we assume
+        that the player just wants to let the time pass by.                                          */
+
+    try {
+        choice = Integer.parseInt(scanner.nextLine());
+    } catch (Exception e) {
+        // Defaults to choice = -1;
     }
 
-    /**
-     * Handles player input for placing plants.
-     * The player may choose Sunflower (50 sun), Peashooter (100 sun)
-     * or Cherrybomb (150 sun). Planting is disallowed on the house column.
-     */
-    private void placePlant() {
-        System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
-        int choice = -1;
-        try {
+     if (choice == 0) return;
+     getPlantPosition(user_input);
+     if (!isValidPosition(user_input)) return;
+     if (!isValidPurchase(choice)) return;          // These do not affect the global variable "sun." Primitive values passed to a method is only a local copy
 
-            /* Read the player's choice; invalid input defaults to -1, if it is an invalid input we assume
-               that the player just wants to let the time pass by.                                          */
+     Tile tilePlant = board[user_input[0]][user_input[1]];
 
-            choice = Integer.parseInt(scanner.nextLine());
-        } catch (Exception e) {
-            choice = -1;
-        }
-            /*
-                This section handles the logic of :
-                    1. Choosing the type of plant to place
-                    2. Boundary checking for correct locations, if incorrect move to the next tick.
-                       It does not loop waiting for a correct input
-                    3. If you have enough sun to plant
-             */
+        switch (choice) {
+
+        case 1:    // SUNFLOWER
+            tilePlant.setPlant(new Sunflower(tilePlant));
+            break;
+
+        case 2:     // PEASHOOTER
+            tilePlant.setPlant(new Peashooter(tilePlant));
+            break;
+
+        case 3:     // CHERRYBOMB
+            tilePlant.setPlant(new Cherrybomb(tilePlant));
+            break;
+
+        default:  
+            System.out.println("Unknown plant not yet indicated placePlant() function");
+            break;
+    }
+
+     System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
+        " at Row " + (user_input[0] + 1) + ", Column " + (user_input[1] + 1));
+
+}
+
+
+public int[] getPlantPosition(int[] user_input) {               // USED FOR placePlant() function
+    System.out.print("Enter row (1-5) and column (2-9): ");
+    int row = scanner.nextInt() - 1;      // Conversion of 1 base to 0 base index
+    int col = scanner.nextInt() - 1;      // Same logic
+    scanner.nextLine();                   // Consume leftover new line
+
+    user_input [0] = row;              // Place it into user_input
+    user_input [1] = col;              // 
     
-        if (choice == 1 && sun >= 50) {
-            System.out.print("Enter row (1-5) and column (2-9): ");
-            int r = scanner.nextInt() - 1;
-            int c = scanner.nextInt() - 1;
-            scanner.nextLine();
-            // Validate location and ensure tile is empty
-            if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
-                board[r][c].setPlant(new Sunflower(board[r][c]));
-                sun -= 50;
-                System.out.println("Placed Sunflower at Row " + (r + 1) + " Column " + (c + 1));
-            } else {
-                System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
-            }
-        } else if (choice == 2 && sun >= 100) {
-            System.out.print("Enter row (1-5) and column (2-9): ");
-            int r = scanner.nextInt() - 1;
-            int c = scanner.nextInt() - 1;
-            scanner.nextLine();
-            // Validate location and ensure tile is empty
-            if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
-                board[r][c].setPlant(new Peashooter(board[r][c]));
-                sun -= 100;
-                System.out.println("Placed Peashooter at Row " + (r + 1) + " Column " + (c + 1));
-            } else {
-                System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
-            }
-        } else if (choice == 3 && sun >= 150) {
-            System.out.print("Enter row (1-5) and column (2-9): ");
-            int r = scanner.nextInt() - 1;
-            int c = scanner.nextInt() - 1;
-            scanner.nextLine();
-            // Validate location and ensure tile is empty
-            if (r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied()) {
-                board[r][c].setPlant(new Cherrybomb(board[r][c]));
-                sun -= 150;
-                System.out.println("Placed Cherrybomb at Row " + (r + 1) + " Column " + (c + 1));
-            } else {
-                System.out.println("Invalid location. Cannot place on the house (column " + (HOUSE_COLUMN + 1) + ").");
-            }
-        } else if (choice == 1 || choice == 2 || choice == 3) {
-            System.out.println("Not enough sun to plant that!");
-        }
+    return user_input;
+}
+
+public boolean isValidPosition(int[] input) {                   // USED FOR placePlant() function
+
+    int r = input[0];
+    int c = input[1];
+    if ((r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied())) {
+        return true;
+    } else {
+        System.out.println("Invalid location!");
+        return false;
     }
+
+}
+
+public boolean isValidPurchase(int choice) {                    // USED FOR placePlant() function
+    boolean isValid = false;
+
+    switch(choice) {
+        case 1:
+            if (sun>=50) {
+                sun-= 50;
+                isValid = true;
+            } break;
+        case 2:
+            if (sun>=100) {
+                sun-= 100;
+                isValid = true;
+            } break;
+        case 3: 
+            if (sun>=150) {
+                sun -=150;
+                isValid = true;
+            } break;
+        default:
+            System.out.println("Unknown Plant!");
+            break;
+    }
+
+    if (isValid==false) {
+        System.out.println("Not enough sun!");
+    }
+
+    return isValid;
+}
+       
 
     /**
      * Iterates through all Peashooters and attacks the first zombie within range.
      * Eliminates zombies with zero health after being hit.
      */
-    private void handlePeashooters() {
+    private void handleAllPlants() {
 
         for (int r = 0; r < ROWS; r++) {                                                        // ROW
             for (int c = 0; c < COLS; c++) {                                                    // COLUMN
                 Plant p = board[r][c].getPlant();                                               // Get Plant per Tile
-                if (p instanceof Peashooter) {                                                  // Check if Peashooter
-                    boolean hasAttacked = false;                                                // Every PeaShooter can only attack 1 zombie
-                                                                                                // Look at own column (zc = c) then increment with zc++ to check to the right
-                    for (int zc = c; zc < COLS && zc <= c + p.getRange() && !hasAttacked; zc++) {               // The Peashooter’s maximum range to the right (c + p.getRange())
-                        if (board[r][zc].hasZombies()) {                                        // But never past the edge of the board zc < COLS
-                            List<Zombie> zs = board[r][zc].getZombies();                        // Get list of zombies
-                            if (!zs.isEmpty()) {                                                // Check if we are not accessing a null value
-                                Zombie target = zs.get(0);                                      // Get the first zombie
-                                p.action(target);                                               // Call PeaShooter action method
-                                if (!target.isAlive()) {                                        // Update Logic
-                                    board[r][zc].removeZombie(target);
-                                    System.out.println(
-                                            "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
+                
+                 switch (p.getClass().getSimpleName()) {
+
+                    case "Peashooter": 
+                        boolean hasAttacked = false;                                                // Every PeaShooter can only attack 1 zombie
+                                                                                                    // Look at own column (zc = c) then increment with zc++ to check to the right
+                        for (int zc = c; zc < COLS && zc <= c + p.getRange() && !hasAttacked; zc++) {               // The Peashooter’s maximum range to the right (c + p.getRange())
+                            if (board[r][zc].hasZombies()) {                                        // But never past the edge of the board zc < COLS
+                                List<Zombie> zs = board[r][zc].getZombies();                        // Get list of zombies
+                                if (!zs.isEmpty()) {                                                // Check if we are not accessing a null value
+                                    Zombie target = zs.get(0);                                      // Get the first zombie
+                                    p.action(target);                                               // Call PeaShooter action method
+                                    if (!target.isAlive()) {                                        // Update Logic
+                                        board[r][zc].removeZombie(target);
+                                        System.out.println(
+                                                "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
+                                    }
                                 }
+                                hasAttacked = true; //                                              // Shoot only 1 zombie
                             }
-                            hasAttacked = true; //                                              // Shoot only 1 zombie
                         }
+                        break;
+
+                    case "Cherrybomb": 
+                        Cherrybomb cb = (Cherrybomb) p;
+                        // Advance fuse timer and explode when ready
+                        cb.tick(board);
+                        if (!cb.isAlive()) {
+                            board[r][c].removePlants();
+                        }
+                        break;
+                    
+                    case "Sunflower":
+                        if (ticks % 2 == 0) {
+                        Sunflower s = (Sunflower) p;
+                        sun = s.action(sun);
                     }
-                }
+                    break;
+
+                    default: 
+                        System.out.println("Unknown Plant Type Error"); 
+                        break;// Catcher
+                 }
+
             }
         }
     }
@@ -309,24 +356,6 @@ public class Game {
      * Updates all active Cherrybombs each tick. When a bomb's fuse expires it explodes
      * damaging nearby zombies before removing itself from the board.
      */
-    private void handleCherrybombs() {
-            /*
-               Same logic as Sunflower handleSunflowers()
-             */
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                Plant p = board[r][c].getPlant();
-                if (p instanceof Cherrybomb) {
-                    Cherrybomb cb = (Cherrybomb) p;
-                    // Advance fuse timer and explode when ready
-                    cb.tick(board);
-                    if (!cb.isAlive()) {
-                        board[r][c].removePlants();
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Moves all zombies that were not just spawned this tick and handles their attacks.
@@ -349,7 +378,7 @@ public class Game {
         }
 
         for (Zombie z : movingZombies) {
-            z.attack(board);                         // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN, IF NEEDED!
+            z.attack(board);                    // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN, IF NEEDED!
                                                 // But damage is too low for zombies.
 
             Tile current = z.getPosition();
@@ -408,18 +437,16 @@ public class Game {
         // Main game loop: each iteration represents one tick
         while (ticks <= GAME_DURATION) {
             System.out.println("Time: " + formatTime(ticks));
+            System.out.println("Current Sun: " + sun);
 
             justSpawned.clear(); // clear tracker for this tick
 
             // === Begin per-tick phases ===
             dropSun();
             spawnZombies();
-            handleSunflowers();
-            System.out.println("Current Sun: " + sun);
             placePlant();
-            handlePeashooters();
-            handleCherrybombs();
-            if (moveZombies()) {
+            handleAllPlants();                      // Handles all Plants
+            if (moveZombies()) {                    // Handles all Zombies and returns true if zombie reaches house
                 scanner.close();
                 return;
             }
