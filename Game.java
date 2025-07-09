@@ -7,9 +7,11 @@ import plants.Peashooter;
 import plants.Plant;
 import plants.Sunflower;
 import tiles.Tile;
+import zombies.BucketHeadZombie;
 import zombies.ConeheadZombie;
 import zombies.FlagZombie;
 import zombies.NormalZombie;
+import zombies.PoleVaultingZombie;
 import zombies.Zombie;
 
 /**
@@ -160,18 +162,19 @@ public class Game {
         Tile spawnTile = board[row][COLS - 1];
         // Uses LAST COLUMN (COLS - 1) to spawn
         Zombie z;
-        int zType = rand.nextInt(3);
-        // Choose random number from 0 to 2
-        if (zType == 0) {
-            // 0 is Normal Zombie
-            z = new NormalZombie(spawnTile);
-        } else if (zType == 1) {
-            // 1 is Flag Zombie
-            z = new FlagZombie(spawnTile);
-        } else {
-            // 2 is Conehead Zombie
-            z = new ConeheadZombie(spawnTile);
-        }
+        int zType = rand.nextInt(5);
+        // Choose random number from 0 to 4
+
+    switch (zType) {
+        case 0: z = new NormalZombie(spawnTile); break;
+        case 1: z = new FlagZombie(spawnTile); break;
+        case 2: z = new ConeheadZombie(spawnTile); break;
+        case 3: z = new BucketHeadZombie(spawnTile); break;
+        case 4: z = new PoleVaultingZombie(spawnTile); break;
+        default: z = new NormalZombie(spawnTile); break;
+    }
+
+
         // We can scale this further to add zombies!!!
         spawnTile.addZombie(z);
         // Add zombie to the tile

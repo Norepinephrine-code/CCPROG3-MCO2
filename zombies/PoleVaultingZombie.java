@@ -23,17 +23,17 @@ public class PoleVaultingZombie extends Zombie {
 
                 /** JUMP LOGIC HERE */
                 Tile currentTile = this.getPosition();
+                int newCol = this.getPosition().getColumn() - 1;   // Move to the left by one
+                if (newCol < 0) newCol = 0;                        // Safeguard
+                int row = this.getPosition().getRow();
+    
                 currentTile.removeZombie(this);
 
-                int newCol = this.getPosition().getColumn() - 1;   // Move to the left by one
-                if (newCol < 0) newCol = 0;
-
-                Tile newTile = board[this.getPosition().getRow()][newCol];
+                Tile newTile = board[row][newCol];
                 this.setPosition(newTile);
                 newTile.addZombie(this);
                 jump = true;
             } 
     }
-
 
 }
