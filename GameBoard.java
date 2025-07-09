@@ -3,6 +3,7 @@ import plants.Peashooter;
 import plants.Plant;
 import plants.Sunflower;
 import tiles.Tile;
+import zombies.BucketHeadZombie;
 import zombies.ConeheadZombie;
 import zombies.FlagZombie;
 import zombies.NormalZombie;
@@ -71,6 +72,10 @@ public class GameBoard {
                                 content = "ZC ";
                             } else if (z instanceof NormalZombie) {
                                 content = "ZN ";
+                            } else if (z instanceof PoleVaultingZombie) {
+                                content = "ZPV";
+                            } else if (z instanceof BucketHeadZombie) {
+                                content = "ZBH";
                             } else {
                                 content = "Z??";
                             }
