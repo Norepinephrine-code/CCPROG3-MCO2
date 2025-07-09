@@ -7,6 +7,7 @@ import zombies.BucketHeadZombie;
 import zombies.ConeheadZombie;
 import zombies.FlagZombie;
 import zombies.NormalZombie;
+import zombies.PoleVaultingZombie;
 import zombies.Zombie;
 
 /**
@@ -74,11 +75,11 @@ public class GameBoard {
                                 content = "ZN ";
                             } else if (z instanceof PoleVaultingZombie) {
                                 content = "ZPV";
-                            } else if (z instanceof BucketHeadZombie) {
+                             } else if (z instanceof BucketHeadZombie) {
                                 content = "ZBH";
-                            } else {
+                             } else {
                                 content = "Z??";
-                            }
+                             }
                         }
 
                     } else if (hasPlant) {

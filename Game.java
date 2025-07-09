@@ -206,7 +206,7 @@ private void placePlant() {
         // Defaults to choice = -1;
     }
 
-     if (choice == 0) return;
+     if (choice == -1) return;
      getPlantPosition(user_input);
      if (!isValidPosition(user_input)) return;
      if (!isValidPurchase(choice)) return;          // These do not affect the global variable "sun." Primitive values passed to a method is only a local copy
@@ -299,58 +299,59 @@ public boolean isValidPurchase(int choice) {                    // USED FOR plac
      * Iterates through all Peashooters and attacks the first zombie within range.
      * Eliminates zombies with zero health after being hit.
      */
-    private void handleAllPlants() {
+private void handleAllPlants() {
 
-        for (int r = 0; r < ROWS; r++) {                                                        // ROW
-            for (int c = 0; c < COLS; c++) {                                                    // COLUMN
-                Plant p = board[r][c].getPlant();                                               // Get Plant per Tile
-                
-                 switch (p.getClass().getSimpleName()) {
+    for (int r = 0; r < ROWS; r++) {                                                        // ROW
+        for (int c = 0; c < COLS; c++) {                                                    // COLUMN
+            Plant p = board[r][c].getPlant();                                               // Get Plant per Tile
+            
+            if (p !=null)
+                switch (p.getClass().getSimpleName()) {
 
-                    case "Peashooter": 
-                        boolean hasAttacked = false;                                                // Every PeaShooter can only attack 1 zombie
-                                                                                                    // Look at own column (zc = c) then increment with zc++ to check to the right
-                        for (int zc = c; zc < COLS && zc <= c + p.getRange() && !hasAttacked; zc++) {               // The Peashooter’s maximum range to the right (c + p.getRange())
-                            if (board[r][zc].hasZombies()) {                                        // But never past the edge of the board zc < COLS
-                                List<Zombie> zs = board[r][zc].getZombies();                        // Get list of zombies
-                                if (!zs.isEmpty()) {                                                // Check if we are not accessing a null value
-                                    Zombie target = zs.get(0);                                      // Get the first zombie
-                                    p.action(target);                                               // Call PeaShooter action method
-                                    if (!target.isAlive()) {                                        // Update Logic
-                                        board[r][zc].removeZombie(target);
-                                        System.out.println(
-                                                "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
-                                    }
+                case "Peashooter": 
+                    boolean hasAttacked = false;                                                // Every PeaShooter can only attack 1 zombie
+                                                                                                // Look at own column (zc = c) then increment with zc++ to check to the right
+                    for (int zc = c; zc < COLS && zc <= c + p.getRange() && !hasAttacked; zc++) {               // The Peashooter’s maximum range to the right (c + p.getRange())
+                        if (board[r][zc].hasZombies()) {                                        // But never past the edge of the board zc < COLS
+                            List<Zombie> zs = board[r][zc].getZombies();                        // Get list of zombies
+                            if (!zs.isEmpty()) {                                                // Check if we are not accessing a null value
+                                Zombie target = zs.get(0);                                      // Get the first zombie
+                                p.action(target);                                               // Call PeaShooter action method
+                                if (!target.isAlive()) {                                        // Update Logic
+                                    board[r][zc].removeZombie(target);
+                                    System.out.println(
+                                            "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
                                 }
-                                hasAttacked = true; //                                              // Shoot only 1 zombie
                             }
+                            hasAttacked = true; //                                              // Shoot only 1 zombie
                         }
-                        break;
-
-                    case "Cherrybomb": 
-                        Cherrybomb cb = (Cherrybomb) p;
-                        // Advance fuse timer and explode when ready
-                        cb.tick(board);
-                        if (!cb.isAlive()) {
-                            board[r][c].removePlants();
-                        }
-                        break;
-                    
-                    case "Sunflower":
-                        if (ticks % 2 == 0) {
-                        Sunflower s = (Sunflower) p;
-                        sun = s.action(sun);
                     }
                     break;
 
-                    default: 
-                        System.out.println("Unknown Plant Type Error"); 
-                        break;// Catcher
-                 }
+                case "Cherrybomb": 
+                    Cherrybomb cb = (Cherrybomb) p;
+                    // Advance fuse timer and explode when ready
+                    cb.tick(board);
+                    if (!cb.isAlive()) {
+                        board[r][c].removePlants();
+                    }
+                    break;
+                
+                case "Sunflower":
+                    if (ticks % 2 == 0) {
+                    Sunflower s = (Sunflower) p;
+                    sun = s.action(sun);
+                }
+                break;
 
-            }
+                default: 
+                    System.out.println("Unknown Plant Type Error"); 
+                    break;// Catcher
+                }
+
         }
     }
+}
 
     /**
      * Updates all active Cherrybombs each tick. When a bomb's fuse expires it explodes
