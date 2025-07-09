@@ -1,20 +1,23 @@
 package zombies;
-import tiles.Tile;
 import plants.Plant;
+import tiles.Tile;
 
 /**
  * Base class for all zombie types. Implements common behaviour such as
  * movement, attacking and taking damage.
  */
 public abstract class Zombie {
-    protected int health = 70;
-    protected int baseSpeed = 4;
-    protected int speed = 4;
-    protected int damage = 10;
+    
+    // Property Variables //
+    protected int health;
+    protected int baseSpeed;
+    protected int speed;
+    protected int damage;
     protected Tile position;
 
-    protected boolean isFreeze;
-    protected int freezeTimer;
+    // State Variables //
+    protected boolean isFreeze = false;
+    protected int freezeTimer = 0;
 
     /**
      * Constructs a zombie with the given attributes.
@@ -30,6 +33,7 @@ public abstract class Zombie {
         this.speed = bs;
         this.damage = d;
         this.position = pos;
+
         this.isFreeze = false;
         this.freezeTimer = 0;
     }
@@ -95,8 +99,10 @@ public abstract class Zombie {
 
     /**
      * Attacks the plant on the current tile if one exists.
+     * The Tile[][] board is never used here. It is only used by the PoleVaultingZombie for jump purposes
+     * during its first attack
      */
-    public void attack() {
+    public void attack(Tile[][] board) {
         Tile currentTile = this.getPosition();
         Plant target = currentTile.getPlant();
         if (target != null) {

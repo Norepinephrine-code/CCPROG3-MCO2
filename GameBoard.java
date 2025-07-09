@@ -1,12 +1,12 @@
-import tiles.Tile;
+import plants.Cherrybomb;
+import plants.Peashooter;
 import plants.Plant;
 import plants.Sunflower;
-import plants.Peashooter;
-import plants.Cherrybomb;
-import zombies.Zombie;
-import zombies.NormalZombie;
-import zombies.FlagZombie;
+import tiles.Tile;
 import zombies.ConeheadZombie;
+import zombies.FlagZombie;
+import zombies.NormalZombie;
+import zombies.Zombie;
 
 /**
  * Utility class responsible for rendering the state of the board
@@ -52,9 +52,13 @@ public class GameBoard {
                     Tile tile = board[r][c];
                     Plant p = tile.getPlant();
                     boolean hasZombie = tile.hasZombies();
+                    boolean hasPlant = tile.isOccupied();
 
                     // Decide what symbol to print for this tile
-                    if (hasZombie) {
+                    if (hasZombie && hasPlant) {
+                        content = "!X!";
+
+                    } else if (hasZombie) {
                         // Multiple zombies shown with 'M'
                         if (tile.getZombies().size() > 1) {
                             content = " M ";
@@ -65,20 +69,29 @@ public class GameBoard {
                                 content = "ZF ";
                             } else if (z instanceof ConeheadZombie) {
                                 content = "ZC ";
-                            } else {
+                            } else if (z instanceof NormalZombie) {
                                 content = "ZN ";
+                            } else {
+                                content = "Z??";
                             }
                         }
-                    } else if (p instanceof Sunflower) {
-                        content = " S ";
-                    } else if (p instanceof Peashooter) {
-                        content = " P ";
-                    } else if (p instanceof Cherrybomb) {
-                        content = "C-B";
+
+                    } else if (hasPlant) {
+                                  
+                            if (p instanceof Sunflower) {
+                                content = " S ";
+                            } else if (p instanceof Peashooter) {
+                                content = " P ";
+                            } else if (p instanceof Cherrybomb) {
+                                content = "C-B";
+                            } else {
+                                content = "P??";
+                            }
                     } else {
-                        // Empty tile
-                        content = "---";
-                    }
+                                // Empty tile
+                                content = "---";
+                            } 
+                    
                 }
 
                 // Print tile contents separated by | bars

@@ -1,17 +1,16 @@
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-
-import tiles.Tile;
+import plants.Cherrybomb;
+import plants.Peashooter;
 import plants.Plant;
 import plants.Sunflower;
-import plants.Peashooter;
-import plants.Cherrybomb;
-import zombies.Zombie;
-import zombies.NormalZombie;
-import zombies.FlagZombie;
+import tiles.Tile;
 import zombies.ConeheadZombie;
+import zombies.FlagZombie;
+import zombies.NormalZombie;
+import zombies.Zombie;
 
 /**
  * The {@code Game} class encapsulates the core logic for the 
@@ -347,7 +346,7 @@ public class Game {
         }
 
         for (Zombie z : movingZombies) {
-            z.attack();                         // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN, IF NEEDED!
+            z.attack(board);                         // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN, IF NEEDED!
                                                 // But damage is too low for zombies.
 
             Tile current = z.getPosition();
