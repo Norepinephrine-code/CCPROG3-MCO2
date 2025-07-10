@@ -6,6 +6,8 @@ import plants.Cherrybomb;
 import plants.Peashooter;
 import plants.Plant;
 import plants.Sunflower;
+import plants.Wallnut;
+import plants.PotatoMine;
 import tiles.Tile;
 import zombies.BucketHeadZombie;
 import zombies.ConeheadZombie;
@@ -359,10 +361,11 @@ private void handleAllPlants() {
                     break;
 
                 case "Wallnut": 
+                    // Do nothing!
                     break;
 
                 case "PotatoMine":
-                    Wallnut = wn = (Wallnut) p;
+                    PotatoMine pm = (PotatoMine) p;
                     p.armExplode();
 
                 default: 
