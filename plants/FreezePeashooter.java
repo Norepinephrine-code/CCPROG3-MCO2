@@ -26,12 +26,16 @@ public class FreezePeashooter extends Plant {
                 if (!zs.isEmpty()) {
                     Zombie target = zs.get(0);
                     this.action(target);
-                    target.freezeFor(5);                        // ONLY LOGIC CHANGE
-                    if (!target.isAlive()) {
+                    //*************  */ DEATH CHECKER **********//
+                    if (!target.isAlive()) {                    // IF DEAD KILL AND ANNOUNCE
                         board[r][zc].removeZombie(target);
                         System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
+                    } else {
+                        target.freezeFor(5);              // IF NOT DEAD, FREEZE AND ANNOUNCE
+                        System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " freezed");
                     }
-                    hasAttacked = true;
+
+                    hasAttacked = true; 
                 }
             }
         }

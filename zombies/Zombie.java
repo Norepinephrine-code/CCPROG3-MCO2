@@ -146,7 +146,7 @@ public abstract class Zombie {
      */
     public int getSpeed() {
 
-        return isFreeze ? this.speed / 2 : this.baseSpeed;
+        return isFreeze ? (this.speed * 2) : (this.baseSpeed);
     }
 
     /**
