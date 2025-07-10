@@ -332,9 +332,6 @@ private void handleAllPlants() {
                     Cherrybomb cb = (Cherrybomb) p;
                     // Advance fuse timer and explode when ready
                     cb.tick(board);
-                    if (!cb.isAlive()) {
-                        board[r][c].removePlants();
-                    }
                     break;
                 
                 case "Sunflower":
@@ -342,7 +339,14 @@ private void handleAllPlants() {
                     Sunflower s = (Sunflower) p;
                     sun = s.action(sun);
                 }
-                break;
+                    break;
+
+                case "Wallnut": 
+                    break;
+
+                case "PotatoMine":
+                    Wallnut = wn = (Wallnut) p;
+                    p.armExplode();
 
                 default: 
                     System.out.println("Unknown Plant Type Error"); 

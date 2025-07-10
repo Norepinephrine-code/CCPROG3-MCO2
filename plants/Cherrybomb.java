@@ -2,7 +2,6 @@ package plants;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import tiles.Tile;
 import zombies.Zombie;
 
@@ -76,7 +75,7 @@ public class Cherrybomb extends Plant {
         }
         System.out.println("Cherrybomb exploded at Row " + (plantRow+1) + " Column " + (plantCol+1) + "!");
         this.health = 0;
-        position.removePlants();
+        this.position.removePlant();
     }
 
 }

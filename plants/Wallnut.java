@@ -9,6 +9,6 @@ public class Wallnut extends Plant {
     }
     @Override
     public int action(Zombie zombie) {
-        // Do nothing 
+        return 0;   // Do nothing 
     }
 }

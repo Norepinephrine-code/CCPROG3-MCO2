@@ -39,7 +39,7 @@ public class Tile {
     /**
      * Clears any plant currently occupying this tile.
      */
-    public void removePlants() {
+    public void removePlant() {
         this.plant = null;
     }
 
