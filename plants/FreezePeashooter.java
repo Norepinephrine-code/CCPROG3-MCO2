@@ -1,6 +1,5 @@
 package plants;
 
-import java.util.ArrayList;
 import java.util.List;
 import tiles.Tile;
 import zombies.Zombie;
@@ -10,8 +9,8 @@ public class FreezePeashooter extends Plant {
     private static final int COOLDOWN_TICKS = 1;
     private int cooldownCounter = 0;
 
-    public class FreezePeashooter (Tile position) {
-       super(100, 4.5f, 15, 50, 9, 20, 2.0f, position);
+    public FreezePeashooter(Tile position) {
+        super(100, 4.5f, 15, 50, 9, 20, 2.0f, position);
     }
 
     public void shoot(Tile[][] board) {

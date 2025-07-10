@@ -196,7 +196,7 @@ public class Game {
 private void placePlant() {
 
 
-    System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 4-Wallnut, 5-PotatoMine, 6-SnowPea 0-None):");
+    System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 4-Wallnut, 5-PotatoMine, 6-SnowPea, 7-Remove Plant 0-None):");
     int choice = -1;
     int[] user_input = new int[2];
 
@@ -236,6 +236,15 @@ private void placePlant() {
             break;
         case 5:     // POTATO MINE
             tilePlant.setPlant(new PotatoMine(tilePlant));
+            break;
+        case 6:
+            tilePlant.setPlant(new FreezePeashooter(tilePlant));
+            break;
+        case 7:
+            if (tilePlant.hasPlant()) {
+                tilePlant.removePlant();
+                System.out.println("Plant removed!");
+            }
             break;
 
         default:  
@@ -359,6 +368,7 @@ private void handleAllPlants() {
                 case "FreezePeashooter":
                     FreezePeashooter fp = (FreezePeashooter) p;
                     fp.shoot(board);
+                    break;
 
                 default: 
                     System.out.println("Unknown Plant Type Error"); 

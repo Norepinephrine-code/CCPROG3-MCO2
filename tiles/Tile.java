@@ -95,6 +95,14 @@ public class Tile {
     public boolean hasZombies() {
         return !zombies.isEmpty();
     }
+
+    public boolean hasPlant() {
+        if (plant!=null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     /**
      * @return list of zombies currently on this tile
