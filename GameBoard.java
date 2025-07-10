@@ -1,7 +1,10 @@
 import plants.Cherrybomb;
+import plants.FreezePeashooter;
 import plants.Peashooter;
 import plants.Plant;
+import plants.PotatoMine;
 import plants.Sunflower;
+import plants.Wallnut;
 import tiles.Tile;
 import zombies.BucketHeadZombie;
 import zombies.ConeheadZombie;
@@ -90,6 +93,12 @@ public class GameBoard {
                                 content = " P ";
                             } else if (p instanceof Cherrybomb) {
                                 content = "C-B";
+                            } else if (p instanceof Wallnut) {
+                                content = "-W-";
+                            } else if (p instanceof PotatoMine) {
+                                content = "P-M"; 
+                            } else if (p instanceof FreezePeashooter) {
+                                content = "F-P";  
                             } else {
                                 content = "P??";
                             }
