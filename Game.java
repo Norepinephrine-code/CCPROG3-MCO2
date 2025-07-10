@@ -227,6 +227,13 @@ private void placePlant() {
             tilePlant.setPlant(new Cherrybomb(tilePlant));
             break;
 
+        case 4:     // WALLNUT
+            tilePlant.setPlant(new Wallnut(tilePlant));
+            break;
+        case 5:     // POTATO MINE
+            tilePlant.setPlant(new PotatoMine(tilePlant));
+            break;
+
         default:  
             System.out.println("Unknown plant not yet indicated placePlant() function");
             break;
@@ -280,6 +287,16 @@ public boolean isValidPurchase(int choice) {                    // USED FOR plac
         case 3: 
             if (sun>=150) {
                 sun -=150;
+                isValid = true;
+            } break;
+        case 4: 
+            if (sun>=50) {
+                sun -=50;
+                isValid = true;
+            } break;
+        case 5: 
+            if (sun>=25) {
+                sun -=25;
                 isValid = true;
             } break;
         default:

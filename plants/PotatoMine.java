@@ -23,6 +23,9 @@ public class PotatoMine extends Plant {
     public void action(Tile[][] board) {
         armExplode();
     }
+    
+    // void action() is not used because we want to make it more clearer with what it does by writing a new
+    // method instead called armExplode();
 
     public void armExplode() {
         armTime += (hasArmed)? 0:1;                   // Armed? Add nothing, else increment count by 1.
