@@ -3,11 +3,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import plants.Cherrybomb;
+import plants.FreezePeashooter;
 import plants.Peashooter;
 import plants.Plant;
+import plants.PotatoMine;
 import plants.Sunflower;
 import plants.Wallnut;
-import plants.PotatoMine;
 import tiles.Tile;
 import zombies.BucketHeadZombie;
 import zombies.ConeheadZombie;
@@ -195,7 +196,7 @@ public class Game {
 private void placePlant() {
 
 
-    System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 0-None):");
+    System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 4-Wallnut, 5-PotatoMine, 6-SnowPea 0-None):");
     int choice = -1;
     int[] user_input = new int[2];
 
@@ -208,6 +209,7 @@ private void placePlant() {
         // Defaults to choice = -1;
     }
 
+    // CHECKERS BELOW
      if (choice == -1) return;
      getPlantPosition(user_input);
      if (!isValidPosition(user_input)) return;
@@ -272,7 +274,7 @@ public boolean isValidPosition(int[] input) {                   // USED FOR plac
 
 }
 
-public boolean isValidPurchase(int choice) {                    // USED FOR placePlant() function
+public boolean isValidPurchase(int choice) {        // PRICES INDICATED HERE!!!!            // USED FOR placePlant() function
     boolean isValid = false;
 
     switch(choice) {
@@ -328,23 +330,9 @@ private void handleAllPlants() {
                 switch (p.getClass().getSimpleName()) {
 
                 case "Peashooter": 
-                    boolean hasAttacked = false;                                                // Every PeaShooter can only attack 1 zombie
-                                                                                                // Look at own column (zc = c) then increment with zc++ to check to the right
-                    for (int zc = c; zc < COLS && zc <= c + p.getRange() && !hasAttacked; zc++) {               // The Peashooter’s maximum range to the right (c + p.getRange())
-                        if (board[r][zc].hasZombies()) {                                        // But never past the edge of the board zc < COLS
-                            List<Zombie> zs = board[r][zc].getZombies();                        // Get list of zombies
-                            if (!zs.isEmpty()) {                                                // Check if we are not accessing a null value
-                                Zombie target = zs.get(0);                                      // Get the first zombie
-                                p.action(target);                                               // Call PeaShooter action method
-                                if (!target.isAlive()) {                                        // Update Logic
-                                    board[r][zc].removeZombie(target);
-                                    System.out.println(
-                                            "Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
-                                }
-                            }
-                            hasAttacked = true; //                                              // Shoot only 1 zombie
-                        }
-                    }
+                //LOGIC HERE CALL ACTION
+                    Peashooter ps = (Peashooter) p;
+                    ps.shoot(board);
                     break;
 
                 case "Cherrybomb": 
@@ -366,7 +354,11 @@ private void handleAllPlants() {
 
                 case "PotatoMine":
                     PotatoMine pm = (PotatoMine) p;
-                    p.armExplode();
+                    pm.armExplode();
+                    break;
+                case "FreezePeashooter":
+                    FreezePeashooter fp = (FreezePeashooter) p;
+                    fp.shoot(board);
 
                 default: 
                     System.out.println("Unknown Plant Type Error"); 

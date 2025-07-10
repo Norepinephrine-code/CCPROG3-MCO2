@@ -145,7 +145,8 @@ public abstract class Zombie {
      * @return current movement speed factoring in modifiers
      */
     public int getSpeed() {
-        return speed;
+
+        return isFreeze ? this.speed / 2 : this.baseSpeed;
     }
 
     /**

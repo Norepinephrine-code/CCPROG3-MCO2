@@ -1,20 +1,21 @@
 package plants;
 
+import java.util.ArrayList;
 import java.util.List;
 import tiles.Tile;
 import zombies.Zombie;
 
-public class Peashooter extends Plant {
+public class FreezePeashooter extends Plant {
 
     private static final int COOLDOWN_TICKS = 1;
     private int cooldownCounter = 0;
 
-    public Peashooter(Tile position) {
-        super(100, 4.5f, 15, 50, 9, 20, 2.0f, position);
+    public class FreezePeashooter (Tile position) {
+       super(100, 4.5f, 15, 50, 9, 20, 2.0f, position);
     }
 
     public void shoot(Tile[][] board) {
-
+        
         int r = this.getPosition().getRow();
         int c = this.getPosition().getColumn();
 
@@ -26,6 +27,7 @@ public class Peashooter extends Plant {
                 if (!zs.isEmpty()) {
                     Zombie target = zs.get(0);
                     this.action(target);
+                    target.freezeFor(5);                        // ONLY LOGIC CHANGE
                     if (!target.isAlive()) {
                         board[r][zc].removeZombie(target);
                         System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
@@ -34,7 +36,6 @@ public class Peashooter extends Plant {
                 }
             }
         }
-
     }
 
     @Override
@@ -53,4 +54,6 @@ public class Peashooter extends Plant {
 
         return after;
     }
+
+
 }
