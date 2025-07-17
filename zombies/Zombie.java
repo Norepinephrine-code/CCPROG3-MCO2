@@ -111,7 +111,7 @@ public abstract class Zombie {
                     (currentTile.getColumn() + 1) + " attacked the plant for " + this.getDamage() +
                     " damage.");
             if (!target.isAlive()) {
-                currentTile.removePlants();
+                currentTile.removePlant();
                 System.out.println("Plant at Row " + (currentTile.getRow() + 1) + ", Col " +
                         (currentTile.getColumn() + 1) + " was destroyed.");
             }
