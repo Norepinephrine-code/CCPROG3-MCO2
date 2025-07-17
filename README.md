@@ -63,3 +63,24 @@
 </li>
 </ol>
 
+
+## GUI Support
+
+A basic Swing-based board viewer is provided via `GameBoardGUI`. When running the game
+with the default `Driver`, a window will display the board using text or images if
+available. Place image files for plants and zombies under `images/plants` and
+`images/zombies` respectively. The file names used by `GameBoardGUI` are:
+
+- `sunflower.png`
+- `peashooter.png`
+- `freezepeashooter.png`
+- `cherrybomb.png`
+- `potatomine.png`
+- `wallnut.png`
+- `normal.png`
+- `flag.png`
+- `conehead.png`
+- `polevault.png`
+- `buckethead.png`
+
+If an image is missing, the GUI will display simple text instead.

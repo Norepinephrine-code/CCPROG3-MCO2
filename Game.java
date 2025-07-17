@@ -16,6 +16,7 @@ import zombies.FlagZombie;
 import zombies.NormalZombie;
 import zombies.PoleVaultingZombie;
 import zombies.Zombie;
+import gui.GameBoardGUI;
 
 /**
  * The {@code Game} class encapsulates the core logic for the 
@@ -51,6 +52,9 @@ public class Game {
 
     /** Utility for rendering the board state. */
     private GameBoard gameBoard;
+
+    /** Optional Swing GUI representation of the board. */
+    private GameBoardGUI gameBoardGUI;
 
     /** Scanner for player input. */
     private Scanner scanner;
@@ -100,6 +104,8 @@ public class Game {
             }
         }
         gameBoard = new GameBoard(board);
+        // Initialize the Swing GUI as well. It will safely run on the EDT.
+        gameBoardGUI = new GameBoardGUI(board);
     }
 
     /**
@@ -460,6 +466,7 @@ private void handleAllPlants() {
         System.out.println("Level: " + level);
 
         gameBoard.display();
+        if (gameBoardGUI != null) gameBoardGUI.update();
 
         // Main game loop: each iteration represents one tick
         while (ticks <= GAME_DURATION) {
@@ -480,6 +487,7 @@ private void handleAllPlants() {
             // === End per-tick phases ===
 
             gameBoard.display();
+            if (gameBoardGUI != null) gameBoardGUI.update();
 
             if (ticks == GAME_DURATION) {
                 System.out.println("Time's up! Plants survived. Plants win!");
