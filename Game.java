@@ -196,6 +196,11 @@ public class Game {
                 "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
                         + " | Type: " + z.getClass().getSimpleName()
                         + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
+
+        // Refresh GUI immediately when a new zombie appears
+        if (gameBoardGUI != null) {
+            gameBoardGUI.update();
+        }
     }
  
 
@@ -253,13 +258,18 @@ private void placePlant() {
             }
             break;
 
-        default:  
+        default:
             System.out.println("Unknown plant not yet indicated placePlant() function");
             break;
     }
 
-     System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
+    System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
         " at Row " + (user_input[0] + 1) + ", Column " + (user_input[1] + 1));
+
+    // Refresh GUI right after placing or removing a plant
+    if (gameBoardGUI != null) {
+        gameBoardGUI.update();
+    }
 
 }
 
