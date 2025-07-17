@@ -46,39 +46,44 @@ public class GameBoardGUI {
     public void update() {
         if (cells == null) return;
 
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {                        //
-                TileLabel lbl = cells[r][c];
-                Tile tile = board[r][c];
+        SwingUtilities.invokeLater(() -> {          // Telling Java to RUN a seperate thread apart from the main one
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {                        //
+                    TileLabel lbl = cells[r][c];
+                    Tile tile = board[r][c];
 
-                Icon plantIcon = null;
-                Icon zombieIcon = null;
-                Icon houseIcon = null;
+                    Icon plantIcon = null;
+                    Icon zombieIcon = null;
+                    Icon houseIcon = null;
 
-                // This code will alternate between Light and Dark
-                Icon background = ((r+c)%2==0) ? getBackgroundIcon("Light Green"): 
-                                                 getBackgroundIcon("Dark Green");
+                    // This code will alternate between Light and Dark
+                    Icon background = ((r+c)%2==0) ? getBackgroundIcon("Light Green"): 
+                                                    getBackgroundIcon("Dark Green");
 
-                if (c == 0) {
-                    background = getBackgroundIcon("Cement");
-                    houseIcon = getHouseIcon();
+                    if (c == 0) {
+                        background = getBackgroundIcon("Cement");
+                        houseIcon = getHouseIcon();
+                    }
+
+                    if (tile.isOccupied()) {
+                        Plant p = tile.getPlant();
+                        plantIcon = getPlantIcon(p);
+                    }
+
+                    if (tile.hasZombies()) {
+                        // only shows the first zombie for now here. 
+                        // We can work on this later to add layering zombies
+                        Zombie z = tile.getZombies().get(0); 
+                        zombieIcon = getZombieIcon(z);
+                    }
+
+                    lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
                 }
-
-                if (tile.isOccupied()) {
-                    Plant p = tile.getPlant();
-                    plantIcon = getPlantIcon(p);
-                }
-
-                if (tile.hasZombies()) {
-                    // only shows the first zombie for now here. 
-                    // We can work on this later to add layering zombies
-                    Zombie z = tile.getZombies().get(0); 
-                    zombieIcon = getZombieIcon(z);
-                }
-
-                lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
             }
-        }
+            frame.revalidate();
+            frame.repaint();
+        });
+
     }
 
     private Icon getPlantIcon(Plant p) {
