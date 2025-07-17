@@ -26,30 +26,28 @@ public class GameBoardGUI {
         frame.setLayout(new GridLayout(rows, cols));
 
         cells = new TileLabel[rows][cols];
-        for (int r = 0; r < rows; r++) {
+        for (int r = 0; r < rows; r++) {                                       // Iterate through the entire tiles
             for (int c = 0; c < cols; c++) {
-                TileLabel lbl = new TileLabel();
-                lbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                lbl.setPreferredSize(new Dimension(80, 80));
-                cells[r][c] = lbl;
-                frame.add(lbl);
+                TileLabel lbl = new TileLabel();                               // Declare our Tile GUI
+                lbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));    // Sets the borders
+                lbl.setPreferredSize(new Dimension(80, 80));      // Sets the size of the borders
+                cells[r][c] = lbl;                                             // Each cell is a TileLabel lbl
+                frame.add(lbl);                                                // Add that to the frame. I dont know why Java Swing has to make this manual
             }
         }
 
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        update();
+        frame.pack();                               // Make the frame fit into the tiles we made
+        frame.setLocationRelativeTo(null);        // Center the frame to the computer screen
+        frame.setVisible(true);                   // Show window... I dont know why this has to be manual
+        update();                                   // TIME TO PAINT
     }
 
     /** Refreshes the display to reflect the current board state. */
     public void update() {
         if (cells == null) return;
 
-        Icon background = load("images/backgrounds/tile.png"); // grass or default background
-
         for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
+            for (int c = 0; c < cols; c++) {                        //
                 TileLabel lbl = cells[r][c];
                 Tile tile = board[r][c];
 
@@ -57,7 +55,12 @@ public class GameBoardGUI {
                 Icon zombieIcon = null;
                 Icon houseIcon = null;
 
+                // This code will alternate between Light and Dark
+                Icon background = ((r+c)%2==0) ? getBackgroundIcon("Light Green"): 
+                                                 getBackgroundIcon("Dark Green");
+
                 if (c == 0) {
+                    background = getBackgroundIcon("Cement");
                     houseIcon = getHouseIcon();
                 }
 
@@ -99,7 +102,16 @@ public class GameBoardGUI {
     }
 
     private Icon getHouseIcon() {
-        return load("images/house/lawnmower");
+        return load("images/house/lawn_mower.png");
+    }
+
+    private Icon getBackgroundIcon(String type) {
+        if (type.equals("Cement")) return load("images/backgrounds/cement.png");
+        if (type.equals("Light Green")) return load("images/backgrounds/light_grass.png");
+        if (type.equals("Dark Green")) return load("images/backgrounds/dark_grass.png");
+
+        return load("images/backgrounds/missing_grass.png");   
+
     }
 
 
@@ -110,7 +122,7 @@ public class GameBoardGUI {
             Image scaledImage = rawIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
         }
-        
+
         System.out.println("ERROR: Failed Reading " + path + ". Displaying missing icon!");
         ImageIcon fallback = new ImageIcon("images/missing.png");
         Image scaled = fallback.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
