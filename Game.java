@@ -1,3 +1,4 @@
+import gui.GameBoardGUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +17,6 @@ import zombies.FlagZombie;
 import zombies.NormalZombie;
 import zombies.PoleVaultingZombie;
 import zombies.Zombie;
-import gui.GameBoardGUI;
 
 /**
  * The {@code Game} class encapsulates the core logic for the 
