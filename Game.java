@@ -466,7 +466,7 @@ private void handleAllPlants() {
         System.out.println("Level: " + level);
 
         gameBoard.display();
-        if (gameBoardGUI != null) gameBoardGUI.update();
+        gameBoardGUI.update();
 
         // Main game loop: each iteration represents one tick
         while (ticks <= GAME_DURATION) {
@@ -487,7 +487,7 @@ private void handleAllPlants() {
             // === End per-tick phases ===
 
             gameBoard.display();
-            if (gameBoardGUI != null) gameBoardGUI.update();
+            gameBoardGUI.update();
 
             if (ticks == GAME_DURATION) {
                 System.out.println("Time's up! Plants survived. Plants win!");
