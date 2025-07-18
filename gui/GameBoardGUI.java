@@ -64,7 +64,8 @@ public class GameBoardGUI {
                         houseIcon = getHouseIcon();
                     } else {
                         
-                        // This code will alternate between Light and Dark for the tiles
+                        // This code will alternate between Light and Dark for the tiles DEPENDING
+                        // on the level!
                         switch (level) {
                             case 1: background = (c!=0 && (r+c)%2==0) ? 
                                                     getBackgroundIcon("Light Green"): // True
@@ -111,22 +112,26 @@ public class GameBoardGUI {
     }
 
     private Icon getPlantIcon(Plant p) {
+
         if (p instanceof Sunflower) return load("images/plants/sunflower.png");
         if (p instanceof Peashooter) return load("images/plants/peashooter.png");
         if (p instanceof FreezePeashooter) return load("images/plants/freezepeashooter.png");
         if (p instanceof Cherrybomb) return load("images/plants/cherrybomb.png");
         if (p instanceof PotatoMine) return load("images/plants/potatomine.png");
         if (p instanceof Wallnut) return load("images/plants/wallnut.png");
+
         return load("images/plants/unknownPlant.png"); 
     }
 
 
     private Icon getZombieIcon(Zombie z) {
+
         if (z instanceof NormalZombie) return load("images/zombies/normal.png");
         if (z instanceof FlagZombie) return load("images/zombies/flag.png");
         if (z instanceof ConeheadZombie) return load("images/zombies/conehead.png");
         if (z instanceof PoleVaultingZombie) return load("images/zombies/polevault.png");
         if (z instanceof BucketHeadZombie) return load("images/zombies/buckethead.png");
+
         return load("images/zombies/unknownZombie.png");
     }
 
@@ -135,6 +140,7 @@ public class GameBoardGUI {
     }
 
     private Icon getBackgroundIcon(String type) {
+
         if (type.equals("Cement")) return load("images/backgrounds/cement.png");
         if (type.equals("Light Green")) return load("images/backgrounds/light_grass.png");
         if (type.equals("Dark Green")) return load("images/backgrounds/dark_grass.png");
