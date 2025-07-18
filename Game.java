@@ -33,10 +33,10 @@ import zombies.Zombie;
 public class Game {
 
     /** Number of rows on the board. */
-    private static final int ROWS = 5;
+    private static int ROWS;
 
     /** Number of columns on the board. */
-    private static final int COLS = 9;
+    private static int COLS;
 
     /** Column index representing the player's house. */
     private static final int HOUSE_COLUMN = 0;
@@ -108,9 +108,8 @@ public class Game {
         board[2][2].setPlant(new Peashooter(board[2][2]));             //FOR DEBUGGING
         board[2][4].addZombie(new NormalZombie(board[2][4]));          //FOR DEBUGGING
 
-        gameBoard = new GameBoard(board);
-        // Initialize the Swing GUI as well. It will safely run on the EDT.
-        gameBoardGUI = new GameBoardGUI(board);
+        gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
+        gameBoardGUI = new GameBoardGUI(board,level);
     }
 
     /**
@@ -126,10 +125,28 @@ public class Game {
         }
         if (level < 1) level = 1;                       // Select default level 1 if input less than 1
         if (level > 3) level = 3;                       // Select default level 3 if input greater than 3
+    }
 
-        if (level == 1) waveLimit = 5;
-        if (level == 2) waveLimit = 7;
-        if (level == 3) waveLimit = 9;
+    private void configureLevel() {     // This sets the parameters with what makes each level different!
+        switch (level) {
+            case 1: ROWS = 5;
+                    COLS = 9;
+                    waveLimit = 5;
+                    sun = 150;
+                    break;
+            case 2: ROWS = 6;
+                    COLS = 10;
+                    waveLimit = 7;
+                    sun = 100;
+                    break;
+            case 3: ROWS = 7;
+                    COLS = 13;
+                    waveLimit = 9;
+                    sun = 50;
+                    break;
+            default: System.out.println("Error: Configuration of Level Invalid!");
+                    break;
+        }
     }
 
     /**
@@ -471,10 +488,10 @@ private void handleAllPlants() {
      * and board rendering while checking for win or loss conditions.
      */
     public void start() {
-        initializeBoard();
         selectLevel();
+        configureLevel();
+        initializeBoard();
 
-        sun = 150;
         ticks = 0;
 
         System.out.println("=== Plants vs Zombies Console Game ===");
