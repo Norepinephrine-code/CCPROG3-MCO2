@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import events.GameEventListener;
 import plants.Cherrybomb;
 import plants.FreezePeashooter;
 import plants.Peashooter;
@@ -30,7 +31,7 @@ import zombies.Zombie;
  * Usage:
  * {@code new Game().start();}
  */
-public class Game {
+public class Game implements GameEventListener {
 
     /** Number of rows on the board. */
     private static int ROWS;
@@ -106,8 +107,10 @@ public class Game {
         }
 
         System.out.println("Initializing Debugging Plants");
-        board[2][2].setPlant(new Peashooter(board[2][2]));             //FOR DEBUGGING
-        board[2][4].addZombie(new NormalZombie(board[2][4]));          //FOR DEBUGGING
+        board[2][2].setPlant(new Peashooter(board[2][2]));
+        board[2][2].getPlant().setGameEventListener(this);             //FOR DEBUGGING
+        board[2][4].addZombie(new NormalZombie(board[2][4]));
+        board[2][4].getZombies().get(0).setGameEventListener(this);          //FOR DEBUGGING
 
         gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
         gameBoardGUI = new GameBoardGUI(board,level);
@@ -208,6 +211,7 @@ public class Game {
 
 
         // We can scale this further to add zombies!!!
+        z.setGameEventListener(this);
         spawnTile.addZombie(z);
         // Add zombie to the tile
         justSpawned.add(z);
@@ -255,24 +259,30 @@ private void placePlant() {
 
         case 1:    // SUNFLOWER
             tilePlant.setPlant(new Sunflower(tilePlant));
+            tilePlant.getPlant().setGameEventListener(this);
             break;
 
         case 2:     // PEASHOOTER
             tilePlant.setPlant(new Peashooter(tilePlant));
+            tilePlant.getPlant().setGameEventListener(this);
             break;
 
         case 3:     // CHERRYBOMB
             tilePlant.setPlant(new Cherrybomb(tilePlant));
+            tilePlant.getPlant().setGameEventListener(this);
             break;
 
         case 4:     // WALLNUT
             tilePlant.setPlant(new Wallnut(tilePlant));
+            tilePlant.getPlant().setGameEventListener(this);
             break;
         case 5:     // POTATO MINE
             tilePlant.setPlant(new PotatoMine(tilePlant));
+            tilePlant.getPlant().setGameEventListener(this);
             break;
         case 6:
             tilePlant.setPlant(new FreezePeashooter(tilePlant));
+            tilePlant.getPlant().setGameEventListener(this);
             break;
         case 7:
             if (tilePlant.hasPlant()) {
@@ -531,5 +541,26 @@ private void handleAllPlants() {
 
             ticks++;
         }
+
     }
+    @Override
+    public void onZombieKilled(Zombie z) {
+        Tile t = z.getPosition();
+        t.removeZombie(z);
+        System.out.println("Zombie at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " died.");
+        if (gameBoardGUI != null) {
+            gameBoardGUI.update();
+        }
+    }
+
+    @Override
+    public void onPlantKilled(Plant p) {
+        Tile t = p.getPosition();
+        t.removePlant();
+        System.out.println("Plant at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " was destroyed.");
+        if (gameBoardGUI != null) {
+            gameBoardGUI.update();
+        }
+    }
+
 }

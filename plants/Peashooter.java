@@ -27,7 +27,7 @@ public class Peashooter extends Plant {
                     Zombie target = zs.get(0);
                     this.action(target);
                     if (!target.isAlive()) {
-                        board[r][zc].removeZombie(target);
+                        if (listener != null) listener.onZombieKilled(target);
                         System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
                     }
                     hasAttacked = true;

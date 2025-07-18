@@ -5,6 +5,7 @@
 package plants;
 import tiles.Tile;
 import zombies.Zombie;
+import events.GameEventListener;
 
 public class Plant{
 
@@ -152,6 +153,10 @@ public class Plant{
     public Tile getPosition(){
         return this.position;
     }
+    public void setGameEventListener(GameEventListener l) {
+        this.listener = l;
+    }
+
 
     // Attributes
 
@@ -178,4 +183,6 @@ public class Plant{
 
     /* The position of the plant */
     protected Tile position;
+
+    protected GameEventListener listener;
 }
