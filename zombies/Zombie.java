@@ -1,7 +1,7 @@
 package zombies;
+import events.GameEventListener;
 import plants.Plant;
 import tiles.Tile;
-import events.GameEventListener;
 
 /**
  * Base class for all zombie types. Implements common behaviour such as
@@ -48,15 +48,17 @@ public abstract class Zombie {
     public void move(Tile[][] board) {
         // remove from current tile
         Tile currentTile = this.getPosition();
-        currentTile.removeZombie(this);
 
         // move 1 tile left ONLY:
         int newCol = this.getPosition().getColumn() - 1;
         if (newCol < 0) newCol = 0; // safeguard
 
+        // Get the newTile referencing to the new Column
         Tile newTile = board[this.getPosition().getRow()][newCol];
-        this.setPosition(newTile);
-        newTile.addZombie(this);
+
+        // Declare Move Logic here at Listener
+        listener.onZombieMove(newTile, currentTile, this);
+        
     }
 
     /**

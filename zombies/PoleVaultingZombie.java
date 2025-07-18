@@ -15,8 +15,9 @@ public class PoleVaultingZombie extends Zombie {
         super.attack(board);
     }
 
-    public void jump(Tile[][] board) {
+    public boolean jump(Tile[][] board) {
 
+        if (jump==true) return true;
         boolean hasPlant = this.getPosition().isOccupied();     // isOccupied means it has a plant!
 
             if (hasPlant == true && jump == false) {
@@ -27,13 +28,11 @@ public class PoleVaultingZombie extends Zombie {
                 if (newCol < 0) newCol = 0;                        // Safeguard
                 int row = this.getPosition().getRow();
     
-                currentTile.removeZombie(this);
-
                 Tile newTile = board[row][newCol];
-                this.setPosition(newTile);
-                newTile.addZombie(this);
+                listener.onZombieMove(newTile, currentTile, this);
                 jump = true;
             } 
+        return false;
     }
 
 }

@@ -1,6 +1,7 @@
 package events;
 
 import plants.Plant;
+import tiles.Tile;
 import zombies.Zombie;
 
 /**
@@ -12,4 +13,6 @@ public interface GameEventListener {
 
     /** Called when a plant dies or is removed. */
     void onPlantKilled(Plant p);
+
+    void onZombieMove(Tile newTile, Tile currentTile, Zombie z);
 }

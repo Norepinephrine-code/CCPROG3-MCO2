@@ -471,12 +471,7 @@ private void handleAllPlants() {
 
             if (occupant == null) {
                 if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
-                    Tile previousTile = z.getPosition(); // save old position
-
                     z.move(board);
-                    gameBoardGUI.update(previousTile);          // clear old tile
-                    gameBoardGUI.update(z.getPosition());       // update new tile
-                    System.out.println("GUI is done updating.");
                 }
             }
 
@@ -556,7 +551,7 @@ private void handleAllPlants() {
         System.out.println("Zombie at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " died.");
 
         gameBoardGUI.update(t);
-        System.out.println("GUI is done updating.");
+        System.out.println("GUI is done updating at Zombie Killed.");
 
     }
 
@@ -567,7 +562,19 @@ private void handleAllPlants() {
         System.out.println("Plant at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " was destroyed.");
 
         gameBoardGUI.update(t);
-        System.out.println("GUI is done updating.");
+        System.out.println("GUI is done updating at Plant Killed.");
     }
 
+    @Override
+    public void onZombieMove(Tile newTile, Tile currentTile, Zombie z) {
+
+        currentTile.removeZombie(z);
+        newTile.addZombie(z);
+        z.setPosition(newTile);
+
+        gameBoardGUI.update(currentTile);
+        gameBoardGUI.update(newTile);
+        System.out.println("GUI is done updating at Zombie Move.");
+
+    }
 }

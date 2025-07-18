@@ -34,14 +34,14 @@ public class PotatoMine extends Plant {
         if (hasArmed && this.position.hasZombies()) {
             for (Zombie z : new ArrayList<>(this.position.getZombies())) {
                 z.takeDamage(1000);
-                if (!z.isAlive() && listener != null) {
+                if (!z.isAlive()) {
                     listener.onZombieKilled(z);
                 }
             }
 
-            if (listener != null) {
-                listener.onPlantKilled(this); // The mine explodes and dies
-            }
+        
+            listener.onPlantKilled(this); // The mine explodes and dies
+        
         }
     }
 

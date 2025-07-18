@@ -28,8 +28,7 @@ public class FreezePeashooter extends Plant {
                     this.action(target);
                     //*************  */ DEATH CHECKER **********//
                     if (!target.isAlive()) {                    // IF DEAD KILL AND ANNOUNCE
-                        if (listener != null) listener.onZombieKilled(target);
-                        System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " died.");
+                        listener.onZombieKilled(target);
                     } else {
                         target.freezeFor(5);              // IF NOT DEAD, FREEZE AND ANNOUNCE
                         System.out.println("Zombie at Row " + (r + 1) + " Col " + (zc + 1) + " freezed");
