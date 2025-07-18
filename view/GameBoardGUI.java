@@ -190,7 +190,7 @@ public class GameBoardGUI {
                         zombieIcon = getZombieIcon(z);
                     }
 
-                    lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
+                    if(lbl!=null) lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
                 }
             }
             frame.revalidate();
