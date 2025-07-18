@@ -1,3 +1,5 @@
+package main;
+
 import events.GameEventListener;
 import gui.GameBoardGUI;
 import java.util.ArrayList;

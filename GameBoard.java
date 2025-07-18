@@ -1,3 +1,5 @@
+package main;
+
 import plants.Cherrybomb;
 import plants.FreezePeashooter;
 import plants.Peashooter;

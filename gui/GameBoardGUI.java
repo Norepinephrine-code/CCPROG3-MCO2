@@ -30,6 +30,8 @@ public class GameBoardGUI {
         frame = new JFrame("Plants vs Zombies GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
+
         //========================================TOP PANEL======================================/
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout());
@@ -49,6 +51,10 @@ public class GameBoardGUI {
             btn.addActionListener(e -> game.setSelectedPlantType(plantType));  
             topPanel.add(btn);
         }
+        //========================================TOP PANEL=======================================/
+       
+
+
 
         //========================================GAME BOARD======================================/
         frame.setLayout(new BorderLayout());
@@ -76,12 +82,21 @@ public class GameBoardGUI {
             }
         }
         //========================================GAME BOARD======================================/
+
+
+
+
+        
+        //=========================================================================================/
         frame.add(centerGrid, BorderLayout.CENTER);
         frame.add(topPanel, BorderLayout.NORTH);
         frame.pack();                               // Make the frame fit into the tiles we made
         frame.setLocationRelativeTo(null);        // Center the frame to the computer screen
         frame.setVisible(true);                   // Show window... I dont know why this has to be manual
         InitializeBoard();                          // TIME TO PAINT
+
+        //=========================================================================================/
+
     }
 
     /** Refreshes the display to reflect the current board state. */
