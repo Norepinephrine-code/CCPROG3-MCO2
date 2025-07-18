@@ -1,9 +1,8 @@
 package view;
 
+import controller.Game;
 import java.awt.*;
 import javax.swing.*;
-
-import controller.Game;
 import model.plants.*;
 import model.tiles.Tile;
 import model.zombies.*;
@@ -16,6 +15,9 @@ public class GameBoardGUI {
     private JFrame frame;
     private TileLabel[][] cells;
     private Game game;
+
+    private JLabel sunIndicator;
+    private JLabel timeIndicator;
 
     public GameBoardGUI(Tile[][] board, int level, Game game) {
         this.board = board;
@@ -71,6 +73,8 @@ public class GameBoardGUI {
                 lbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));     // Black Border
                 lbl.setPreferredSize(new Dimension(80, 80));       // Dimensions of the cell
 
+                // This makes the first column (house), have a mouse listener as well.
+                // That is why we have boundary checks at Game.java with isValidPosition().
                 lbl.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -87,18 +91,45 @@ public class GameBoardGUI {
 
 
 
+        //========================================BOTTOM PANEL=====================================/
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 40, 5));
+
+        sunIndicator = new JLabel("Sun: Goodluck!");
+        sunIndicator.setFont(new Font("Arial", Font.BOLD, 16));
+
+        timeIndicator = new JLabel("Time: Goodluck!");
+        timeIndicator.setFont(new Font("Arial", Font.BOLD, 16));
+
+        bottomPanel.add(sunIndicator);
+        bottomPanel.add(timeIndicator);
+        //========================================BOTTOM PANEL=====================================/
+
+
+
         
         //=========================================================================================/
-        frame.add(centerGrid, BorderLayout.CENTER);
         frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(centerGrid, BorderLayout.CENTER);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.pack();                               // Make the frame fit into the tiles we made
         frame.setLocationRelativeTo(null);        // Center the frame to the computer screen
         frame.setVisible(true);                   // Show window... I dont know why this has to be manual
         InitializeBoard();                          // TIME TO PAINT
-
         //=========================================================================================/
 
     }
+
+    public void updateIndicators(int sun, int ticks) {
+        int minutes = ticks / 60;
+        int seconds = ticks % 60;
+
+        String formatTime = String.format("%02d:%02d", minutes, seconds);
+
+        sunIndicator.setText("Sun: " + sun);
+        timeIndicator.setText("Time: " + formatTime);
+    }
+
 
     /** Refreshes the display to reflect the current board state. */
     public void InitializeBoard() {

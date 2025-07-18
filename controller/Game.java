@@ -2,6 +2,10 @@ package controller;
 
 
 import events.GameEventListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import javax.swing.Timer;
 import model.plants.Cherrybomb;
 import model.plants.FreezePeashooter;
 import model.plants.Peashooter;
@@ -16,13 +20,7 @@ import model.zombies.FlagZombie;
 import model.zombies.NormalZombie;
 import model.zombies.PoleVaultingZombie;
 import model.zombies.Zombie;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-import javax.swing.Timer;
-
+import view.GameBoard;
 import view.GameBoardGUI;
 
 /**
@@ -62,9 +60,6 @@ public class Game implements GameEventListener {
 
     /** Optional Swing GUI representation of the board. */
     private GameBoardGUI gameBoardGUI;
-
-    /** Scanner for player input. */
-    private Scanner scanner;
 
     /** Random generator for zombie spawning. */
     private Random rand;
@@ -106,7 +101,6 @@ public class Game implements GameEventListener {
      */
     public Game(int level) {
         this.level = level;
-        scanner = new Scanner(System.in);
         rand = new Random();
     }
 
@@ -246,8 +240,12 @@ public class Game implements GameEventListener {
 
         // CHECKERS BELOW
         if (selectedPlant==0) return;
-        if (!isValidPosition(clicked_row,clicked_column)) return;
-        if (!isValidPurchase(selectedPlant)) return;          // These do not affect the global variable "sun." Primitive values passed to a method is only a local copy
+
+        // The purpose of the validator is to check if there is an existing plant.
+        // We want to ignore the validator if we are intending to remove
+
+        if (!isValidPosition(clicked_row,clicked_column) && selectedPlant!=7) return;
+        if (!isValidPurchase(selectedPlant)) return;         
 
         Tile tilePlant = board[clicked_row][clicked_column];
 
@@ -284,6 +282,8 @@ public class Game implements GameEventListener {
                 if (tilePlant.hasPlant()) {
                     tilePlant.removePlant();
                     System.out.println("Plant removed!");
+                } else {
+                    System.out.println("There is no plant to remove!");
                 }
                 break;
 
@@ -498,6 +498,7 @@ private void handleAllPlants() {
         }
 
             ticks++;
+            gameBoardGUI.updateIndicators(sun, ticks);
     }
 
 
