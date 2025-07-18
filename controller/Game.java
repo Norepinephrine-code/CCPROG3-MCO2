@@ -119,12 +119,6 @@ public class Game implements GameEventListener {
             }
         }
 
-        System.out.println("Initializing Debugging Plants");
-        board[2][2].setPlant(new Peashooter(board[2][2]));
-        board[2][2].getPlant().setGameEventListener(this);             //FOR DEBUGGING
-        board[2][4].addZombie(new NormalZombie(board[2][4]));
-        board[2][4].getZombies().get(0).setGameEventListener(this);          //FOR DEBUGGING
-
         gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
         gameBoardGUI = new GameBoardGUI(board,level,this);
     }
@@ -466,7 +460,20 @@ private void handleAllPlants() {
      * and board rendering while checking for win or loss conditions.
      */
     public void start() {
-        //selectLevel();
+        //=====================================     WELCOME MESSAGE      =======================================================//
+        String message = """
+        This game was forged through sleepless nights, relentless debugging, and undying passion of
+        Hadriel H. Ramos & Royce Vergara.
+
+        It is a testament to what two minds can build with heart, grit, and the will to create something fun, chaotic, and alive.
+
+        Welcome to Plants vs Zombies.
+
+        BUILD VERSION: 4.0
+        """;
+        JOptionPane.showMessageDialog(null, message, "Message from the Authors", JOptionPane.PLAIN_MESSAGE);
+        //======================================================================================================================//
+
         configureLevel();
         initializeBoard();
         System.out.println("=== Plants vs Zombies Console Game ===");
@@ -496,12 +503,14 @@ private void handleAllPlants() {
             System.out.println("Time's up! Plants survived. Plants win!");
             JOptionPane.showMessageDialog(null, "Time's up! Plants survived. Plants win!", "Plants Win!", JOptionPane.INFORMATION_MESSAGE);
             timer.stop();
+            System.exit(0);
         }
 
         if (ZombiesWin) {                  
             System.out.println("A zombie reached your house! Game Over. Zombies win!");
             JOptionPane.showMessageDialog(null, "A zombie reached your house! Game Over. Zombies Win!", "Zombies Win!", JOptionPane.INFORMATION_MESSAGE);
             timer.stop();
+            System.exit(0);
         }
 
             ticks++;
