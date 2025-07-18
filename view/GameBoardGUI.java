@@ -243,9 +243,7 @@ public class GameBoardGUI {
 
         if (tile.getZombies().size() > 1) {
             zombieIcon = getZombieIcon();       // Overloading method, this method returns the multiple zombie image
-        }
-        
-        if (tile.hasZombies()) {
+        } else if (tile.hasZombies()) {
             Zombie z = tile.getZombies().get(0); 
             zombieIcon = getZombieIcon(z);
         }
