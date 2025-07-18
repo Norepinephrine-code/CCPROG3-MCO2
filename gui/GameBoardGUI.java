@@ -5,6 +5,7 @@ import javax.swing.*;
 import plants.*;
 import tiles.Tile;
 import zombies.*;
+import main.Game;
 
 public class GameBoardGUI {
     private Tile[][] board;
@@ -13,31 +14,70 @@ public class GameBoardGUI {
     private int level;
     private JFrame frame;
     private TileLabel[][] cells;
+    private Game game;
 
-    public GameBoardGUI(Tile[][] board, int level) {
+    public GameBoardGUI(Tile[][] board, int level, Game game) {
         this.board = board;
         this.rows = board.length;
         this.cols = board[0].length;
         this.level = level;
+        this.game = game;
         SwingUtilities.invokeLater(this::createAndShowGUI);
     }
 
     private void createAndShowGUI() {
+
         frame = new JFrame("Plants vs Zombies GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(rows, cols));
 
-        cells = new TileLabel[rows][cols];
-        for (int r = 0; r < rows; r++) {                                       // Iterate through the entire tiles
-            for (int c = 0; c < cols; c++) {
-                TileLabel lbl = new TileLabel();                               // Declare our Tile GUI
-                lbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));    // Sets the borders
-                lbl.setPreferredSize(new Dimension(80, 80));      // Sets the size of the borders
-                cells[r][c] = lbl;                                             // Each cell is a TileLabel lbl
-                frame.add(lbl);                                                // Add that to the frame. I dont know why Java Swing has to make this manual
-            }
+        //========================================TOP PANEL======================================/
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout());
+
+        String[] plantNames = {"Sunflower",        // 1
+                                "Peashooter",      // 2
+                                "Cherrybomb",      // 3
+                                "Wallnut",         // 4
+                                "PotatoMine",      // 5
+                                "SnowPea",         // 6
+                                "Remove"};         // 7
+
+        for (int i = 0; i < plantNames.length; i++) {
+            final int plantType = i + 1;                // Since our switch case is 1 based in Game
+            JButton btn = new JButton(plantNames[i]);
+            // Lambda Notation. This just says that in an event of a click, it calls the method with the parameters
+            btn.addActionListener(e -> game.setSelectedPlantType(plantType));  
+            topPanel.add(btn);
         }
 
+        //========================================GAME BOARD======================================/
+        frame.setLayout(new BorderLayout());
+        JPanel centerGrid = new JPanel(new GridLayout(rows, cols));
+        cells = new TileLabel[rows][cols];
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                final int row = r;
+                final int col = c;
+
+                TileLabel lbl = new TileLabel();                                // Our Tile
+                lbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));     // Black Border
+                lbl.setPreferredSize(new Dimension(80, 80));       // Dimensions of the cell
+
+                lbl.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        game.handleTileClick(row, col);
+                    }
+                });
+
+                cells[r][c] = lbl;
+                centerGrid.add(lbl);
+            }
+        }
+        //========================================GAME BOARD======================================/
+        frame.add(centerGrid, BorderLayout.CENTER);
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.pack();                               // Make the frame fit into the tiles we made
         frame.setLocationRelativeTo(null);        // Center the frame to the computer screen
         frame.setVisible(true);                   // Show window... I dont know why this has to be manual

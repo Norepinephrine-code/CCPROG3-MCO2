@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import javax.swing.Timer;
 import plants.Cherrybomb;
 import plants.FreezePeashooter;
 import plants.Peashooter;
@@ -75,6 +76,18 @@ public class Game implements GameEventListener {
     /** Current time tick. */
     private int ticks;
 
+    /** Zombie Win Flag */
+    private boolean ZombiesWin = false;
+
+    /** Plant Win Flag */
+    private boolean PlantsWin = false;
+
+    /** Timer */
+    private Timer timer;
+
+    /** Selected Plant Type */
+    private int selectedPlant = 0;
+
     /**
      * Tracks zombies spawned in the current tick to prevent immediate movement.
      */
@@ -113,22 +126,7 @@ public class Game implements GameEventListener {
         board[2][4].getZombies().get(0).setGameEventListener(this);          //FOR DEBUGGING
 
         gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
-        gameBoardGUI = new GameBoardGUI(board,level);
-    }
-
-    /**
-     * Prompts the player to select a difficulty level from 1-3.
-     * The chosen level determines the final zombie wave size.
-     */
-    private void selectLevel() {
-        System.out.print("Select Level (1, 2, or 3): ");
-        try {
-            level = Integer.parseInt(scanner.nextLine());
-        } catch (Exception e) {
-            level = 1;
-        }
-        if (level < 1) level = 1;                       // Select default level 1 if input less than 1
-        if (level > 3) level = 3;                       // Select default level 3 if input greater than 3
+        gameBoardGUI = new GameBoardGUI(board,level,this);
     }
 
     private void configureLevel() {     // This sets the parameters with what makes each level different!
@@ -230,152 +228,109 @@ public class Game implements GameEventListener {
     }
  
 
-private void placePlant() {
-
-
-    System.out.print("Place plant? (1-Sunflower, 2-Peashooter, 3-Cherrybomb, 4-Wallnut, 5-PotatoMine, 6-SnowPea, 7-Remove Plant 0-None):");
-    int choice = -1;
-    int[] user_input = new int[2];
-
-    /* Read the player's choice; invalid input defaults to -1, if it is an invalid input we assume
-        that the player just wants to let the time pass by.                                          */
-
-    try {
-        choice = Integer.parseInt(scanner.nextLine());
-    } catch (Exception e) {
-        // Defaults to choice = -1;
+    public void setSelectedPlantType(int plantType) {
+        this.selectedPlant = plantType;
     }
 
-    // CHECKERS BELOW
-     if (choice == -1 || choice == 0) return;
-     getPlantPosition(user_input);
-     if (!isValidPosition(user_input)) return;
-     if (!isValidPurchase(choice)) return;          // These do not affect the global variable "sun." Primitive values passed to a method is only a local copy
-
-     Tile tilePlant = board[user_input[0]][user_input[1]];
-
-        switch (choice) {
-
-        case 1:    // SUNFLOWER
-            tilePlant.setPlant(new Sunflower(tilePlant));
-            tilePlant.getPlant().setGameEventListener(this);
-            break;
-
-        case 2:     // PEASHOOTER
-            tilePlant.setPlant(new Peashooter(tilePlant));
-            tilePlant.getPlant().setGameEventListener(this);
-            break;
-
-        case 3:     // CHERRYBOMB
-            tilePlant.setPlant(new Cherrybomb(tilePlant));
-            tilePlant.getPlant().setGameEventListener(this);
-            break;
-
-        case 4:     // WALLNUT
-            tilePlant.setPlant(new Wallnut(tilePlant));
-            tilePlant.getPlant().setGameEventListener(this);
-            break;
-        case 5:     // POTATO MINE
-            tilePlant.setPlant(new PotatoMine(tilePlant));
-            tilePlant.getPlant().setGameEventListener(this);
-            break;
-        case 6:     // FREEZE PEA
-            tilePlant.setPlant(new FreezePeashooter(tilePlant));
-            tilePlant.getPlant().setGameEventListener(this);
-            break;
-        case 7:
-            if (tilePlant.hasPlant()) {
-                tilePlant.removePlant();
-                System.out.println("Plant removed!");
-            }
-            break;
-
-        default:
-            System.out.println("Unknown plant not yet indicated placePlant() function");
-            break;
+    public void handleTileClick(int clicked_row, int clicked_column) {
+        placePlant(clicked_row, clicked_column, selectedPlant);
+        this.selectedPlant = 0;
     }
 
-    System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
-        " at Row " + (user_input[0] + 1) + ", Column " + (user_input[1] + 1));
+    private void placePlant(int clicked_row, int clicked_column, int selectedPlant) {
 
-    // Refresh GUI right after placing or removing a plant
+        // CHECKERS BELOW
+        if (selectedPlant==0) return;
+        if (!isValidPosition(clicked_row,clicked_column)) return;
+        if (!isValidPurchase(selectedPlant)) return;          // These do not affect the global variable "sun." Primitive values passed to a method is only a local copy
 
-        gameBoardGUI.update(tilePlant);
+        Tile tilePlant = board[clicked_row][clicked_column];
 
-}
+            switch (selectedPlant) {
 
+            case 1:    // SUNFLOWER
+                tilePlant.setPlant(new Sunflower(tilePlant));
+                tilePlant.getPlant().setGameEventListener(this);
+                break;
 
-public int[] getPlantPosition(int[] user_input) {               // USED FOR placePlant() function
-    System.out.print("Enter row (1-5) and column (2-9): ");
-    int row = scanner.nextInt() - 1;      // Conversion of 1 base to 0 base index
-    int col = scanner.nextInt() - 1;      // Same logic
-    scanner.nextLine();                   // Consume leftover new line
+            case 2:     // PEASHOOTER
+                tilePlant.setPlant(new Peashooter(tilePlant));
+                tilePlant.getPlant().setGameEventListener(this);
+                break;
 
-    user_input [0] = row;              // Place it into user_input
-    user_input [1] = col;              // 
-    
-    return user_input;
-}
+            case 3:     // CHERRYBOMB
+                tilePlant.setPlant(new Cherrybomb(tilePlant));
+                tilePlant.getPlant().setGameEventListener(this);
+                break;
 
-public boolean isValidPosition(int[] input) {                   // USED FOR placePlant() function
+            case 4:     // WALLNUT
+                tilePlant.setPlant(new Wallnut(tilePlant));
+                tilePlant.getPlant().setGameEventListener(this);
+                break;
+            case 5:     // POTATO MINE
+                tilePlant.setPlant(new PotatoMine(tilePlant));
+                tilePlant.getPlant().setGameEventListener(this);
+                break;
+            case 6:     // FREEZE PEA
+                tilePlant.setPlant(new FreezePeashooter(tilePlant));
+                tilePlant.getPlant().setGameEventListener(this);
+                break;
+            case 7:     // REMOVE PLANT
+                if (tilePlant.hasPlant()) {
+                    tilePlant.removePlant();
+                    System.out.println("Plant removed!");
+                }
+                break;
 
-    int r = input[0];
-    int c = input[1];
-    if ((r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied())) {
-        return true;
-    } else {
-        System.out.println("Invalid location!");
-        return false;
+            default:
+                System.out.println("Unknown plant not yet indicated placePlant() function");
+                break;
+        }
+
+            System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
+                " at Row " + (clicked_row + 1) + ", Column " + (clicked_column + 1));
+
+        // Refresh GUI right after placing or removing a plant
+            gameBoardGUI.update(tilePlant);
+
     }
 
-}
+    private boolean isValidPosition(int r, int c) {                   // USED FOR placePlant() function
 
-public boolean isValidPurchase(int choice) {        // PRICES INDICATED HERE!!!!            // USED FOR placePlant() function
-    boolean isValid = false;
-
-    switch(choice) {
-        case 1:
-            if (sun>=50) {
-                sun-= 50;
-                isValid = true;
-            } break;
-        case 2:
-            if (sun>=100) {
-                sun-= 100;
-                isValid = true;
-            } break;
-        case 3: 
-            if (sun>=150) {
-                sun -=150;
-                isValid = true;
-            } break;
-        case 4: 
-            if (sun>=50) {
-                sun -=50;
-                isValid = true;
-            } break;
-        case 5: 
-            if (sun>=25) {
-                sun -=25;
-                isValid = true;
-            } break;
-        case 6:
-            if (sun >= 175) {
-                sun -= 175;
-                isValid = true;
-            } break;
-        default:
-            System.out.println("Unknown Plant!");
-            break;
+        if ((r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied())) {
+            return true;
+        } else {
+            System.out.println("Invalid location!");
+            return false;
+        }
     }
 
-    if (isValid==false) {
-        System.out.println("Not enough sun!");
+    private boolean isValidPurchase(int selectedPlant) {
+        int cost;
+
+        switch (selectedPlant) {
+            case 1: cost = 50; break;   // Sunflower
+            case 2: cost = 100; break;  // Peashooter
+            case 3: cost = 150; break;  // Cherrybomb
+            case 4: cost = 50; break;   // Wallnut
+            case 5: cost = 25; break;   // PotatoMine
+            case 6: cost = 175; break;  // FreezePeashooter
+            case 7: cost = 0; break;    // Remove (free)
+            default:
+                System.out.println("Unknown Plant!");
+                return false;
+        }
+
+        if (sun >= cost) {
+            sun -= cost;
+            return true;
+        } else {
+            System.out.println("Not enough sun!");
+            return false;
+        }
     }
 
-    return isValid;
-}
-       
+      
 
     /**
      * Iterates through all Peashooters and attacks the first zombie within range.
@@ -477,7 +432,6 @@ private void handleAllPlants() {
 
             // Check if any zombie reached the house column
             if (z.getPosition().getColumn() == 0) {
-                System.out.println("A zombie reached your house! Game Over. Zombies win!");
                 return true;
             }
         }
@@ -505,45 +459,43 @@ private void handleAllPlants() {
         //selectLevel();
         configureLevel();
         initializeBoard();
-
-        ticks = 0;
-
         System.out.println("=== Plants vs Zombies Console Game ===");
         System.out.println("Level: " + level);
-
         gameBoard.display();
         gameBoardGUI.InitializeBoard();
 
-        // Main game loop: each iteration represents one tick
-        while (ticks <= GAME_DURATION) {
-            System.out.println("Time: " + formatTime(ticks));
-            System.out.println("Current Sun: " + sun);
+        ticks = 0;
+        timer = new Timer(1000, e -> runTick()); // 1000ms = 1 second
+        timer.start();
+    }
 
-            justSpawned.clear(); // clear tracker for this tick
+    public void runTick() {
+        System.out.println("Time: " + formatTime(ticks));
+        System.out.println("Current Sun: " + sun);
 
-            // === Begin per-tick phases ===
-            dropSun();
-            spawnZombies();
-            placePlant();
-            handleAllPlants();                      // Handles all Plants
-            if (moveZombies()) {                    // Handles all Zombies and returns true if zombie reaches house
-                scanner.close();
-                return;
-            }
-            // === End per-tick phases ===
+                justSpawned.clear();                          // clear tracker for this tick
+                dropSun();                                    // Drop the Sun
+                spawnZombies();                               // Spawn Some Zombies
+                handleAllPlants();                            // Handles all Plants
 
-            gameBoard.display();
+                ZombiesWin = moveZombies();                   // Returns True if Zombie reaches House
+                PlantsWin = (ticks >= GAME_DURATION);         // Returns True if Time is up
+                gameBoard.display();
 
-            if (ticks == GAME_DURATION) {
-                System.out.println("Time's up! Plants survived. Plants win!");
-                scanner.close();
-                return;
-            }
-
-            ticks++;
+        if (PlantsWin) {
+            System.out.println("Time's up! Plants survived. Plants win!");
+            timer.stop();
         }
 
+        if (ZombiesWin) {                  
+            System.out.println("A zombie reached your house! Game Over. Zombies win!");
+            timer.stop();
+        }
+
+            ticks++;
     }
+
+
     @Override
     public void onZombieKilled(Zombie z) {
         Tile t = z.getPosition();
@@ -577,4 +529,5 @@ private void handleAllPlants() {
         System.out.println("GUI is done updating at Zombie Move.");
 
     }
+
 }
