@@ -126,9 +126,24 @@ public class GameBoardGUI {
         Icon houseIcon = null;
         Icon background = null;
 
-        // Handle background and icons based on level and tile state
-        // Simplified background selection logic
-        background = getBackgroundIconBasedOnLevel(r, c);
+        switch (level) {
+            case 1: background = (c!=0 && (r+c)%2==0) ? 
+                                    getBackgroundIcon("Light Green"): // True
+                                    getBackgroundIcon("Dark Green");  // False
+                    break;
+            case 2: background = (c!=0 && c==cols-1) ? 
+                                    getBackgroundIcon("Grave Mud"):     // True
+                                    ((r+c)%2==0)     ?                       // False
+                                        getBackgroundIcon("Light Mud"): // True
+                                        getBackgroundIcon("Dark Mud");  // False
+                    break;
+            case 3: background = (c!=0 && c==cols-1) ? 
+                                    getBackgroundIcon("Cloud Frost"):     // True
+                                    ((r+c)%2==0)     ?                       // False
+                                        getBackgroundIcon("Light Frost"): // True
+                                        getBackgroundIcon("Dark Frost");  // False
+                    break;
+        }
 
         if (tile.hasZombies() && tile.hasPlant()) {
             background = getBackgroundIcon("Under Attack!");

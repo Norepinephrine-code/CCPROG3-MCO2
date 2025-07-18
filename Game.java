@@ -300,9 +300,8 @@ private void placePlant() {
         " at Row " + (user_input[0] + 1) + ", Column " + (user_input[1] + 1));
 
     // Refresh GUI right after placing or removing a plant
-    if (gameBoardGUI != null) {
-        gameBoardGUI.update();
-    }
+
+        gameBoardGUI.update(tilePlant);
 
 }
 
@@ -509,7 +508,7 @@ private void handleAllPlants() {
         System.out.println("Level: " + level);
 
         gameBoard.display();
-        gameBoardGUI.update();
+        gameBoardGUI.InitializeBoard();
 
         // Main game loop: each iteration represents one tick
         while (ticks <= GAME_DURATION) {
@@ -530,8 +529,6 @@ private void handleAllPlants() {
             // === End per-tick phases ===
 
             gameBoard.display();
-            gameBoardGUI.update();
-            System.out.println("GUI is done updating.");
 
             if (ticks == GAME_DURATION) {
                 System.out.println("Time's up! Plants survived. Plants win!");
@@ -548,9 +545,10 @@ private void handleAllPlants() {
         Tile t = z.getPosition();
         t.removeZombie(z);
         System.out.println("Zombie at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " died.");
-        if (gameBoardGUI != null) {
-            gameBoardGUI.update();
-        }
+
+        gameBoardGUI.update(t);
+        System.out.println("GUI is done updating.");
+
     }
 
     @Override
@@ -558,9 +556,9 @@ private void handleAllPlants() {
         Tile t = p.getPosition();
         t.removePlant();
         System.out.println("Plant at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " was destroyed.");
-        if (gameBoardGUI != null) {
-            gameBoardGUI.update();
-        }
+        
+        gameBoardGUI.update(t);
+        System.out.println("GUI is done updating.");
     }
 
 }
