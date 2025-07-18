@@ -66,7 +66,7 @@ public class Cherrybomb extends Plant {
                         for (Zombie z : zs) {                                       // LOOP THE ZOMBIE ARRAY OF THAT TILE
                             z.takeDamage(this.damage);                              // DAMAGE ZOMBIE!
                             if (!z.isAlive()) {
-                                tile.removeZombie(z);                               // KILL ZOMBIE IF HEALTH == 0
+                                if (listener != null) listener.onZombieKilled(z);                               // KILL ZOMBIE IF HEALTH == 0
                             }
                         }
                     }
@@ -75,7 +75,7 @@ public class Cherrybomb extends Plant {
         }
         System.out.println("Cherrybomb exploded at Row " + (plantRow+1) + " Column " + (plantCol+1) + "!");
         this.health = 0;
-        this.position.removePlant();
+        if (listener != null) listener.onPlantKilled(this);
     }
 
 }

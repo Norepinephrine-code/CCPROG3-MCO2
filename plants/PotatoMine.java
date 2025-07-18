@@ -33,12 +33,12 @@ public class PotatoMine extends Plant {
         if (this.position.hasZombies() && hasArmed) {
             List <Zombie> zombies = this.position.getZombies();
             for (Zombie z:zombies) {
-                z.takeDamage(1000);             // This can be any number, but just Instantly kill it.
+                z.takeDamage(1000);
+                if (!z.isAlive() && listener != null) listener.onZombieKilled(z);
             }
 
             //******************DEATH******************//
-            this.health = 0;
-            this.getPosition().removePlant();
+            if (listener != null) listener.onPlantKilled(this);
             
         }
     }

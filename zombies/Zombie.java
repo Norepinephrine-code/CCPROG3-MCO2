@@ -1,6 +1,7 @@
 package zombies;
 import plants.Plant;
 import tiles.Tile;
+import events.GameEventListener;
 
 /**
  * Base class for all zombie types. Implements common behaviour such as
@@ -14,6 +15,7 @@ public abstract class Zombie {
     protected int speed;
     protected int damage;
     protected Tile position;
+    protected GameEventListener listener;
 
     // State Variables //
     protected boolean isFreeze = false;
@@ -65,9 +67,13 @@ public abstract class Zombie {
     public void setPosition(Tile position) {
         this.position = position;
     }
+    public void setGameEventListener(GameEventListener l) {
+        this.listener = l;
+    }
+
 
     /**
-     * Reduces this zombie's health by the specified amount.
+
      *
      * @param amount damage to apply
      */
@@ -111,7 +117,7 @@ public abstract class Zombie {
                     (currentTile.getColumn() + 1) + " attacked the plant for " + this.getDamage() +
                     " damage.");
             if (!target.isAlive()) {
-                currentTile.removePlant();
+                if (listener != null) listener.onPlantKilled(target);
                 System.out.println("Plant at Row " + (currentTile.getRow() + 1) + ", Col " +
                         (currentTile.getColumn() + 1) + " was destroyed.");
             }
