@@ -279,7 +279,7 @@ private void placePlant() {
             tilePlant.setPlant(new PotatoMine(tilePlant));
             tilePlant.getPlant().setGameEventListener(this);
             break;
-        case 6:
+        case 6:     // FREEZE PEA
             tilePlant.setPlant(new FreezePeashooter(tilePlant));
             tilePlant.getPlant().setGameEventListener(this);
             break;
@@ -357,6 +357,11 @@ public boolean isValidPurchase(int choice) {        // PRICES INDICATED HERE!!!!
         case 5: 
             if (sun>=25) {
                 sun -=25;
+                isValid = true;
+            } break;
+        case 6:
+            if (sun >= 175) {
+                sun -= 175;
                 isValid = true;
             } break;
         default:
