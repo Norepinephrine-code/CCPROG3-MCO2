@@ -1,9 +1,9 @@
+import events.GameEventListener;
 import gui.GameBoardGUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import events.GameEventListener;
 import plants.Cherrybomb;
 import plants.FreezePeashooter;
 import plants.Peashooter;
@@ -225,9 +225,8 @@ public class Game implements GameEventListener {
                         + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
 
         // Refresh GUI immediately when a new zombie appears
-        if (gameBoardGUI != null) {
-            gameBoardGUI.update();
-        }
+            gameBoardGUI.update(z.getPosition());
+        
     }
  
 
@@ -467,7 +466,12 @@ private void handleAllPlants() {
 
             if (occupant == null) {
                 if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
+                    Tile previousTile = z.getPosition(); // save old position
+
                     z.move(board);
+                    gameBoardGUI.update(previousTile);          // clear old tile
+                    gameBoardGUI.update(z.getPosition());       // update new tile
+                    System.out.println("GUI is done updating.");
                 }
             }
 
@@ -556,7 +560,7 @@ private void handleAllPlants() {
         Tile t = p.getPosition();
         t.removePlant();
         System.out.println("Plant at Row " + (t.getRow()+1) + " Col " + (t.getColumn()+1) + " was destroyed.");
-        
+
         gameBoardGUI.update(t);
         System.out.println("GUI is done updating.");
     }

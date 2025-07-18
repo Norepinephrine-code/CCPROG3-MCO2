@@ -1,7 +1,6 @@
 package plants;
 
 import java.util.ArrayList;
-import java.util.List;
 import tiles.Tile;
 import zombies.Zombie;
 
@@ -27,19 +26,22 @@ public class PotatoMine extends Plant {
     // method instead called armExplode();
 
     public void armExplode() {
-        armTime += (hasArmed)? 0:1;                   // Armed? Add nothing, else increment count by 1.
-        hasArmed = (armTime >= ARM_THRESHOLD);        // hasArmed? Returns True if it has already reached to THRESHOLD.
+        if (!hasArmed) {
+            armTime++;
+            hasArmed = (armTime >= ARM_THRESHOLD);
+        }
 
-        if (this.position.hasZombies() && hasArmed) {
-            List <Zombie> zombies = this.position.getZombies();
-            for (Zombie z:zombies) {
+        if (hasArmed && this.position.hasZombies()) {
+            for (Zombie z : new ArrayList<>(this.position.getZombies())) {
                 z.takeDamage(1000);
-                if (!z.isAlive() && listener != null) listener.onZombieKilled(z);
+                if (!z.isAlive() && listener != null) {
+                    listener.onZombieKilled(z);
+                }
             }
 
-            //******************DEATH******************//
-            if (listener != null) listener.onPlantKilled(this);
-            
+            if (listener != null) {
+                listener.onPlantKilled(this); // The mine explodes and dies
+            }
         }
     }
 
