@@ -35,4 +35,8 @@ public class PoleVaultingZombie extends Zombie {
         return false;
     }
 
+    public boolean hasJumped() {
+        return this.jump;
+    }
+
 }

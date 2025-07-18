@@ -184,8 +184,13 @@ public class GameBoardGUI {
         if (z instanceof NormalZombie) return load("images/zombies/normal.png");
         if (z instanceof FlagZombie) return load("images/zombies/flag.png");
         if (z instanceof ConeheadZombie) return load("images/zombies/conehead.png");
-        if (z instanceof PoleVaultingZombie) return load("images/zombies/polevault.png");
         if (z instanceof BucketHeadZombie) return load("images/zombies/buckethead.png");
+
+        if (z instanceof PoleVaultingZombie) {      // State-Dependent Icon!
+            PoleVaultingZombie polevault_zombie = (PoleVaultingZombie) z;
+            if (polevault_zombie.hasJumped()==false) return load("images/zombies/polevault.png");
+            if (polevault_zombie.hasJumped()==true) return load("images/zombies/polevault_jump.png");
+        }
 
         return load("images/zombies/unknownZombie.png");
     }
