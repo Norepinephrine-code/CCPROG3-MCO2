@@ -1,3 +1,5 @@
+import javax.swing.SwingUtilities;
+
 /**
  * Entry point for the console-based Plants vs Zombies game.
  * This class now simply launches the {@link Game} which
@@ -10,6 +12,6 @@ public class Driver {
      * @param args command line arguments (unused)
      */
     public static void main(String[] args) {
-        new Game().start();
+         SwingUtilities.invokeLater(() -> new LevelSelectorGUI());
     }
 }

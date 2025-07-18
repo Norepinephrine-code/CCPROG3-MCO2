@@ -85,7 +85,8 @@ public class Game {
      * constructor simply prepares the input scanner and pseudo-random number
      * generator used for zombie spawning and user interaction.
      */
-    public Game() {
+    public Game(int level) {
+        this.level = level;
         scanner = new Scanner(System.in);
         rand = new Random();
     }
@@ -488,7 +489,7 @@ private void handleAllPlants() {
      * and board rendering while checking for win or loss conditions.
      */
     public void start() {
-        selectLevel();
+        //selectLevel();
         configureLevel();
         initializeBoard();
 
