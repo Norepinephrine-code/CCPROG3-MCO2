@@ -46,7 +46,6 @@ public class GameBoardGUI {
     public void update() {
         if (cells == null) return;
 
-        SwingUtilities.invokeLater(() -> {          // Telling Java to RUN a seperate thread apart from the main one
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {                        //
                     TileLabel lbl = cells[r][c];
@@ -63,6 +62,10 @@ public class GameBoardGUI {
                     if (c == 0) {
                         background = getBackgroundIcon("Cement");
                         houseIcon = getHouseIcon();
+                    }
+
+                    if (tile.hasZombies() && tile.hasPlant()) {
+                        background = getBackgroundIcon("Under Attack!");
                     }
 
                     if (tile.isOccupied()) {
@@ -82,7 +85,6 @@ public class GameBoardGUI {
             }
             frame.revalidate();
             frame.repaint();
-        });
 
     }
 
@@ -114,6 +116,7 @@ public class GameBoardGUI {
         if (type.equals("Cement")) return load("images/backgrounds/cement.png");
         if (type.equals("Light Green")) return load("images/backgrounds/light_grass.png");
         if (type.equals("Dark Green")) return load("images/backgrounds/dark_grass.png");
+        if (type.equals("Under Attack!")) return load("images/backgrounds/under_attack.png");
 
         return load("images/backgrounds/missing_grass.png");   
 

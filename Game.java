@@ -103,6 +103,11 @@ public class Game {
                 board[r][c] = new Tile(r, c);
             }
         }
+
+        System.out.println("Initializing Debugging Plants");
+        board[2][2].setPlant(new Peashooter(board[2][2]));             //FOR DEBUGGING
+        board[2][4].addZombie(new NormalZombie(board[2][4]));          //FOR DEBUGGING
+
         gameBoard = new GameBoard(board);
         // Initialize the Swing GUI as well. It will safely run on the EDT.
         gameBoardGUI = new GameBoardGUI(board);
@@ -221,7 +226,7 @@ private void placePlant() {
     }
 
     // CHECKERS BELOW
-     if (choice == -1) return;
+     if (choice == -1 || choice == 0) return;
      getPlantPosition(user_input);
      if (!isValidPosition(user_input)) return;
      if (!isValidPurchase(choice)) return;          // These do not affect the global variable "sun." Primitive values passed to a method is only a local copy
@@ -498,6 +503,7 @@ private void handleAllPlants() {
 
             gameBoard.display();
             gameBoardGUI.update();
+            System.out.println("GUI is done updating.");
 
             if (ticks == GAME_DURATION) {
                 System.out.println("Time's up! Plants survived. Plants win!");
