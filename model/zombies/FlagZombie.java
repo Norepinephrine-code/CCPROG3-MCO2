@@ -1,5 +1,5 @@
-package zombies;
-import tiles.Tile;
+package model.zombies;
+import model.tiles.Tile;
 
 /**
  * Faster zombie variant that acts as a wave indicator.

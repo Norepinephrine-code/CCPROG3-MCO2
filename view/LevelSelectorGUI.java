@@ -1,7 +1,10 @@
-package main;
+package view;
+
 
 import java.awt.*;
 import javax.swing.*;
+
+import controller.Game;
 
 public class LevelSelectorGUI extends JFrame {
 

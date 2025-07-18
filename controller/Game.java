@@ -1,26 +1,29 @@
-package main;
+package controller;
+
 
 import events.GameEventListener;
-import gui.GameBoardGUI;
+import model.plants.Cherrybomb;
+import model.plants.FreezePeashooter;
+import model.plants.Peashooter;
+import model.plants.Plant;
+import model.plants.PotatoMine;
+import model.plants.Sunflower;
+import model.plants.Wallnut;
+import model.tiles.Tile;
+import model.zombies.BucketHeadZombie;
+import model.zombies.ConeheadZombie;
+import model.zombies.FlagZombie;
+import model.zombies.NormalZombie;
+import model.zombies.PoleVaultingZombie;
+import model.zombies.Zombie;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import javax.swing.Timer;
-import plants.Cherrybomb;
-import plants.FreezePeashooter;
-import plants.Peashooter;
-import plants.Plant;
-import plants.PotatoMine;
-import plants.Sunflower;
-import plants.Wallnut;
-import tiles.Tile;
-import zombies.BucketHeadZombie;
-import zombies.ConeheadZombie;
-import zombies.FlagZombie;
-import zombies.NormalZombie;
-import zombies.PoleVaultingZombie;
-import zombies.Zombie;
+
+import view.GameBoardGUI;
 
 /**
  * The {@code Game} class encapsulates the core logic for the 

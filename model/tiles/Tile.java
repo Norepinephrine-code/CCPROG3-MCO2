@@ -1,9 +1,10 @@
-package tiles;
+package model.tiles;
 
 import java.util.ArrayList;
 import java.util.List;
-import plants.Plant;
-import zombies.Zombie;
+
+import model.plants.Plant;
+import model.zombies.Zombie;
 
 /**
  * Represents a single grid square on the board. A tile may hold a plant

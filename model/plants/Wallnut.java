@@ -1,6 +1,6 @@
-package plants;
-import tiles.Tile;
-import zombies.Zombie;
+package model.plants;
+import model.tiles.Tile;
+import model.zombies.Zombie;
 
 public class Wallnut extends Plant {
 

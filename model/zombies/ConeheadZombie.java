@@ -1,5 +1,5 @@
-package zombies;
-import tiles.Tile;
+package model.zombies;
+import model.tiles.Tile;
 
 /**
  * Zombie equipped with a cone that provides additional defence at the cost of

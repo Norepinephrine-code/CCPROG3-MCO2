@@ -1,9 +1,10 @@
-package plants;
+package model.plants;
 
 import java.util.ArrayList;
 import java.util.List;
-import tiles.Tile;
-import zombies.Zombie;
+
+import model.tiles.Tile;
+import model.zombies.Zombie;
 
 /**
  * Explosive plant that damages all zombies in a 3x3 area around it.

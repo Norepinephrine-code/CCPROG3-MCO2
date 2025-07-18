@@ -1,8 +1,9 @@
-package plants;
+package model.plants;
 
 import java.util.List;
-import tiles.Tile;
-import zombies.Zombie;
+
+import model.tiles.Tile;
+import model.zombies.Zombie;
 
 public class Peashooter extends Plant {
 

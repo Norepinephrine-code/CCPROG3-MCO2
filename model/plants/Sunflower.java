@@ -1,5 +1,5 @@
-package plants;
-import tiles.Tile;
+package model.plants;
+import model.tiles.Tile;
 
 /**
  * Support plant that periodically generates sun resources.

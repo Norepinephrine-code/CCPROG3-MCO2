@@ -1,8 +1,8 @@
 package events;
 
-import plants.Plant;
-import tiles.Tile;
-import zombies.Zombie;
+import model.plants.Plant;
+import model.tiles.Tile;
+import model.zombies.Zombie;
 
 /**
  * Listener interface for game events such as entity deaths.

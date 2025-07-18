@@ -1,11 +1,12 @@
-package gui;
+package view;
 
 import java.awt.*;
 import javax.swing.*;
-import main.Game;
-import plants.*;
-import tiles.Tile;
-import zombies.*;
+
+import controller.Game;
+import model.plants.*;
+import model.tiles.Tile;
+import model.zombies.*;
 
 public class GameBoardGUI {
     private Tile[][] board;

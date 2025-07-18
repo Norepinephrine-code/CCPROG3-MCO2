@@ -1,7 +1,7 @@
-package zombies;
+package model.zombies;
 import events.GameEventListener;
-import plants.Plant;
-import tiles.Tile;
+import model.plants.Plant;
+import model.tiles.Tile;
 
 /**
  * Base class for all zombie types. Implements common behaviour such as

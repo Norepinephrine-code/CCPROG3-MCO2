@@ -1,6 +1,6 @@
-package main;
-
+import controller.Game;
 import javax.swing.SwingUtilities;
+import view.LevelSelectorGUI;
 
 /**
  * Entry point for the console-based Plants vs Zombies game.
