@@ -241,6 +241,10 @@ public class GameBoardGUI {
             plantIcon = getPlantIcon(p);
         }
 
+        if (tile.getZombies().size() > 1) {
+            zombieIcon = getZombieIcon();       // Overloading method, this method returns the multiple zombie image
+        }
+        
         if (tile.hasZombies()) {
             Zombie z = tile.getZombies().get(0); 
             zombieIcon = getZombieIcon(z);
@@ -280,6 +284,10 @@ public class GameBoardGUI {
         }
 
         return load("images/zombies/unknownZombie.png");
+    }
+
+    private Icon getZombieIcon() {
+        return load("images/zombies/multiple.png");
     }
 
     private Icon getHouseIcon() {
