@@ -30,8 +30,11 @@ public class GameBoardGUI {
 
     private void createAndShowGUI() {
 
-        frame = new JFrame("Plants vs Zombies GUI");
+        frame = new JFrame("Plants vs Zombies");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ImageIcon logo = load("images/logo.png");
+        frame.setIconImage(logo.getImage());
 
 
 
