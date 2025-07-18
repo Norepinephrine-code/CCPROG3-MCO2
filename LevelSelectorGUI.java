@@ -75,7 +75,7 @@ public class LevelSelectorGUI extends JFrame {
 
     private void launchLevel(int level) {
         dispose(); // close selector window
-        SwingGame game = new SwingGame(level);
-        game.start();
+        Game game = new Game(level);
+        new Thread(() -> game.start()).start(); // run game on its own thread
     }
 }
