@@ -5,6 +5,7 @@ import events.GameEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import model.plants.Cherrybomb;
 import model.plants.FreezePeashooter;
@@ -174,6 +175,7 @@ public class Game implements GameEventListener {
         } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {                                // 141 - 170 Spawn every 3
             spawnSingleZombie();
         } else if (ticks == 171) {
+             JOptionPane.showMessageDialog(null, "Wave of Zombies Commencing!", "Alert!", JOptionPane.WARNING_MESSAGE);
             for (int waveCount = 0; waveCount< waveLimit;waveCount++) {
                 spawnSingleZombie();
             }
@@ -292,8 +294,10 @@ public class Game implements GameEventListener {
                 break;
         }
 
+        if (tilePlant.getPlant()!=null) {
             System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
                 " at Row " + (clicked_row + 1) + ", Column " + (clicked_column + 1));
+        }
 
         // Refresh GUI right after placing or removing a plant
             gameBoardGUI.update(tilePlant);
@@ -331,6 +335,7 @@ public class Game implements GameEventListener {
             return true;
         } else {
             System.out.println("Not enough sun!");
+            JOptionPane.showMessageDialog(null, "You don't have enough sun!", "Sorry", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -363,7 +368,7 @@ private void handleAllPlants() {
                     break;
                 
                 case "Sunflower":
-                    if (ticks % 2 == 0) {
+                    if (ticks % 5 == 0) {           // Adjust Sun generation here
                     Sunflower s = (Sunflower) p;
                     sun = s.action(sun);
                 }
@@ -489,11 +494,13 @@ private void handleAllPlants() {
 
         if (PlantsWin) {
             System.out.println("Time's up! Plants survived. Plants win!");
+            JOptionPane.showMessageDialog(null, "Time's up! Plants survived. Plants win!", "Plants Win!", JOptionPane.INFORMATION_MESSAGE);
             timer.stop();
         }
 
         if (ZombiesWin) {                  
             System.out.println("A zombie reached your house! Game Over. Zombies win!");
+            JOptionPane.showMessageDialog(null, "A zombie reached your house! Game Over. Zombies Win!", "Zombies Win!", JOptionPane.INFORMATION_MESSAGE);
             timer.stop();
         }
 
