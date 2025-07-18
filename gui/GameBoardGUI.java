@@ -41,11 +41,11 @@ public class GameBoardGUI {
         frame.pack();                               // Make the frame fit into the tiles we made
         frame.setLocationRelativeTo(null);        // Center the frame to the computer screen
         frame.setVisible(true);                   // Show window... I dont know why this has to be manual
-        update();                                   // TIME TO PAINT
+        InitializeBoard();                          // TIME TO PAINT
     }
 
     /** Refreshes the display to reflect the current board state. */
-    public void update() {
+    public void InitializeBoard() {
         if (cells == null) return;
 
             for (int r = 0; r < rows; r++) {
@@ -110,6 +110,46 @@ public class GameBoardGUI {
             frame.repaint();
 
     }
+
+    // Overloaded update method that only updates a specific tile
+    public void update(Tile pos) {
+        if (cells == null) return;
+
+        int r = pos.getRow();
+        int c = pos.getColumn();
+
+        TileLabel lbl = cells[r][c];
+        Tile tile = board[r][c];
+
+        Icon plantIcon = null;
+        Icon zombieIcon = null;
+        Icon houseIcon = null;
+        Icon background = null;
+
+        // Handle background and icons based on level and tile state
+        // Simplified background selection logic
+        background = getBackgroundIconBasedOnLevel(r, c);
+
+        if (tile.hasZombies() && tile.hasPlant()) {
+            background = getBackgroundIcon("Under Attack!");
+        }
+
+        if (tile.isOccupied()) {
+            Plant p = tile.getPlant();
+            plantIcon = getPlantIcon(p);
+        }
+
+        if (tile.hasZombies()) {
+            Zombie z = tile.getZombies().get(0); 
+            zombieIcon = getZombieIcon(z);
+        }
+
+        lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
+
+        frame.revalidate();
+        frame.repaint();
+    }
+
 
     private Icon getPlantIcon(Plant p) {
 
