@@ -2,10 +2,10 @@ package gui;
 
 import java.awt.*;
 import javax.swing.*;
+import main.Game;
 import plants.*;
 import tiles.Tile;
 import zombies.*;
-import main.Game;
 
 public class GameBoardGUI {
     private Tile[][] board;
