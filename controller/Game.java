@@ -11,6 +11,7 @@ import model.plants.Plant;
 import model.plants.Sunflower;
 import model.tiles.Tile;
 import model.zombies.Zombie;
+import util.MusicPlayer;
 import view.GameBoard;
 import view.GameBoardGUI;
 
@@ -51,61 +52,14 @@ public class Game implements GameEventListener {
     private PlantController plantController;
     private ZombieController zombieController;
     private TileClickController tileClickController;
+    private MusicPlayer musicPlayer = new MusicPlayer();
+
 
     public Game(int level) {
         this.level = level;
+        this.rand = new Random();   // For Generation of Random Suns
     }
 
-//==============================================================================================================//
-    private void configureLevel() {     
-        switch (level) {
-            case 1: ROWS = 5;
-                    COLS = 9;
-                    waveLimit = 5;
-                    sun = 150;
-                    break;
-            case 2: ROWS = 6;
-                    COLS = 10;
-                    waveLimit = 7;
-                    sun = 100;
-                    break;
-            case 3: ROWS = 7;
-                    COLS = 13;
-                    waveLimit = 9;
-                    sun = 50;
-                    break;
-            default: System.out.println("Error: Configuration of Level Invalid!");
-                    break;
-        }
-    }
-
-//==============================================================================================================//
-    private void initializeBoard() {
-        board = new Tile[ROWS][COLS];
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                board[r][c] = new Tile(r, c);
-            }
-        }
-
-        gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
-        gameBoardGUI = new GameBoardGUI(board,level,this);
-        this.plantController = new PlantController(this.board, this, ROWS, COLS);
-        this.zombieController = new ZombieController(this.board, this, this.waveLimit);
-        this.tileClickController = new TileClickController(this, board, this, ROWS, COLS);
-
-    }
-//==============================================================================================================//
-
-    public void handleTileClick(int clicked_row, int clicked_column) {
-        tileClickController.action(clicked_row, clicked_column);
-    }
-
-    private static String formatTime(int ticks) {
-        int minutes = ticks / 60;
-        int seconds = ticks % 60;
-        return String.format("%02d:%02d", minutes, seconds);
-    }
 
 
 /*
@@ -137,8 +91,7 @@ public class Game implements GameEventListener {
 
         configureLevel();
         initializeBoard();
-        System.out.println("=== Plants vs Zombies Console Game ===");
-        System.out.println("Level: " + level);
+        musicPlayer.playLoop("resources/audio/background.wav");
 
         gameBoard.display();
         gameBoardGUI.InitializeBoard();
@@ -148,7 +101,6 @@ public class Game implements GameEventListener {
         timer.start();
     }
 
-//==============================================================================================================//
     public void runTick() {
 
         displayState();
@@ -170,8 +122,10 @@ public class Game implements GameEventListener {
             System.exit(0);
         }
 
-            ticks++;
-            gameBoardGUI.updateIndicators(sun, ticks);
+        if (ticks < 30) { maybeDropRandomSun();}
+
+        ticks++;
+        gameBoardGUI.updateIndicators(sun, ticks);
     } 
 
 /* ==============================================================================================================//
@@ -244,10 +198,24 @@ public class Game implements GameEventListener {
     }
 
     @Override
-    public void onCollectSun(Sunflower sf) {
+    public void onCollectSunFromSunflower(Sunflower sf) {
         sun+=50;
         gameBoardGUI.update(sf.getPosition());
         System.out.println("GUI is done updating manual collection of sun.");
+    }
+
+    @Override
+    public void onCollectSunFromTile(Tile tile) {
+        sun+=50;
+        tile.setSunDrop(false);
+        gameBoardGUI.update(tile);
+    }
+
+    @Override
+    public void onDroppedSun(Tile tile) {
+        tile.setSunDrop(true);
+        gameBoardGUI.update(tile);
+        System.out.println("GUI is done updating sun drop!");
     }
 
     @Override
@@ -256,6 +224,18 @@ public class Game implements GameEventListener {
         System.out.println("GUI is done updating of available sun.");
     }
 
+    /*
+     * 
+  ░██████   ░██████████ ░██████████░██████████░██████████ ░█████████           ░██      ░██████  ░██████████ ░██████████░██████████░██████████ ░█████████  
+ ░██   ░██  ░██             ░██        ░██    ░██         ░██     ░██         ░██      ░██   ░██ ░██             ░██        ░██    ░██         ░██     ░██ 
+░██         ░██             ░██        ░██    ░██         ░██     ░██        ░██      ░██        ░██             ░██        ░██    ░██         ░██     ░██ 
+ ░████████  ░█████████      ░██        ░██    ░█████████  ░█████████        ░██       ░██  █████ ░█████████      ░██        ░██    ░█████████  ░█████████  
+        ░██ ░██             ░██        ░██    ░██         ░██   ░██        ░██        ░██     ██ ░██             ░██        ░██    ░██         ░██   ░██   
+ ░██   ░██  ░██             ░██        ░██    ░██         ░██    ░██      ░██          ░██  ░███ ░██             ░██        ░██    ░██         ░██    ░██  
+  ░██████   ░██████████     ░██        ░██    ░██████████ ░██     ░██    ░██            ░█████░█ ░██████████     ░██        ░██    ░██████████ ░██     ░██ 
+                                                                                                                                                           
+        - Simple setter and getter for Selected Plant Type and Sun Variable, both of which dynamically changes with user input.
+     */
     // ====================== Setters and Getters for global variables ===============================  //
         public void setSelectedPlantType(int plantType) { this.selectedPlant = plantType;}
         public void setSun(int sun) {this.sun=sun;}
@@ -265,10 +245,93 @@ public class Game implements GameEventListener {
         public int getColumn() {return this.COLS;}
     //  ===============================================================================================  //
 
+    /*
+     * 
+░███     ░███ ░██████████ ░██████████░██     ░██   ░██████   ░███████     ░██████   
+░████   ░████ ░██             ░██    ░██     ░██  ░██   ░██  ░██   ░██   ░██   ░██  
+░██░██ ░██░██ ░██             ░██    ░██     ░██ ░██     ░██ ░██    ░██ ░██         
+░██ ░████ ░██ ░█████████      ░██    ░██████████ ░██     ░██ ░██    ░██  ░████████  
+░██  ░██  ░██ ░██             ░██    ░██     ░██ ░██     ░██ ░██    ░██         ░██ 
+░██       ░██ ░██             ░██    ░██     ░██  ░██   ░██  ░██   ░██   ░██   ░██  
+░██       ░██ ░██████████     ░██    ░██     ░██   ░██████   ░███████     ░██████   
+     
+    - Compartmentalized methods
+     */
+
     public void displayState() {
         System.out.println("Time: " + formatTime(ticks));
         System.out.println("Current Sun: " + sun);
     }
+
+    //  ===============================================================================================  //
+    private void maybeDropRandomSun() {
+    int chance = rand.nextInt(100);  // 0 to 99
+
+    if (chance < 20) { // 20% chance per second
+            int r = rand.nextInt(ROWS);
+            int c = rand.nextInt(COLS - 1) + 1; // skip column 0 (house)
+
+            Tile tile = board[r][c];
+
+            // Only drop if no plant/zombie sun is already there
+            if (!tile.hasSunDrop()) {
+                onDroppedSun(tile);
+            }
+        }
+    }
+    //  ===============================================================================================  //
+    
+    //  ===============================================================================================  //
+    private void configureLevel() {     
+        switch (level) {
+            case 1: ROWS = 5;
+                    COLS = 9;
+                    waveLimit = 5;
+                    sun = 150;
+                    break;
+            case 2: ROWS = 6;
+                    COLS = 10;
+                    waveLimit = 7;
+                    sun = 100;
+                    break;
+            case 3: ROWS = 7;
+                    COLS = 13;
+                    waveLimit = 9;
+                    sun = 50;
+                    break;
+            default: System.out.println("Error: Configuration of Level Invalid!");
+                    break;
+        }
+    }
+
+    //  ===============================================================================================  //
+    private void initializeBoard() {
+        board = new Tile[ROWS][COLS];
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                board[r][c] = new Tile(r, c);
+            }
+        }
+
+        gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
+        gameBoardGUI = new GameBoardGUI(board,level,this);
+        this.plantController = new PlantController(this.board, this, ROWS, COLS);
+        this.zombieController = new ZombieController(this.board, this, this.waveLimit);
+        this.tileClickController = new TileClickController(this, board, this, ROWS, COLS);
+
+    }
     //  ===============================================================================================  //
 
+    public void handleTileClick(int clicked_row, int clicked_column) {
+        tileClickController.action(clicked_row, clicked_column);
+    }
+
+    //  ===============================================================================================  //
+
+    private static String formatTime(int ticks) {
+        int minutes = ticks / 60;
+        int seconds = ticks % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+    //  ===============================================================================================  //
 }

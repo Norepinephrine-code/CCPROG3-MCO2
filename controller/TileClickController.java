@@ -40,6 +40,12 @@ public class TileClickController {
         Plant p = t.getPlant();
         int selectedPlant = game.getSelectedPlantType();
 
+        if (t.hasSunDrop()) {
+            listener.onCollectSunFromTile(t);
+            game.setSelectedPlantType(0);
+            return;
+        }
+
         if (p instanceof Sunflower && selectedPlant != 7) {
             Sunflower sf = (Sunflower) p;
             sf.collect(); 

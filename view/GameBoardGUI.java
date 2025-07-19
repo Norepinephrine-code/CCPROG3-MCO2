@@ -33,7 +33,7 @@ public class GameBoardGUI {
         frame = new JFrame("Plants vs Zombies");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        ImageIcon logo = load("images/logo.png");
+        ImageIcon logo = load("resources/images/logo.png");
         frame.setIconImage(logo.getImage());
 
 
@@ -201,11 +201,11 @@ public class GameBoardGUI {
             plantIcon = getPlantIcon(p);
         }
 
-        if (tile.getZombies().size() > 1) {
+        if (tile.getZombies().size() > 1) {     // If there is a zombie, check if there is 1 or multiple.
             zombieIcon = getZombieIcon();       // Overloading method, this method returns the multiple zombie image
         } else if (tile.hasZombies()) {
             Zombie z = tile.getZombies().get(0); 
-            zombieIcon = getZombieIcon(z);
+            zombieIcon = getZombieIcon(z);      // Overloading method, this method returns one single zombie
         }
 
         if (tile.getPlant() instanceof Sunflower) {
@@ -213,6 +213,10 @@ public class GameBoardGUI {
             if (sf.hasSun()) {
                 background = getBackgroundIcon("Sun Ready!");
             }
+        }
+
+        if (tile.hasSunDrop()) {
+            background = getBackgroundIcon("Sun Dropped!");
         }
 
         lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
@@ -224,62 +228,63 @@ public class GameBoardGUI {
 
     private Icon getPlantIcon(Plant p) {
 
-        if (p instanceof Sunflower) return load("images/plants/sunflower.png");
-        if (p instanceof Peashooter) return load("images/plants/peashooter.png");
-        if (p instanceof FreezePeashooter) return load("images/plants/freezepeashooter.png");
-        if (p instanceof Cherrybomb) return load("images/plants/cherrybomb.png");
-        if (p instanceof PotatoMine) return load("images/plants/potatomine.png");
-        if (p instanceof Wallnut) return load("images/plants/wallnut.png");
+        if (p instanceof Sunflower) return load("resources/images/plants/sunflower.png");
+        if (p instanceof Peashooter) return load("resources/images/plants/peashooter.png");
+        if (p instanceof FreezePeashooter) return load("resources/images/plants/freezepeashooter.png");
+        if (p instanceof Cherrybomb) return load("resources/images/plants/cherrybomb.png");
+        if (p instanceof PotatoMine) return load("resources/images/plants/potatomine.png");
+        if (p instanceof Wallnut) return load("resources/images/plants/wallnut.png");
 
-        return load("images/plants/unknownPlant.png"); 
+        return load("resources/images/plants/unknownPlant.png"); 
     }
 
 
     private Icon getZombieIcon(Zombie z) {
 
-        if (z instanceof NormalZombie) return load("images/zombies/normal.png");
-        if (z instanceof FlagZombie) return load("images/zombies/flag.png");
-        if (z instanceof ConeheadZombie) return load("images/zombies/conehead.png");
-        if (z instanceof BucketHeadZombie) return load("images/zombies/buckethead.png");
+        if (z instanceof NormalZombie) return load("resources/images/zombies/normal.png");
+        if (z instanceof FlagZombie) return load("resources/images/zombies/flag.png");
+        if (z instanceof ConeheadZombie) return load("resources/images/zombies/conehead.png");
+        if (z instanceof BucketHeadZombie) return load("resources/images/zombies/buckethead.png");
 
         if (z instanceof PoleVaultingZombie) {      // State-Dependent Icon!
             PoleVaultingZombie polevault_zombie = (PoleVaultingZombie) z;
-            if (polevault_zombie.hasJumped()==false) return load("images/zombies/polevault.png");
-            if (polevault_zombie.hasJumped()==true) return load("images/zombies/polevault_jump.png");
+            if (polevault_zombie.hasJumped()==false) return load("resources/images/zombies/polevault.png");
+            if (polevault_zombie.hasJumped()==true) return load("resources/images/zombies/polevault_jump.png");
         }
 
-        return load("images/zombies/unknownZombie.png");
+        return load("resources/images/zombies/unknownZombie.png");
     }
 
     private Icon getZombieIcon() {
-        return load("images/zombies/multiple.png");
+        return load("resources/images/zombies/multiple.png");
     }
 
     private Icon getHouseIcon() {
-        return load("images/house/lawn_mower.png");
+        return load("resources/images/house/lawn_mower.png");
     }
 
     private Icon getBackgroundIcon(String type) {
 
-        if (type.equals("Cement")) return load("images/backgrounds/cement.png");
-        if (type.equals("Light Green")) return load("images/backgrounds/light_grass.png");
-        if (type.equals("Dark Green")) return load("images/backgrounds/dark_grass.png");
+        if (type.equals("Cement")) return load("resources/images/backgrounds/cement.png");
+        if (type.equals("Light Green")) return load("resources/images/backgrounds/light_grass.png");
+        if (type.equals("Dark Green")) return load("resources/images/backgrounds/dark_grass.png");
 
-        if (type.equals("Light Mud")) return load("images/backgrounds/light_mud.png");
-        if (type.equals("Dark Mud")) return load("images/backgrounds/dark_mud.png");
-        if (type.equals("Grave Mud")) return load("images/backgrounds/grave_mud.png");
+        if (type.equals("Light Mud")) return load("resources/images/backgrounds/light_mud.png");
+        if (type.equals("Dark Mud")) return load("resources/images/backgrounds/dark_mud.png");
+        if (type.equals("Grave Mud")) return load("resources/images/backgrounds/grave_mud.png");
 
-        if (type.equals("Light Frost")) return load("images/backgrounds/light_frost.png");
-        if (type.equals("Dark Frost")) return load("images/backgrounds/dark_frost.png");
-        if (type.equals("Cloud Frost")) return load("images/backgrounds/cloud_frost.png");
+        if (type.equals("Light Frost")) return load("resources/images/backgrounds/light_frost.png");
+        if (type.equals("Dark Frost")) return load("resources/images/backgrounds/dark_frost.png");
+        if (type.equals("Cloud Frost")) return load("resources/images/backgrounds/cloud_frost.png");
 
 
 
-        if (type.equals("Under Attack!")) return load("images/backgrounds/under_attack.png");
-        if (type.equals("Sun Ready!")) return load("images/backgrounds/sun_ready.png");
+        if (type.equals("Under Attack!")) return load("resources/images/backgrounds/under_attack.png");
+        if (type.equals("Sun Ready!")) return load("resources/images/backgrounds/sun_ready.png");
+        if (type.equals("Sun Dropped!")) return load("resources/images/backgrounds/sun_dropped.png");
  
 
-        return load("images/backgrounds/missing_grass.png");   
+        return load("resources/images/backgrounds/missing_grass.png");   
 
     }
 
@@ -293,7 +298,7 @@ public class GameBoardGUI {
         }
 
         System.out.println("ERROR: Failed Reading " + path + ". Displaying missing icon!");
-        ImageIcon fallback = new ImageIcon("images/missing.png");
+        ImageIcon fallback = new ImageIcon("resources/images/missing.png");
         Image scaled = fallback.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }

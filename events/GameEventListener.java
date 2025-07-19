@@ -22,7 +22,11 @@ public interface GameEventListener {
 
     void onSetPlant(Plant p);
 
-    void onCollectSun(Sunflower sf);
+    void onCollectSunFromSunflower(Sunflower sf);
+
+    void onCollectSunFromTile(Tile tile);
+
+    void onDroppedSun(Tile tile);
 
     void onReadySun(Sunflower sf);
 }

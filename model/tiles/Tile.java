@@ -2,7 +2,6 @@ package model.tiles;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import model.plants.Plant;
 import model.zombies.Zombie;
 
@@ -15,6 +14,8 @@ public class Tile {
     private int column;
     private Plant plant;
     private List<Zombie> zombies;
+
+    private boolean hasSunDrop = false;
 
     /**
      * Creates a tile located at the given row and column.
@@ -111,4 +112,13 @@ public class Tile {
     public List<Zombie> getZombies() {
         return zombies;
     }
+
+    public boolean hasSunDrop() {
+    return hasSunDrop;
+}
+
+    public void setSunDrop(boolean val) {
+        this.hasSunDrop = val;
+    }
+
 }

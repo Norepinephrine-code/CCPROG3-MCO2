@@ -39,7 +39,7 @@ public class Sunflower extends Plant {
         if (hasSun==true) {
             hasSun = false;                  // Reset Collection
             tick_timer = 0;                  // Reset Timer
-            listener.onCollectSun(this);     // Inform Game to Generate Sun
+            listener.onCollectSunFromSunflower(this);     // Inform Game to Generate Sun
         }
     }
 
