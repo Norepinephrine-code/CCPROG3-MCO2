@@ -1,86 +1,47 @@
-<h1 align="center">CCPROG3 MCO1</h1>
+# Plants vs Zombies Java Implementation
 
-<p align="center"><em>A simple console implementation of <strong>Plants vs Zombies</strong> for CCPROG3 by Ramos & Vergara.</em></p> 
-<p align="center"><em>VERSION CONTROL: 7:00 PM June 24, 2025</em></p> 
+This repository contains a small Java recreation of **Plants vs Zombies** for a class project. The game can be played entirely in the console or using the included Swing graphical interface.
 
-<h2>Important Logics and Parameters</h2>
+## Running
 
-<ol>
-<li><strong>Board Setup</strong>
-  <ul>
-    <li>Grid size: <strong>5 rows x 9 columns</strong></li>
-    <li>Column 0 represents the house; plants may be placed from columns 1 to 8</li>
-    <li>Zombies spawn at the last column (8)</li>
-    <li>Indexes displayed to user is Index-1</li>
-  </ul>
-</li>
+1. Compile all sources:
+   ```bash
+   javac */*.java */*/*.java
+   ```
+2. Start the program:
+   ```bash
+   java Driver
+   ```
+   The level selection window will appear and the game will launch once you choose a level.
 
-<li><strong>Game Flow</strong>
-  <ul>
-    <li>The game runs for <strong>180 ticks</strong></li>
-    <li>Each tick drops sun, spawns zombies, processes sunflower generation, allows plant placement, resolves plant attacks and cherrybomb explosions, moves zombies, and checks if any reach the house</li>
-  </ul>
-</li>
+## Source Overview
 
-<li><strong>Sun Generation</strong>
-  <ul>
-    <li>Every 5 ticks a global drop adds 25 sun</li>
-    <li>Each Sunflower produces 50 sun every 2 ticks</li>
-    <li>Player starts with 150 sun</li>
-  </ul>
-</li>
+The table below lists every Java file in the project along with its responsibility.
 
-<li><strong>Plant Parameters</strong>
-  <ul>
-    <li><strong>Sunflower</strong>: cost 50, health 40, generates sun</li>
-    <li><strong>Peashooter</strong>: cost 100, health 50, range 9, damage 15 long-range / 20 close-range, fires once every 2 ticks</li>
-    <li><strong>Cherrybomb</strong>: cost 150, health 1000, explodes after 3 ticks dealing 1800 damage in a 3x3 area</li>
-  </ul>
-</li>
-
-<li><strong>Zombie Types</strong>
-  <ul>
-    <li>NormalZombie: health 70, speed 4, damage 10</li>
-    <li>ConeheadZombie: health 70, speed 2</li>
-    <li>FlagZombie: health 70, speed 3</li>
-  </ul>
-</li>
-
-<li><strong>Zombie Wave Pattern</strong>
-  <ul>
-    <li>Ticks 30–80: spawn every 10 ticks</li>
-    <li>Ticks 81–140: spawn every 5 ticks</li>
-    <li>Ticks 141–170: spawn every 3 ticks</li>
-    <li>Ticks 171: Wave Spawn</li>
-  </ul>
-</li>
-
-<li><strong>Win/Loss Conditions</strong>
-  <ul>
-    <li>Plants win if no zombie reaches column 0 by tick 180</li>
-    <li>If any zombie enters the house column, zombies win immediately</li>
-  </ul>
-</li>
-</ol>
-
-
-## GUI Support
-
-A basic Swing-based board viewer is provided via `GameBoardGUI`. When running the game
-with the default `Driver`, a window will display the board using text or images if
-available. Place image files for plants and zombies under `images/plants` and
-`images/zombies` respectively. The file names used by `GameBoardGUI` are:
-
-- `sunflower.png`
-- `peashooter.png`
-- `freezepeashooter.png`
-- `cherrybomb.png`
-- `potatomine.png`
-- `wallnut.png`
-- `normal.png`
-- `flag.png`
-- `conehead.png`
-- `polevault.png`
-- `buckethead.png`
-
-If an image is missing, the GUI will display simple text instead.
+| File | Responsibility |
+| ---- | -------------- |
+| `Driver.java` | Entry point that launches the `LevelSelectorGUI`. |
+| `controller/Game.java` | Coordinates the entire game, manages timers, board state and event callbacks. |
+| `controller/PlantController.java` | Executes actions for all plants each tick. |
+| `controller/TileClickController.java` | Handles mouse clicks to place or remove plants and collect sun. |
+| `controller/ZombieController.java` | Spawns zombies and moves them according to level rules. |
+| `events/GameEventListener.java` | Interface for notifying about kills, moves, and sun events. |
+| `model/plants/Plant.java` | Base class containing shared plant attributes and behaviour. |
+| `model/plants/Sunflower.java` | Generates sun over time when collected. |
+| `model/plants/Peashooter.java` | Fires peas at zombies from a distance. |
+| `model/plants/FreezePeashooter.java` | Variant that freezes zombies in addition to dealing damage. |
+| `model/plants/Cherrybomb.java` | Explodes after a short fuse damaging nearby zombies. |
+| `model/plants/Wallnut.java` | Defensive plant acting as a high-health barrier. |
+| `model/plants/PotatoMine.java` | Arms after a delay and explodes when a zombie steps on it. |
+| `model/tiles/Tile.java` | Represents a single board square containing a plant and/or zombies. |
+| `model/zombies/Zombie.java` | Abstract superclass for all zombies providing movement and attack logic. |
+| `model/zombies/NormalZombie.java` | Standard zombie with balanced attributes. |
+| `model/zombies/FlagZombie.java` | Faster zombie that signals the arrival of a wave. |
+| `model/zombies/ConeheadZombie.java` | Slower but tougher zombie wearing a traffic cone. |
+| `model/zombies/BucketHeadZombie.java` | Extremely durable zombie wearing a bucket. |
+| `model/zombies/PoleVaultingZombie.java` | Can jump over the first plant it encounters. |
+| `util/MusicPlayer.java` | Utility for looping background music during gameplay. |
+| `view/GameBoard.java` | Prints a text representation of the board to the console. |
+| `view/GameBoardGUI.java` | Swing GUI that visually displays the board and indicators. |
+| `view/LevelSelectorGUI.java` | Simple window that lets you choose a game level. |
+| `view/TileLabel.java` | Custom Swing label used for each tile in the GUI grid. |
