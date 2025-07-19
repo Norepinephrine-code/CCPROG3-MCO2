@@ -1,6 +1,6 @@
 package events;
 
-import model.plants.Plant;
+import model.plants.*;
 import model.tiles.Tile;
 import model.zombies.Zombie;
 
@@ -15,4 +15,10 @@ public interface GameEventListener {
     void onPlantKilled(Plant p);
 
     void onZombieMove(Tile newTile, Tile currentTile, Zombie z);
+
+    void onZombieGenerated(Zombie z);
+
+    void onCollectSun(Sunflower sf);
+
+    void onReadySun(Sunflower sf);
 }

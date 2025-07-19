@@ -94,6 +94,8 @@ public class Game implements GameEventListener {
      */
     private List<Zombie> justSpawned = new ArrayList<>();
 
+    private PlantController plantController;
+
     /**
      * Constructs a new {@code Game} object. The board itself is not created at
      * this stage; it will be initialized once {@link #start()} is invoked. The
@@ -121,6 +123,8 @@ public class Game implements GameEventListener {
 
         gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
         gameBoardGUI = new GameBoardGUI(board,level,this);
+        this.plantController = new PlantController(this.board, this);
+
     }
 
     private void configureLevel() {     // This sets the parameters with what makes each level different!
@@ -145,91 +149,24 @@ public class Game implements GameEventListener {
         }
     }
 
-    /**
-     * Generates 25 sun points every 5 ticks if the current
-     * tick count is divisible by five.
-     */
-    private void dropSun() {                            // Drop sun every 5 seconds
-        if (ticks % 5 == 0) {
-            sun += 25;
-            System.out.println("Sun dropped! Current sun: " + sun);
-        }
-    }
-
-    /**
-     * Spawns zombies following the level's timing pattern. Early waves spawn less frequently while later waves increase the rate. Newly created zombies are added to {@code justSpawned} so they remain stationary for one tick.
-     */
-    private void spawnZombies() {
-
-        // Determine if a zombie should spawn based on the current tick window
-        if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {                                        // 30 - 80 Spawn every 10
-            spawnSingleZombie();
-        } else if (ticks >= 81 && ticks <= 140 && ticks % 5 == 0) {                                 // 81 - 140 Spawn every 5
-            spawnSingleZombie();
-        } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {                                // 141 - 170 Spawn every 3
-            spawnSingleZombie();
-        } else if (ticks == 171) {
-             JOptionPane.showMessageDialog(null, "Wave of Zombies Commencing!", "Alert!", JOptionPane.WARNING_MESSAGE);
-            for (int waveCount = 0; waveCount< waveLimit;waveCount++) {
-                spawnSingleZombie();
-            }
-        }
-    }
-
-    /**
-     * Spawns a single zombie on the right-most column. A random row and
-     * zombie type are selected. The newly created zombie is added to the
-     * {@link #justSpawned} list so that it does not move until the next game
-     * tick.
-     */
-    private void spawnSingleZombie() {
-        // Uses Pseudo-random for random spawn
-        // Randomly choose a row and zombie type
-        int row = rand.nextInt(ROWS);
-        // If ROWS = 5, then row can be 0, 1, 2, 3, or 4.
-        Tile spawnTile = board[row][COLS - 1];
-        // Uses LAST COLUMN (COLS - 1) to spawn
-        Zombie z;
-        int zType = rand.nextInt(5);
-        // Choose random number from 0 to 4
-
-    switch (zType) {
-        case 0: z = new NormalZombie(spawnTile); break;
-        case 1: z = new FlagZombie(spawnTile); break;
-        case 2: z = new ConeheadZombie(spawnTile); break;
-        case 3: z = new BucketHeadZombie(spawnTile); break;
-        case 4: z = new PoleVaultingZombie(spawnTile); break;
-        default: z = new NormalZombie(spawnTile); break;
-    }
-
-
-        // We can scale this further to add zombies!!!
-        z.setGameEventListener(this);
-        spawnTile.addZombie(z);
-        // Add zombie to the tile
-        justSpawned.add(z);
-        // When a zombie just got spawned, we put them in a justSpawned array list.
-        System.out.println(
-                // those who exist in that array list cannot call their move() methods the same second they got spawned
-
-                // This prevents the scenario where a zombie moves immediately and skips a tile after spawn.
-                "Zombie appeared in Row " + (row + 1) + ", Column " + COLS
-                        + " | Type: " + z.getClass().getSimpleName()
-                        + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
-
-        // Refresh GUI immediately when a new zombie appears
-            gameBoardGUI.update(z.getPosition());
-        
-    }
- 
 
     public void setSelectedPlantType(int plantType) {
         this.selectedPlant = plantType;
     }
 
     public void handleTileClick(int clicked_row, int clicked_column) {
-        placePlant(clicked_row, clicked_column, selectedPlant);
-        this.selectedPlant = 0;
+
+        Tile t = board[clicked_row][clicked_column];
+        Plant p = t.getPlant();
+
+        if (p instanceof Sunflower && this.selectedPlant != 7) {
+            Sunflower sf = (Sunflower) p;
+            sf.collect(); 
+            this.selectedPlant = 0;
+        } else {
+            placePlant(clicked_row, clicked_column, selectedPlant);
+            this.selectedPlant = 0;
+        }
     }
 
     private void placePlant(int clicked_row, int clicked_column, int selectedPlant) {
@@ -337,112 +274,6 @@ public class Game implements GameEventListener {
       
 
     /**
-     * Iterates through all Peashooters and attacks the first zombie within range.
-     * Eliminates zombies with zero health after being hit.
-     */
-private void handleAllPlants() {
-
-    for (int r = 0; r < ROWS; r++) {                                                        // ROW
-        for (int c = 0; c < COLS; c++) {                                                    // COLUMN
-            Plant p = board[r][c].getPlant();                                               // Get Plant per Tile
-            
-            if (p !=null)
-                switch (p.getClass().getSimpleName()) {
-
-                case "Peashooter": 
-                //LOGIC HERE CALL ACTION
-                    Peashooter ps = (Peashooter) p;
-                    ps.shoot(board);
-                    break;
-
-                case "Cherrybomb": 
-                    Cherrybomb cb = (Cherrybomb) p;
-                    // Advance fuse timer and explode when ready
-                    cb.tick(board);
-                    break;
-                
-                case "Sunflower":
-                    if (ticks % 5 == 0) {           // Adjust Sun generation here
-                    Sunflower s = (Sunflower) p;
-                    sun = s.action(sun);
-                }
-                    break;
-
-                case "Wallnut": 
-                    // Do nothing!
-                    break;
-
-                case "PotatoMine":
-                    PotatoMine pm = (PotatoMine) p;
-                    pm.armExplode();
-                    break;
-                case "FreezePeashooter":
-                    FreezePeashooter fp = (FreezePeashooter) p;
-                    fp.shoot(board);
-                    break;
-
-                default: 
-                    System.out.println("Unknown Plant Type Error"); 
-                    break;// Catcher
-                }
-
-        }
-    }
-}
-
-    /**
-     * Updates all active Cherrybombs each tick. When a bomb's fuse expires it explodes
-     * damaging nearby zombies before removing itself from the board.
-     */
-
-    /**
-     * Moves all zombies that were not just spawned this tick and handles their attacks.
-     * Checks if any zombie reaches the player's house.
-     *
-     * @return {@code true} if a zombie reached the house; {@code false} otherwise.
-     */
-    private boolean moveZombies() {
-        List<Zombie> movingZombies = new ArrayList<>();
-        // Collect all zombies from every tile first
-
-            /*
-               Same logic as Sunflower handleSunflowers()
-             */
-
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                movingZombies.addAll(board[r][c].getZombies());
-            }
-        }
-
-        for (Zombie z : movingZombies) {
-            z.attack(board);                    // WE CAN CHANGE GAME LOGIC HERE TO ATTACK WITH COOL DOWN, IF NEEDED!
-                                                // But damage is too low for zombies.
-
-            Tile current = z.getPosition();
-            Plant occupant = current.getPlant();
-
-            /*
-                Movement logic requirements:
-                    1. Only move if there is no living plant on the current tile.
-                    2. Skip movement for newly spawned zombies, (this prevents z.move() being called on the same tick it is spawned)
-             */
-
-            if (occupant == null) {
-                if (!justSpawned.contains(z) && ticks % z.getSpeed() == 0) {
-                    z.move(board);
-                }
-            }
-
-            // Check if any zombie reached the house column
-            if (z.getPosition().getColumn() == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Formats a tick count as a MM:SS time string.
      *
      * @param ticks current tick count
@@ -490,12 +321,9 @@ private void handleAllPlants() {
         System.out.println("Time: " + formatTime(ticks));
         System.out.println("Current Sun: " + sun);
 
-                justSpawned.clear();                          // clear tracker for this tick
-                dropSun();                                    // Drop the Sun
-                spawnZombies();                               // Spawn Some Zombies
-                handleAllPlants();                            // Handles all Plants
 
-                ZombiesWin = moveZombies();                   // Returns True if Zombie reaches House
+                plantController.tick();                       // Handles all Plants
+                ZombiesWin = zombieController.tick(ticks);    // Returns True if Zombie reaches House
                 PlantsWin = (ticks >= GAME_DURATION);         // Returns True if Time is up
                 gameBoard.display();
 
@@ -550,6 +378,25 @@ private void handleAllPlants() {
         gameBoardGUI.update(newTile);
         System.out.println("GUI is done updating at Zombie Move.");
 
+    }
+
+    @Override
+    public void onZombieGenerated(Zombie z) {
+        gameBoardGUI.update(z.getPosition());
+        System.out.println("GUI is done updating a generated zombie.");
+    }
+
+    @Override
+    public void onCollectSun(Sunflower sf) {
+        sun+=50;
+        gameBoardGUI.update(sf.getPosition());
+        System.out.println("GUI is done updating manual collection of sun.");
+    }
+
+    @Override
+    public void onReadySun(Sunflower sf) {
+        gameBoardGUI.update(sf.getPosition());
+        System.out.println("GUI is done updating of available sun.");
     }
 
 }
