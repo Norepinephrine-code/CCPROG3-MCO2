@@ -68,14 +68,23 @@ public class ZombieController {
             default: z = new NormalZombie(spawnTile); break;
         }
         z.setGameEventListener(listener);
-        spawnTile.addZombie(z);
-        justSpawned.add(z);
+        justSpawned.add(z);                             
         System.out.println("Zombie appeared in Row " + (row + 1) + ", Column " + cols
                 + " | Type: " + z.getClass().getSimpleName()
                 + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
 
         listener.onZombieGenerated(z);              // Inform the Game that a zombie is generated
 
+    }
+
+    private void spawnFlagZombie(){
+        int rows = board.length;
+        int cols = board[0].length;
+        int row = rand.nextInt(rows);
+        Tile spawnTile = board[row][cols - 1];
+        Zombie z = new FlagZombie(spawnTile); 
+        z.setGameEventListener(listener);
+        listener.onZombieGenerated(z);
     }
 
     private boolean moveZombies(int ticks) {
