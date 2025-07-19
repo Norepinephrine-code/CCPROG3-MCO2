@@ -191,11 +191,6 @@ public class Game implements GameEventListener {
         t.addZombie(z);
         gameBoardGUI.update(z.getPosition());
         System.out.println("GUI is done updating a generated zombie.");
-
-        System.out.println("Zombie appeared in Row " + (row + 1) + ", Column " + cols
-        + " | Type: " + z.getClass().getSimpleName()
-        + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
-        
     }
 
     @Override
