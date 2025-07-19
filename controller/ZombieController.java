@@ -44,9 +44,12 @@ public class ZombieController {
             spawnSingleZombie();
         } else if (ticks >= 141 && ticks <= 170 && ticks % 3 == 0) {
             spawnSingleZombie();
+            if (ticks == 165) {
+                spawnFlagZombie();
+            }
         } else if (ticks == 171) {
             JOptionPane.showMessageDialog(null, "Wave of Zombies Commencing!", "Alert!", JOptionPane.WARNING_MESSAGE);
-            for (int waveCount = 0; waveCount < waveLimit; waveCount++) {
+            for (int waveCount = 0; waveCount < waveLimit; waveCount++) {  
                 spawnSingleZombie();
             }
         }
@@ -58,21 +61,16 @@ public class ZombieController {
         int row = rand.nextInt(rows);
         Tile spawnTile = board[row][cols - 1];
         Zombie z;
-        int zType = rand.nextInt(5);
+        int zType = rand.nextInt(4);
         switch (zType) {
             case 0: z = new NormalZombie(spawnTile); break;
-            case 1: z = new FlagZombie(spawnTile); break;
-            case 2: z = new ConeheadZombie(spawnTile); break;
-            case 3: z = new BucketHeadZombie(spawnTile); break;
-            case 4: z = new PoleVaultingZombie(spawnTile); break;
+            case 1: z = new ConeheadZombie(spawnTile); break;
+            case 2: z = new BucketHeadZombie(spawnTile); break;
+            case 3: z = new PoleVaultingZombie(spawnTile); break;
             default: z = new NormalZombie(spawnTile); break;
         }
         z.setGameEventListener(listener);
         justSpawned.add(z);                             
-        System.out.println("Zombie appeared in Row " + (row + 1) + ", Column " + cols
-                + " | Type: " + z.getClass().getSimpleName()
-                + " | Health=" + z.getHealth() + ", Speed=" + z.getSpeed());
-
         listener.onZombieGenerated(z);              // Inform the Game that a zombie is generated
 
     }
@@ -82,8 +80,11 @@ public class ZombieController {
         int cols = board[0].length;
         int row = rand.nextInt(rows);
         Tile spawnTile = board[row][cols - 1];
+
         Zombie z = new FlagZombie(spawnTile); 
+
         z.setGameEventListener(listener);
+        justSpawned.add(z);
         listener.onZombieGenerated(z);
     }
 
