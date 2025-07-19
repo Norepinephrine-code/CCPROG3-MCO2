@@ -85,7 +85,7 @@ public class Game implements GameEventListener {
 
         Welcome to Plants vs Zombies.
 
-        BUILD VERSION: 4.0
+        BUILD VERSION: 5.0
         """;
         JOptionPane.showMessageDialog(null, message, "Message from the Authors", JOptionPane.PLAIN_MESSAGE);
 
