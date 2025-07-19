@@ -138,67 +138,14 @@ public class GameBoardGUI {
     public void InitializeBoard() {
         if (cells == null) return;
 
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {                        //
-                    TileLabel lbl = cells[r][c];
-                    Tile tile = board[r][c];
-
-                    Icon plantIcon = null;
-                    Icon zombieIcon = null;
-                    Icon houseIcon = null;
-                    Icon background = null;
-
-                    // FIRST COLUMN will always be Cement
-                    if (c == 0) {
-                        background = getBackgroundIcon("Cement");
-                        houseIcon = getHouseIcon();
-                    } else {
-                        
-                        // This code will alternate between Light and Dark for the tiles DEPENDING
-                        // on the level!
-                        switch (level) {
-                            case 1: background = (c!=0 && (r+c)%2==0) ? 
-                                                    getBackgroundIcon("Light Green"): // True
-                                                    getBackgroundIcon("Dark Green");  // False
-                                    break;
-                            case 2: background = (c!=0 && c==cols-1) ? 
-                                                    getBackgroundIcon("Grave Mud"):     // True
-                                                    ((r+c)%2==0)     ?                       // False
-                                                        getBackgroundIcon("Light Mud"): // True
-                                                        getBackgroundIcon("Dark Mud");  // False
-                                    break;
-                            case 3: background = (c!=0 && c==cols-1) ? 
-                                                    getBackgroundIcon("Cloud Frost"):     // True
-                                                    ((r+c)%2==0)     ?                       // False
-                                                        getBackgroundIcon("Light Frost"): // True
-                                                        getBackgroundIcon("Dark Frost");  // False
-                                    break;
-                        }
-                    }
-                
-
-                    if (tile.hasZombies() && tile.hasPlant()) {
-                        background = getBackgroundIcon("Under Attack!");
-                    }
-
-                    if (tile.isOccupied()) {
-                        Plant p = tile.getPlant();
-                        plantIcon = getPlantIcon(p);
-                    }
-
-                    if (tile.hasZombies()) {
-                        // only shows the first zombie for now here. 
-                        // We can work on this later to add layering zombies
-                        Zombie z = tile.getZombies().get(0); 
-                        zombieIcon = getZombieIcon(z);
-                    }
-
-                    if(lbl!=null) lbl.setIcons(background, houseIcon, plantIcon, zombieIcon); 
-                }
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                update(board[r][c]);
             }
-            frame.revalidate();
-            frame.repaint();
+        }
 
+        frame.revalidate();
+        frame.repaint();
     }
 
     // Overloaded update method that only updates a specific tile
@@ -216,24 +163,34 @@ public class GameBoardGUI {
         Icon houseIcon = null;
         Icon background = null;
 
-        switch (level) {
-            case 1: background = (c!=0 && (r+c)%2==0) ? 
-                                    getBackgroundIcon("Light Green"): // True
-                                    getBackgroundIcon("Dark Green");  // False
-                    break;
-            case 2: background = (c!=0 && c==cols-1) ? 
-                                    getBackgroundIcon("Grave Mud"):     // True
-                                    ((r+c)%2==0)     ?                       // False
-                                        getBackgroundIcon("Light Mud"): // True
-                                        getBackgroundIcon("Dark Mud");  // False
-                    break;
-            case 3: background = (c!=0 && c==cols-1) ? 
-                                    getBackgroundIcon("Cloud Frost"):     // True
-                                    ((r+c)%2==0)     ?                       // False
-                                        getBackgroundIcon("Light Frost"): // True
-                                        getBackgroundIcon("Dark Frost");  // False
-                    break;
+                    // FIRST COLUMN will always be Cement
+        if (c == 0) {
+            background = getBackgroundIcon("Cement");
+            houseIcon = getHouseIcon();
+        } else {
+            
+            // This code will alternate between Light and Dark for the tiles DEPENDING
+            // on the level!
+            switch (level) {
+                case 1: background = (c!=0 && (r+c)%2==0) ? 
+                                        getBackgroundIcon("Light Green"): // True
+                                        getBackgroundIcon("Dark Green");  // False
+                        break;
+                case 2: background = (c!=0 && c==cols-1) ? 
+                                        getBackgroundIcon("Grave Mud"):     // True
+                                        ((r+c)%2==0)     ?                       // False
+                                            getBackgroundIcon("Light Mud"): // True
+                                            getBackgroundIcon("Dark Mud");  // False
+                        break;
+                case 3: background = (c!=0 && c==cols-1) ? 
+                                        getBackgroundIcon("Cloud Frost"):     // True
+                                        ((r+c)%2==0)     ?                       // False
+                                            getBackgroundIcon("Light Frost"): // True
+                                            getBackgroundIcon("Dark Frost");  // False
+                        break;
+            }
         }
+                
 
         if (tile.hasZombies() && tile.hasPlant()) {
             background = getBackgroundIcon("Under Attack!");
@@ -249,6 +206,13 @@ public class GameBoardGUI {
         } else if (tile.hasZombies()) {
             Zombie z = tile.getZombies().get(0); 
             zombieIcon = getZombieIcon(z);
+        }
+
+        if (tile.getPlant() instanceof Sunflower) {
+            Sunflower sf = (Sunflower) tile.getPlant();
+            if (sf.hasSun()) {
+                background = getBackgroundIcon("Sun Ready!");
+            }
         }
 
         lbl.setIcons(background, houseIcon, plantIcon, zombieIcon);
@@ -312,7 +276,8 @@ public class GameBoardGUI {
 
 
         if (type.equals("Under Attack!")) return load("images/backgrounds/under_attack.png");
-
+        if (type.equals("Sun Ready!")) return load("images/backgrounds/sun_ready.png");
+ 
 
         return load("images/backgrounds/missing_grass.png");   
 

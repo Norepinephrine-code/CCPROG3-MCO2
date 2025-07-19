@@ -7,127 +7,57 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import model.plants.Cherrybomb;
-import model.plants.FreezePeashooter;
-import model.plants.Peashooter;
 import model.plants.Plant;
-import model.plants.PotatoMine;
 import model.plants.Sunflower;
-import model.plants.Wallnut;
 import model.tiles.Tile;
-import model.zombies.BucketHeadZombie;
-import model.zombies.ConeheadZombie;
-import model.zombies.FlagZombie;
-import model.zombies.NormalZombie;
-import model.zombies.PoleVaultingZombie;
 import model.zombies.Zombie;
 import view.GameBoard;
 import view.GameBoardGUI;
 
-/**
- * The {@code Game} class encapsulates the core logic for the 
- * console version of the Plants vs Zombies simulation. 
+/*
  * 
- * It handles board initialization, level setup, sun generation,
- * zombie spawning, plant placement, attacks, zombie movement,
- * and win/loss conditions. This class separates game logic
- * from the main driver and UI rendering.
+  ░██████                                                   ░██████                           ░██                        ░██ ░██                     
+ ░██   ░██                                                 ░██   ░██                          ░██                        ░██ ░██                     
+░██         ░██████   ░█████████████   ░███████           ░██         ░███████  ░████████  ░████████ ░██░████  ░███████  ░██ ░██  ░███████  ░██░████ 
+░██  █████       ░██  ░██   ░██   ░██ ░██    ░██          ░██        ░██    ░██ ░██    ░██    ░██    ░███     ░██    ░██ ░██ ░██ ░██    ░██ ░███     
+░██     ██  ░███████  ░██   ░██   ░██ ░█████████          ░██        ░██    ░██ ░██    ░██    ░██    ░██      ░██    ░██ ░██ ░██ ░█████████ ░██      
+ ░██  ░███ ░██   ░██  ░██   ░██   ░██ ░██                  ░██   ░██ ░██    ░██ ░██    ░██    ░██    ░██      ░██    ░██ ░██ ░██ ░██        ░██      
+  ░█████░█  ░█████░██ ░██   ░██   ░██  ░███████             ░██████   ░███████  ░██    ░██     ░████ ░██       ░███████  ░██ ░██  ░███████  ░██      
+                                                                                                                                                     
+  This Java File centralizes all the controllers and contains the game values.
  * 
- * Usage:
- * {@code new Game().start();}
  */
 public class Game implements GameEventListener {
 
-    /** Number of rows on the board. */
     private static int ROWS;
-
-    /** Number of columns on the board. */
     private static int COLS;
-
-    /** Column index representing the player's house. */
     private static final int HOUSE_COLUMN = 0;
-
-    /** First column index where plants may be placed. */
     private static final int FIRST_PLANTABLE_COLUMN = HOUSE_COLUMN + 1;
-
-    /** Total duration of the game in ticks. */
     private static final int GAME_DURATION = 180;
-
-    /** 2D grid representing the game board. */
     private Tile[][] board;
-
-    /** Utility for rendering the board state. */
     private GameBoard gameBoard;
-
-    /** Optional Swing GUI representation of the board. */
     private GameBoardGUI gameBoardGUI;
-
-    /** Random generator for zombie spawning. */
     private Random rand;
-
-    /** Player-selected difficulty level (1-3). */
     private int level;
-
-    /** The wave of zombies for a given level. */
     private int waveLimit;
-
-    /** Current available sun points. */
     private int sun;
-
-    /** Current time tick. */
     private int ticks;
-
-    /** Zombie Win Flag */
     private boolean ZombiesWin = false;
-
-    /** Plant Win Flag */
     private boolean PlantsWin = false;
-
-    /** Timer */
     private Timer timer;
-
-    /** Selected Plant Type */
     private int selectedPlant = 0;
-
-    /**
-     * Tracks zombies spawned in the current tick to prevent immediate movement.
-     */
     private List<Zombie> justSpawned = new ArrayList<>();
 
     private PlantController plantController;
+    private ZombieController zombieController;
+    private TileClickController tileClickController;
 
-    /**
-     * Constructs a new {@code Game} object. The board itself is not created at
-     * this stage; it will be initialized once {@link #start()} is invoked. The
-     * constructor simply prepares the input scanner and pseudo-random number
-     * generator used for zombie spawning and user interaction.
-     */
     public Game(int level) {
         this.level = level;
-        rand = new Random();
     }
 
-    /**
-     * Initializes the game board and attaches the rendering utility.
-     *
-     * Index:       0       1  2  3  4  5  6  7                     8
-     * Meaning: [house]           LAWN             [zombie spawn at last column]
-     */
-    private void initializeBoard() {
-        board = new Tile[ROWS][COLS];
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                board[r][c] = new Tile(r, c);
-            }
-        }
-
-        gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
-        gameBoardGUI = new GameBoardGUI(board,level,this);
-        this.plantController = new PlantController(this.board, this);
-
-    }
-
-    private void configureLevel() {     // This sets the parameters with what makes each level different!
+//==============================================================================================================//
+    private void configureLevel() {     
         switch (level) {
             case 1: ROWS = 5;
                     COLS = 9;
@@ -149,149 +79,50 @@ public class Game implements GameEventListener {
         }
     }
 
+//==============================================================================================================//
+    private void initializeBoard() {
+        board = new Tile[ROWS][COLS];
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                board[r][c] = new Tile(r, c);
+            }
+        }
 
-    public void setSelectedPlantType(int plantType) {
-        this.selectedPlant = plantType;
+        gameBoard = new GameBoard(board);               // It does not about the level, it automatically adjusts!
+        gameBoardGUI = new GameBoardGUI(board,level,this);
+        this.plantController = new PlantController(this.board, this, ROWS, COLS);
+        this.zombieController = new ZombieController(this.board, this, this.waveLimit);
+        this.tileClickController = new TileClickController(this, board, this, ROWS, COLS);
+
     }
+//==============================================================================================================//
 
     public void handleTileClick(int clicked_row, int clicked_column) {
-
-        Tile t = board[clicked_row][clicked_column];
-        Plant p = t.getPlant();
-
-        if (p instanceof Sunflower && this.selectedPlant != 7) {
-            Sunflower sf = (Sunflower) p;
-            sf.collect(); 
-            this.selectedPlant = 0;
-        } else {
-            placePlant(clicked_row, clicked_column, selectedPlant);
-            this.selectedPlant = 0;
-        }
+        tileClickController.action(clicked_row, clicked_column);
     }
 
-    private void placePlant(int clicked_row, int clicked_column, int selectedPlant) {
-
-        // CHECKERS BELOW
-        if (selectedPlant==0) return;
-
-        // The purpose of the validator is to check if there is an existing plant.
-        // We want to ignore the validator if we are intending to remove
-
-        if (!isValidPosition(clicked_row,clicked_column) && selectedPlant!=7) return;
-        if (!isValidPurchase(selectedPlant)) return;         
-
-        Tile tilePlant = board[clicked_row][clicked_column];
-
-            switch (selectedPlant) {
-
-            case 1:    // SUNFLOWER
-                tilePlant.setPlant(new Sunflower(tilePlant));
-                tilePlant.getPlant().setGameEventListener(this);
-                break;
-
-            case 2:     // PEASHOOTER
-                tilePlant.setPlant(new Peashooter(tilePlant));
-                tilePlant.getPlant().setGameEventListener(this);
-                break;
-
-            case 3:     // CHERRYBOMB
-                tilePlant.setPlant(new Cherrybomb(tilePlant));
-                tilePlant.getPlant().setGameEventListener(this);
-                break;
-
-            case 4:     // WALLNUT
-                tilePlant.setPlant(new Wallnut(tilePlant));
-                tilePlant.getPlant().setGameEventListener(this);
-                break;
-            case 5:     // POTATO MINE
-                tilePlant.setPlant(new PotatoMine(tilePlant));
-                tilePlant.getPlant().setGameEventListener(this);
-                break;
-            case 6:     // FREEZE PEA
-                tilePlant.setPlant(new FreezePeashooter(tilePlant));
-                tilePlant.getPlant().setGameEventListener(this);
-                break;
-            case 7:     // REMOVE PLANT
-                if (tilePlant.hasPlant()) {
-                    tilePlant.removePlant();
-                    System.out.println("Plant removed!");
-                } else {
-                    System.out.println("There is no plant to remove!");
-                }
-                break;
-
-            default:
-                System.out.println("Unknown plant not yet indicated placePlant() function");
-                break;
-        }
-
-        if (tilePlant.getPlant()!=null) {
-            System.out.println("Placed " + tilePlant.getPlant().getClass().getSimpleName() +
-                " at Row " + (clicked_row + 1) + ", Column " + (clicked_column + 1));
-        }
-
-        // Refresh GUI right after placing or removing a plant
-            gameBoardGUI.update(tilePlant);
-
-    }
-
-    private boolean isValidPosition(int r, int c) {                   // USED FOR placePlant() function
-
-        if ((r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied())) {
-            return true;
-        } else {
-            System.out.println("Invalid location!");
-            return false;
-        }
-    }
-
-    private boolean isValidPurchase(int selectedPlant) {
-        int cost;
-
-        switch (selectedPlant) {
-            case 1: cost = 50; break;   // Sunflower
-            case 2: cost = 100; break;  // Peashooter
-            case 3: cost = 150; break;  // Cherrybomb
-            case 4: cost = 50; break;   // Wallnut
-            case 5: cost = 25; break;   // PotatoMine
-            case 6: cost = 175; break;  // FreezePeashooter
-            case 7: cost = 0; break;    // Remove (free)
-            default:
-                System.out.println("Unknown Plant!");
-                return false;
-        }
-
-        if (sun >= cost) {
-            sun -= cost;
-            return true;
-        } else {
-            System.out.println("Not enough sun!");
-            JOptionPane.showMessageDialog(null, "You don't have enough sun!", "Sorry", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-    }
-
-      
-
-    /**
-     * Formats a tick count as a MM:SS time string.
-     *
-     * @param ticks current tick count
-     * @return formatted time string
-     */
     private static String formatTime(int ticks) {
         int minutes = ticks / 60;
         int seconds = ticks % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    /**
-     * Starts the main game loop after setting up the board and difficulty.
-     * Each tick handles sun generation, zombie spawning, plant actions, movement,
-     * and board rendering while checking for win or loss conditions.
-     */
+
+/*
+ * 
+  ░██████        ░███       ░███     ░███    ░██████████               ░██████      ░██████████      ░███       ░█████████     ░██████████
+ ░██   ░██      ░██░██      ░████   ░████    ░██                      ░██   ░██         ░██         ░██░██      ░██     ░██        ░██    
+░██            ░██  ░██     ░██░██ ░██░██    ░██                     ░██                ░██        ░██  ░██     ░██     ░██        ░██    
+░██  █████    ░█████████    ░██ ░████ ░██    ░█████████               ░████████         ░██       ░█████████    ░█████████         ░██    
+░██     ██    ░██    ░██    ░██  ░██  ░██    ░██                             ░██        ░██       ░██    ░██    ░██   ░██          ░██    
+ ░██  ░███    ░██    ░██    ░██       ░██    ░██                      ░██   ░██         ░██       ░██    ░██    ░██    ░██         ░██    
+  ░█████░█    ░██    ░██    ░██       ░██    ░██████████               ░██████          ░██       ░██    ░██    ░██     ░██        ░██    
+                                                                                                                                          
+    -- This method shows a welcome message, initializes the entire board, runs the timer, and calls the tick methods of PlantController 
+        and ZombieController which fires the game logic.
+ */
     public void start() {
-        //=====================================     WELCOME MESSAGE      =======================================================//
+ 
         String message = """
         This game was forged through sleepless nights, relentless debugging, and undying passion of
         Hadriel H. Ramos & Royce Vergara.
@@ -303,12 +134,12 @@ public class Game implements GameEventListener {
         BUILD VERSION: 4.0
         """;
         JOptionPane.showMessageDialog(null, message, "Message from the Authors", JOptionPane.PLAIN_MESSAGE);
-        //======================================================================================================================//
 
         configureLevel();
         initializeBoard();
         System.out.println("=== Plants vs Zombies Console Game ===");
         System.out.println("Level: " + level);
+
         gameBoard.display();
         gameBoardGUI.InitializeBoard();
 
@@ -317,15 +148,13 @@ public class Game implements GameEventListener {
         timer.start();
     }
 
+//==============================================================================================================//
     public void runTick() {
-        System.out.println("Time: " + formatTime(ticks));
-        System.out.println("Current Sun: " + sun);
 
-
-                plantController.tick();                       // Handles all Plants
-                ZombiesWin = zombieController.tick(ticks);    // Returns True if Zombie reaches House
-                PlantsWin = (ticks >= GAME_DURATION);         // Returns True if Time is up
-                gameBoard.display();
+        displayState();
+        ZombiesWin = zombieController.tick(ticks);    
+        PlantsWin = plantController.tick(ticks);  
+        gameBoard.display();
 
         if (PlantsWin) {
             System.out.println("Time's up! Plants survived. Plants win!");
@@ -343,8 +172,21 @@ public class Game implements GameEventListener {
 
             ticks++;
             gameBoardGUI.updateIndicators(sun, ticks);
-    }
+    } 
 
+/* ==============================================================================================================//
+
+░██████████                                     ░██             ░██         ░██              ░██                                              
+░██                                             ░██             ░██                          ░██                                              
+░██         ░██    ░██  ░███████  ░████████  ░████████          ░██         ░██ ░███████  ░████████  ░███████  ░████████   ░███████  ░██░████ 
+░█████████  ░██    ░██ ░██    ░██ ░██    ░██    ░██             ░██         ░██░██           ░██    ░██    ░██ ░██    ░██ ░██    ░██ ░███     
+░██          ░██  ░██  ░█████████ ░██    ░██    ░██             ░██         ░██ ░███████     ░██    ░█████████ ░██    ░██ ░█████████ ░██      
+░██           ░██░██   ░██        ░██    ░██    ░██             ░██         ░██       ░██    ░██    ░██        ░██    ░██ ░██        ░██      
+░██████████    ░███     ░███████  ░██    ░██     ░████          ░██████████ ░██ ░███████      ░████  ░███████  ░██    ░██  ░███████  ░██      
+                                                                                                                                              
+/ This GameEventListener interfaces centralizes all the removal and placement of entities in the board. /
+
+//===============================================================================================================*/
 
     @Override
     public void onZombieKilled(Zombie z) {
@@ -368,6 +210,15 @@ public class Game implements GameEventListener {
     }
 
     @Override
+    public void onPlantRemoved(Plant p) {
+        Tile t = p.getPosition();
+        t.removePlant();
+
+        gameBoardGUI.update(t);
+        System.out.println("GUI is done updating at removed plant.");
+    }
+
+    @Override
     public void onZombieMove(Tile newTile, Tile currentTile, Zombie z) {
 
         currentTile.removeZombie(z);
@@ -387,6 +238,12 @@ public class Game implements GameEventListener {
     }
 
     @Override
+    public void onSetPlant(Plant p) {
+        gameBoardGUI.update(p.getPosition());
+        System.out.println("GUI is done updating a planted plant");
+    }
+
+    @Override
     public void onCollectSun(Sunflower sf) {
         sun+=50;
         gameBoardGUI.update(sf.getPosition());
@@ -398,5 +255,20 @@ public class Game implements GameEventListener {
         gameBoardGUI.update(sf.getPosition());
         System.out.println("GUI is done updating of available sun.");
     }
+
+    // ====================== Setters and Getters for global variables ===============================  //
+        public void setSelectedPlantType(int plantType) { this.selectedPlant = plantType;}
+        public void setSun(int sun) {this.sun=sun;}
+        public int getSelectedPlantType() {return this.selectedPlant;}
+        public int getSun() {return this.sun;}
+        public int getRow() {return this.ROWS;}
+        public int getColumn() {return this.COLS;}
+    //  ===============================================================================================  //
+
+    public void displayState() {
+        System.out.println("Time: " + formatTime(ticks));
+        System.out.println("Current Sun: " + sun);
+    }
+    //  ===============================================================================================  //
 
 }

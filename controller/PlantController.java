@@ -9,12 +9,16 @@ import model.tiles.Tile;
  */
 public class PlantController {
 
-    private Tile[][] board;
-    private GameEventListener listener;
+    private final Tile[][] board;
+    private final GameEventListener listener;
+    private final int ROWS;
+    private final int COLS;
 
-    public PlantController(Tile[][] board, GameEventListener listener) {
+    public PlantController(Tile[][] board, GameEventListener listener, int ROWS, int COLS) {
         this.board = board;
         this.listener = listener;
+        this.ROWS = ROWS;
+        this.COLS = COLS;
     }
 
     /**
@@ -24,11 +28,12 @@ public class PlantController {
      * @param sun current available sun
      * @return updated sun amount after plant actions
      */
-    public int tick() {
-        handleAllPlants();
+    public boolean tick(int ticks) {
+        if (ticks==180) return true;
+        handleAllPlants(ticks); return false;
     }
 
-private void handleAllPlants() {
+private void handleAllPlants(int ticks) {
 
     for (int r = 0; r < ROWS; r++) {                                                        // ROW
         for (int c = 0; c < COLS; c++) {                                                    // COLUMN
@@ -50,10 +55,8 @@ private void handleAllPlants() {
                     break;
                 
                 case "Sunflower":
-                    if (ticks % 5 == 0) {           // Adjust Sun generation here
-                    Sunflower s = (Sunflower) p;
-                    sun = s.action(sun);
-                }
+                    Sunflower sf = (Sunflower) p;
+                    sf.action();
                     break;
 
                 case "Wallnut": 

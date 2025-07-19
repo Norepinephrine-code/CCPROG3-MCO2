@@ -13,11 +13,11 @@ import model.zombies.*;
  */
 public class ZombieController {
 
-    private Tile[][] board;
-    private GameEventListener listener;
+    private final Tile[][] board;
+    private final GameEventListener listener;
     private Random rand = new Random();
     private List<Zombie> justSpawned = new ArrayList<>();
-    private int waveLimit;
+    private final int waveLimit;
 
     public ZombieController(Tile[][] board, GameEventListener listener, int waveLimit) {
         this.board = board;
