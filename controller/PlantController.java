@@ -5,8 +5,8 @@ import model.plants.*;
 import model.tiles.Tile;
 
 /*
- * 
-░█████████  ░██            ░███    ░███    ░██ ░██████████     ░██████    ░██████   ░███    ░██ ░██████████░█████████    ░██████   ░██         ░██         ░██████████ ░█████████  
+ *
+░█████████  ░██            ░███    ░███    ░██ ░██████████     ░██████    ░██████   ░███    ░██ ░██████████░█████████    ░██████   ░██         ░██         ░██████████ ░█████████
 ░██     ░██ ░██           ░██░██   ░████   ░██     ░██        ░██   ░██  ░██   ░██  ░████   ░██     ░██    ░██     ░██  ░██   ░██  ░██         ░██         ░██         ░██     ░██ 
 ░██     ░██ ░██          ░██  ░██  ░██░██  ░██     ░██       ░██        ░██     ░██ ░██░██  ░██     ░██    ░██     ░██ ░██     ░██ ░██         ░██         ░██         ░██     ░██ 
 ░█████████  ░██         ░█████████ ░██ ░██ ░██     ░██       ░██        ░██     ░██ ░██ ░██ ░██     ░██    ░█████████  ░██     ░██ ░██         ░██         ░█████████  ░█████████  
@@ -16,6 +16,10 @@ import model.tiles.Tile;
                                                                                                                                                                                    
     - Handles all the plant model manipulation and calls
  */
+/**
+ * Controls plant behaviour each tick, delegating actions and notifying the
+ * {@link GameEventListener} of any state changes.
+ */
 public class PlantController {
 
     private final Tile[][] board;
@@ -23,6 +27,14 @@ public class PlantController {
     private final int ROWS;
     private final int COLS;
 
+    /**
+     * Creates a controller to manage all plants on the board.
+     *
+     * @param board     game board tiles
+     * @param listener  event listener to notify
+     * @param ROWS      number of rows in the board
+     * @param COLS      number of columns in the board
+     */
     public PlantController(Tile[][] board, GameEventListener listener, int ROWS, int COLS) {
         this.board = board;
         this.listener = listener;
@@ -31,18 +43,23 @@ public class PlantController {
     }
 
     /**
-     * Executes plant actions for the current tick.
+     * Executes all plant behaviours for this game tick.
      *
      * @param ticks current tick count
-     * @param sun current available sun
-     * @return updated sun amount after plant actions
+     * @return {@code true} if the time limit has been reached
      */
     public boolean tick(int ticks) {
         if (ticks==180) return true;
         handleAllPlants(ticks); return false;
     }
 
-private void handleAllPlants(int ticks) {
+    /**
+     * Iterates over every plant on the board and triggers its behaviour for the
+     * current tick.
+     *
+     * @param ticks current tick count
+     */
+    private void handleAllPlants(int ticks) {
 
     for (int r = 0; r < ROWS; r++) {                                                        // ROW
         for (int c = 0; c < COLS; c++) {                                                    // COLUMN

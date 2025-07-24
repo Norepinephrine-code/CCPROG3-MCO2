@@ -13,6 +13,10 @@ import view.LevelSelectorGUI;
      
     - Main entry point of the game.
  */
+
+/**
+ * Entry point that starts the level selector GUI.
+ */
 public class Driver {
     /**
      * Launches the game using default settings.

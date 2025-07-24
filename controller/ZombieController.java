@@ -37,6 +37,12 @@ public class ZombieController {
         return moveZombies(ticks);
     }
 
+    /**
+     * Determines if new zombies should spawn for the given tick and creates
+     * them accordingly.
+     *
+     * @param ticks current tick count
+     */
     private void spawnZombies(int ticks) {
         if (ticks >= 30 && ticks <= 80 && ticks % 10 == 0) {
             spawnSingleZombie();
@@ -55,6 +61,9 @@ public class ZombieController {
         }
     }
 
+    /**
+     * Spawns a single random zombie at the far right column.
+     */
     private void spawnSingleZombie() {
         int rows = board.length;
         int cols = board[0].length;
@@ -75,6 +84,9 @@ public class ZombieController {
 
     }
 
+    /**
+     * Spawns a special flag zombie signalling the final wave.
+     */
     private void spawnFlagZombie(){
         int rows = board.length;
         int cols = board[0].length;
@@ -88,6 +100,12 @@ public class ZombieController {
         listener.onZombieGenerated(z);
     }
 
+    /**
+     * Moves all zombies forward and performs their attacks.
+     *
+     * @param ticks current tick count
+     * @return {@code true} if a zombie reached the player's house
+     */
     private boolean moveZombies(int ticks) {
         int rows = board.length;
         int cols = board[0].length;

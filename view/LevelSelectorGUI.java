@@ -6,8 +6,15 @@ import javax.swing.*;
 
 import controller.Game;
 
+/**
+ * Simple window that lets the user choose which level to play before starting
+ * the actual game.
+ */
 public class LevelSelectorGUI extends JFrame {
 
+    /**
+     * Creates the selector window and populates it with level buttons.
+     */
     public LevelSelectorGUI() {
         setTitle("Select Your Lawn");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -66,6 +73,13 @@ public class LevelSelectorGUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Helper method that creates a uniformly styled button used by the menu.
+     *
+     * @param text    label of the button
+     * @param bgColor background colour
+     * @return configured {@link JButton}
+     */
     private JButton createStyledButton(String text, Color bgColor) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Arial", Font.BOLD, 16));
@@ -78,6 +92,11 @@ public class LevelSelectorGUI extends JFrame {
         return btn;
     }
 
+    /**
+     * Disposes the selector and starts the chosen level.
+     *
+     * @param level level number to load
+     */
     private void launchLevel(int level) {
         dispose(); // close selector window
         Game game = new Game(level);

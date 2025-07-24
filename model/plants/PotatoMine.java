@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import model.tiles.Tile;
 import model.zombies.Zombie;
 
-
+/**
+ * Delayed explosive mine that arms after a short time and detonates on contact
+ * with a zombie.
+ */
 public class PotatoMine extends Plant {
 
     private int armTime;
@@ -13,12 +16,20 @@ public class PotatoMine extends Plant {
     boolean hasArmed = false;
 
 
+    /**
+     * Creates a potato mine at the specified tile.
+     *
+     * @param position tile where the mine is planted
+     */
     public PotatoMine(Tile position){
         super(150,5.5f,1800,1000,1,1800,5.5f,position);
         this.armTime = 0;
     }
 
 
+    /**
+     * Executes the mine's behaviour each tick.
+     */
     public void action(Tile[][] board) {
         armExplode();
     }
@@ -26,6 +37,9 @@ public class PotatoMine extends Plant {
     // void action() is not used because we want to make it more clearer with what it does by writing a new
     // method instead called armExplode();
 
+    /**
+     * Arms the mine after a delay and explodes when a zombie steps on it.
+     */
     public void armExplode() {
         if (!hasArmed) {
             armTime++;

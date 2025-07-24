@@ -11,6 +11,10 @@ import model.plants.Sunflower;
 import model.plants.Wallnut;
 import model.tiles.Tile;
 
+/**
+ * Handles mouse input on the game board and places or removes plants as
+ * requested by the player.
+ */
 public class TileClickController {
 
     private Game game;
@@ -22,6 +26,15 @@ public class TileClickController {
     private static final int HOUSE_COLUMN = 0;
     private static final int FIRST_PLANTABLE_COLUMN = HOUSE_COLUMN + 1;
 
+    /**
+     * Constructs a controller for handling tile clicks.
+     *
+     * @param game      main game instance
+     * @param board     game board tiles
+     * @param listener  event listener to notify
+     * @param ROWS      number of rows in the board
+     * @param COLS      number of columns in the board
+     */
     public TileClickController(Game game, Tile[][] board, GameEventListener listener, int ROWS, int COLS) {
         this.game = game;
         this.board = board;
@@ -30,10 +43,20 @@ public class TileClickController {
         this.COLS = COLS;
     }
 
+    /**
+     * Entry point called by the GUI when a tile is clicked.
+     *
+     * @param clicked_row    row index of the clicked tile
+     * @param clicked_column column index of the clicked tile
+     */
     public void action(int clicked_row, int clicked_column) {
        handleTileClick(clicked_row, clicked_column);
     }
 
+    /**
+     * Processes a tile click by either collecting sun or attempting to place a
+     * plant.
+     */
     public void handleTileClick(int clicked_row, int clicked_column) {
 
         Tile t = board[clicked_row][clicked_column];
@@ -56,6 +79,10 @@ public class TileClickController {
         }
     }
 
+    /**
+     * Attempts to place the selected plant on the specified tile, deducting the
+     * appropriate sun cost if successful.
+     */
     private void placePlant(int clicked_row, int clicked_column, int selectedPlant) {
 
         // CHECKERS BELOW
@@ -120,6 +147,9 @@ public class TileClickController {
         }
     }
 
+    /**
+     * Validates that the tile is within bounds and currently unoccupied.
+     */
     private boolean isValidPosition(int r, int c) {               // Helper Method
 
         if ((r >= 0 && r < ROWS && c >= FIRST_PLANTABLE_COLUMN && c < COLS && !board[r][c].isOccupied())) {
@@ -130,6 +160,9 @@ public class TileClickController {
         }
     }
 
+    /**
+     * Checks if the player has enough sun to purchase the selected plant.
+     */
     private boolean isValidPurchase(int selectedPlant, int sun) {         // Helper Method
         int cost;
 

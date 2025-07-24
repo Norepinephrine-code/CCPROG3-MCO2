@@ -98,12 +98,13 @@ public class Tile {
         return !zombies.isEmpty();
     }
 
+    /**
+     * Checks whether a plant currently occupies this tile.
+     *
+     * @return {@code true} if a plant is present
+     */
     public boolean hasPlant() {
-        if (plant!=null) {
-            return true;
-        } else {
-            return false;
-        }
+        return plant != null;
     }
     
     /**
@@ -113,10 +114,18 @@ public class Tile {
         return zombies;
     }
 
+    /**
+     * @return {@code true} if a collectible sun is lying on this tile
+     */
     public boolean hasSunDrop() {
-    return hasSunDrop;
-}
+        return hasSunDrop;
+    }
 
+    /**
+     * Sets whether this tile currently has a dropped sun.
+     *
+     * @param val {@code true} if a sun has been dropped here
+     */
     public void setSunDrop(boolean val) {
         this.hasSunDrop = val;
     }
