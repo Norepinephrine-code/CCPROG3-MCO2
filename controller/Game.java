@@ -28,6 +28,11 @@ import view.GameBoardGUI;
   This Java File centralizes all the controllers and contains the game values.
  * 
  */
+
+/**
+ * Central game controller that orchestrates all other controllers and manages
+ * the overall game state.
+ */
 public class Game implements GameEventListener {
 
     private static int ROWS;
@@ -55,6 +60,11 @@ public class Game implements GameEventListener {
     private MusicPlayer musicPlayer = new MusicPlayer();
 
 
+    /**
+     * Constructs a game instance configured for the specified level.
+     *
+     * @param level level number to load
+     */
     public Game(int level) {
         this.level = level;
         this.rand = new Random();   // For Generation of Random Suns
@@ -72,9 +82,9 @@ public class Game implements GameEventListener {
  ░██  ░███    ░██    ░██    ░██       ░██    ░██                      ░██   ░██         ░██       ░██    ░██    ░██    ░██         ░██    
   ░█████░█    ░██    ░██    ░██       ░██    ░██████████               ░██████          ░██       ░██    ░██    ░██     ░██        ░██    
                                                                                                                                           
-    -- This method shows a welcome message, initializes the entire board, runs the timer, and calls the tick methods of PlantController 
-        and ZombieController which fires the game logic.
- */
+    /**
+     * Initializes the board, sets up controllers and begins the main game loop.
+     */
     public void start() {
  
         String message = """
@@ -101,6 +111,9 @@ public class Game implements GameEventListener {
         timer.start();
     }
 
+    /**
+     * Executes one tick of game logic updating plants, zombies and the GUI.
+     */
     public void runTick() {
 
         displayState();
@@ -142,6 +155,7 @@ public class Game implements GameEventListener {
 
 //===============================================================================================================*/
 
+    /** {@inheritDoc} */
     @Override
     public void onZombieKilled(Zombie z) {
         Tile t = z.getPosition();
@@ -153,6 +167,7 @@ public class Game implements GameEventListener {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onPlantKilled(Plant p) {
         Tile t = p.getPosition();
@@ -163,6 +178,7 @@ public class Game implements GameEventListener {
         System.out.println("GUI is done updating at Plant Killed.");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onPlantRemoved(Plant p) {
         Tile t = p.getPosition();
@@ -172,6 +188,7 @@ public class Game implements GameEventListener {
         System.out.println("GUI is done updating at removed plant.");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onZombieMove(Tile newTile, Tile currentTile, Zombie z) {
 
@@ -185,6 +202,7 @@ public class Game implements GameEventListener {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onZombieGenerated(Zombie z) {
         Tile t = z.getPosition();
@@ -193,12 +211,14 @@ public class Game implements GameEventListener {
         System.out.println("GUI is done updating a generated zombie.");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onSetPlant(Plant p) {
         gameBoardGUI.update(p.getPosition());
         System.out.println("GUI is done updating a planted plant");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onCollectSunFromSunflower(Sunflower sf) {
         sun+=50;
@@ -206,6 +226,7 @@ public class Game implements GameEventListener {
         System.out.println("GUI is done updating manual collection of sun.");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onCollectSunFromTile(Tile tile) {
         sun+=50;
@@ -213,6 +234,7 @@ public class Game implements GameEventListener {
         gameBoardGUI.update(tile);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onDroppedSun(Tile tile) {
         tile.setSunDrop(true);
@@ -220,6 +242,7 @@ public class Game implements GameEventListener {
         System.out.println("GUI is done updating sun drop!");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onReadySun(Sunflower sf) {
         gameBoardGUI.update(sf.getPosition());
@@ -239,11 +262,17 @@ public class Game implements GameEventListener {
         - Simple setter and getter for Selected Plant Type and Sun Variable, both of which dynamically changes with user input.
      */
     // ====================== Setters and Getters for global variables ===============================  //
+        /** Sets the currently selected plant type from the GUI. */
         public void setSelectedPlantType(int plantType) { this.selectedPlant = plantType;}
+        /** Updates the player's sun resource count. */
         public void setSun(int sun) {this.sun=sun;}
+        /** @return type id of the selected plant */
         public int getSelectedPlantType() {return this.selectedPlant;}
+        /** @return current available sun */
         public int getSun() {return this.sun;}
+        /** @return number of rows of the board */
         public int getRow() {return this.ROWS;}
+        /** @return number of columns of the board */
         public int getColumn() {return this.COLS;}
     //  ===============================================================================================  //
 
@@ -260,12 +289,18 @@ public class Game implements GameEventListener {
     - Compartmentalized methods
      */
 
+    /**
+     * Prints the current game time and sun count to the console.
+     */
     public void displayState() {
         System.out.println("Time: " + formatTime(ticks));
         System.out.println("Current Sun: " + sun);
     }
 
     //  ===============================================================================================  //
+    /**
+     * Randomly drops a sun on the board during the early game.
+     */
     private void maybeDropRandomSun() {
     int chance = rand.nextInt(100);  // 0 to 99
 
@@ -284,7 +319,10 @@ public class Game implements GameEventListener {
     //  ===============================================================================================  //
     
     //  ===============================================================================================  //
-    private void configureLevel() {     
+    /**
+     * Sets board dimensions and starting resources based on the chosen level.
+     */
+    private void configureLevel() {
         switch (level) {
             case 1: ROWS = 5;
                     COLS = 9;
@@ -307,6 +345,9 @@ public class Game implements GameEventListener {
     }
 
     //  ===============================================================================================  //
+    /**
+     * Constructs the tile grid and initializes all controller instances.
+     */
     private void initializeBoard() {
         board = new Tile[ROWS][COLS];
         for (int r = 0; r < ROWS; r++) {
@@ -324,12 +365,18 @@ public class Game implements GameEventListener {
     }
     //  ===============================================================================================  //
 
+    /**
+     * Delegates tile click handling to the {@link TileClickController}.
+     */
     public void handleTileClick(int clicked_row, int clicked_column) {
         tileClickController.action(clicked_row, clicked_column);
     }
 
     //  ===============================================================================================  //
 
+    /**
+     * Utility to convert tick counts to a mm:ss formatted string.
+     */
     private static String formatTime(int ticks) {
         int minutes = ticks / 60;
         int seconds = ticks % 60;

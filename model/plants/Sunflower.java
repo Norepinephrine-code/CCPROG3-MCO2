@@ -22,9 +22,8 @@ public class Sunflower extends Plant {
     }
 
     /**
-     * Overloaded method to generate sun instead of attacking and reducing Zombie health
-     * @param sun Amount of sun in-game
-     * @return Updated amount of sun
+     * Generates sun after a fixed number of ticks. When ready, a sun can be
+     * collected by the player.
      */
     public void action(){
         if (tick_timer < DURATION) tick_timer++;
@@ -35,6 +34,9 @@ public class Sunflower extends Plant {
         }
     }
 
+    /**
+     * Collects the ready sun and notifies the game to increase the sun count.
+     */
     public void collect() {
         if (hasSun==true) {
             hasSun = false;                  // Reset Collection
@@ -43,6 +45,9 @@ public class Sunflower extends Plant {
         }
     }
 
+    /**
+     * @return {@code true} if a sun is ready to be collected from this plant
+     */
     public boolean hasSun() {
         return this.hasSun;
     }

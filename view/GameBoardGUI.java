@@ -7,6 +7,10 @@ import model.plants.*;
 import model.tiles.Tile;
 import model.zombies.*;
 
+/**
+ * Swing based GUI that visually represents the game board and handles user
+ * interactions such as clicking tiles and selecting plants.
+ */
 public class GameBoardGUI {
     private Tile[][] board;
     private int rows;
@@ -19,6 +23,14 @@ public class GameBoardGUI {
     private JLabel sunIndicator;
     private JLabel timeIndicator;
 
+    /**
+     * Constructs the GUI for the given board and starts rendering on the
+     * Swing event thread.
+     *
+     * @param board underlying board of tiles
+     * @param level current game level
+     * @param game  controller driving the game logic
+     */
     public GameBoardGUI(Tile[][] board, int level, Game game) {
         this.board = board;
         this.rows = board.length;
@@ -28,6 +40,10 @@ public class GameBoardGUI {
         SwingUtilities.invokeLater(this::createAndShowGUI);
     }
 
+    /**
+     * Initializes all Swing components and lays out the board grid along with
+     * control panels.
+     */
     private void createAndShowGUI() {
 
         frame = new JFrame("Plants vs Zombies");
@@ -123,6 +139,13 @@ public class GameBoardGUI {
 
     }
 
+    /**
+     * Updates the status labels showing the player's current sun and elapsed
+     * time.
+     *
+     * @param sun   current sun count
+     * @param ticks elapsed game ticks
+     */
     public void updateIndicators(int sun, int ticks) {
         int minutes = ticks / 60;
         int seconds = ticks % 60;
@@ -134,7 +157,10 @@ public class GameBoardGUI {
     }
 
 
-    /** Refreshes the display to reflect the current board state. */
+    /**
+     * Refreshes every tile in the GUI so that the current state of the board
+     * is accurately shown.
+     */
     public void InitializeBoard() {
         if (cells == null) return;
 
@@ -148,7 +174,11 @@ public class GameBoardGUI {
         frame.repaint();
     }
 
-    // Overloaded update method that only updates a specific tile
+    /**
+     * Updates the icons for a single tile to match its current contents.
+     *
+     * @param pos tile that changed state
+     */
     public void update(Tile pos) {
         if (cells == null) return;
 
@@ -226,6 +256,12 @@ public class GameBoardGUI {
     }
 
 
+    /**
+     * Retrieves the icon image for the given plant instance.
+     *
+     * @param p plant to look up
+     * @return scaled icon representing the plant
+     */
     private Icon getPlantIcon(Plant p) {
 
         if (p instanceof Sunflower) return load("resources/images/plants/sunflower.png");
@@ -239,6 +275,12 @@ public class GameBoardGUI {
     }
 
 
+    /**
+     * Returns the icon image for a specific zombie type.
+     *
+     * @param z zombie whose image should be displayed
+     * @return scaled icon of the zombie
+     */
     private Icon getZombieIcon(Zombie z) {
 
         if (z instanceof NormalZombie) return load("resources/images/zombies/normal.png");
@@ -255,14 +297,30 @@ public class GameBoardGUI {
         return load("resources/images/zombies/unknownZombie.png");
     }
 
+    /**
+     * Icon used when multiple zombies occupy a single tile.
+     *
+     * @return generic multiple-zombie icon
+     */
     private Icon getZombieIcon() {
         return load("resources/images/zombies/multiple.png");
     }
 
+    /**
+     * Icon representing the player's house / lawn mower.
+     *
+     * @return house icon image
+     */
     private Icon getHouseIcon() {
         return load("resources/images/house/lawn_mower.png");
     }
 
+    /**
+     * Retrieves the background tile image by name.
+     *
+     * @param type descriptor of the background tile
+     * @return background icon image
+     */
     private Icon getBackgroundIcon(String type) {
 
         if (type.equals("Cement")) return load("resources/images/backgrounds/cement.png");
@@ -289,6 +347,13 @@ public class GameBoardGUI {
     }
 
 
+    /**
+     * Loads and scales an image from the given path, returning a default icon
+     * if the file cannot be found.
+     *
+     * @param path path to the image file
+     * @return loaded and scaled {@link ImageIcon}
+     */
     private ImageIcon load(String path) {
         java.io.File file = new java.io.File(path);
         if (file.exists()) {

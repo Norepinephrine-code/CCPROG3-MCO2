@@ -69,6 +69,12 @@ public abstract class Zombie {
     public void setPosition(Tile position) {
         this.position = position;
     }
+
+    /**
+     * Registers a game event listener for callbacks related to this zombie.
+     *
+     * @param l listener implementation
+     */
     public void setGameEventListener(GameEventListener l) {
         this.listener = l;
     }
